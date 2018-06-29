@@ -22,13 +22,13 @@ except socket.error:
 s.bind((ipHost, portHost))
 data, addr = s.recvfrom(1024)
 data = data.decode("utf-8")
-nextSpace = data.find(" ")
-#TODO: Handle last item better. Follow last item with a space right now
-if nextSpace == -1:
-    file = data
-else:
-    file = data[0:nextSpace]
+nextSpace = data.find(".py") + 3
+file = data[0:nextSpace]
+lastSpace = nextSpace + 1
+nextSpace = data.find(" ", lastSpace)
 while nextSpace != -1:
-    lastSpace = nextSpace
-    nextSpace = data.find(" ", nextSpace + 1)
+    sys.argv.append(data[lastSpace:nextSpace])
+    lastSpace = nextSpace + 1
+    nextSpace = data.find(" ", lastSpace)
+sys.argv.append(data[lastSpace:])
 exec(open(file).read())
