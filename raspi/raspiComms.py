@@ -15,20 +15,31 @@ portHost = 5000
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
-    #TODO: Change to writing to an error file
+    #TODO: Change to message sent back to gui
     print("Failed To Create Socket")
     sys.exit()
-#TODO: Check for exceptions for communication operations
+
 s.bind((ipHost, portHost))
-data, addr = s.recvfrom(1024)
-data = data.decode("utf-8")
-nextSpace = data.find(".py") + 3
-file = data[0:nextSpace]
-lastSpace = nextSpace + 1
-nextSpace = data.find(" ", lastSpace)
-while nextSpace != -1:
-    sys.argv.append(data[lastSpace:nextSpace])
+while True:
+    data, addr = s.recvfrom(1024)
+    data = data.decode("utf-8")
+    if data == "exit":
+        break
+    nextSpace = data.find(".py") + 3
+    file = data[0:nextSpace]
     lastSpace = nextSpace + 1
     nextSpace = data.find(" ", lastSpace)
-sys.argv.append(data[lastSpace:])
-exec(open(file).read())
+    while nextSpace != -1:
+        sys.argv.append(data[lastSpace:nextSpace])
+        lastSpace = nextSpace + 1
+        nextSpace = data.find(" ", lastSpace)
+    sys.argv.append(data[lastSpace:])
+    try:
+        exec(open(file).read())
+    except ValueError as e:
+        #TODO: Change to message sent back to gui
+        print(e)
+    except FileNotFoundError as e:
+        #TODO: Change to message sent back to gui
+        print(e)
+    del sys.argv[1:]

@@ -17,8 +17,11 @@ portSend = 5000
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
-    #TODO: Change to writing to an error file
+    #TODO: Change to ouput on gui
     print("Failed To Create Socket")
     sys.exit()
-#TODO: Check for exceptions for communication operations
-s.sendto(input().encode('utf-8'), (ipSend, portSend))
+while True:
+    data = input()
+    s.sendto(data.encode('utf-8'), (ipSend, portSend))
+    if data == "exit":
+        break
