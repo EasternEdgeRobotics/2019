@@ -63,16 +63,24 @@ function runPythonPOST(scriptName, data, returnFunction){
  *  joystick values will be handled on the server side (Python)
  * 
  */
+function HandleSliderValues(){
+
+}
 
 
 
 
- /** Get Values from server
+ /** GetAllValues
   * 
   *  Cleaner function to run a GET command to server and return all nessessary values in a single server call
   *  instead of all seperate.
   * 
   */
+ function GetAllValues(){
+     
+ }
+
+
 
 
 

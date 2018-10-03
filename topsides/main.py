@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, jsonify
 import json
 import random
+import profileHandle
 
 app = Flask(__name__)
 
@@ -11,6 +12,14 @@ Base url for opening the GUI. This route will return the index.html
 def returnGui():
     return render_template("index.html")
 
+
+"""
+Return page for control profile edit
+"""
+@app.route("/editprofile")
+def editProfilePage():
+    profiles = profileHandle.loadProfiles()
+    return render_template("controlProfileEdit.html", profiles=profiles)
 
 """
 /testGetPressure

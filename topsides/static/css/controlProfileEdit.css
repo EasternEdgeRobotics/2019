@@ -1,0 +1,25 @@
+
+
+/*------------         PROFILE SELECT        --------------*/
+
+.profile-select-container{
+    text-align: center;
+    margin-top: 100px;
+    padding: 0px 50px;
+}
+
+.profile-panel{
+    min-width: 200px;
+    display: inline-block;
+    background-color: aquamarine;
+    text-align: center;
+    padding: 10px 20px;
+    margin: 5px;
+
+}
+
+    .profile-panel p{
+        margin: 5px 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
