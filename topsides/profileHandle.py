@@ -16,9 +16,13 @@ def loadProfiles():
 
 
 """
-a
-a
-a
+deleteProfile
+
+deletes a control profile from memory
+
+@params:
+    - id: id of profile to delete from memory
+
 """
 def deleteProfile(id):
     print(id)
