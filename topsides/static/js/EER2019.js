@@ -17,9 +17,11 @@ function runPythonGET(scriptName, data, returnFunction){
     $.ajax({
         type: "GET",
         url: "http://localhost:5000/" + scriptName,
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: data,
         success: function(data){
+            console.log("fds");
             returnFunction(data);
         }
     });
@@ -45,6 +47,7 @@ function runPythonPOST(scriptName, data, returnFunction){
     $.ajax({
         type: "POST",
         url: "http://localhost:5000/" + scriptName,
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: data,
         success: function(data){

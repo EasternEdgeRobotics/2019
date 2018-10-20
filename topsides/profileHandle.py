@@ -13,3 +13,17 @@ def loadProfiles():
             return data
     except Exception as e:
         return ("Problem loading json: " + str(e))
+
+
+"""
+a
+a
+a
+"""
+def deleteProfile(id):
+    print(id)
+    with open("json/controlProfiles.json") as file:
+        data = json.load(file)
+        for element in data:
+            if(int(element["id"]) == int(id)):
+                del element
