@@ -1,19 +1,26 @@
 import maestro
+import sys
 #import time
 
 
 
-print("Servo Logs: ")
-servo = maestro.Controller();
 
+
+servo = maestro.Controller();                                                   ## Inits the maestro controller from the library.
 
 try:
     print("Control Starting: ");
-    servo.setAccel(0, 4);
-    servo.setTarget(0, 6000);
-    servo.setSpeed(0, 10);
-    print(servo.getPosition(0), servo.getPosition(1));
 
-except Exception as e:
+    accel = sys.argv[1];                                                        ## get accel, target and speed values from system command
+    target = sys.argv[2];
+    speed = sys.argv[3];
+
+    servo.setAccel(0, accel);
+    servo.setTarget(0, target);
+    servo.setSpeed(0, speed);
+
+    print(servo.getPosition(0));
+
+except Exception as e:                                                          ## Get an error and print it
     print("Type error: " + str(e));
-    servo.close();
+    servo.close();                                                              
