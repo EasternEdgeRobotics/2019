@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, jsonify
+from flask import Flask, render_template, redirect, jsonify, request
 import json
 import random
 import profileHandle
@@ -31,6 +31,26 @@ def testGetPressure():
     value = random.randint(99, 105)
     return json.dumps(value)
 
+"""
+Return page for the control gui
+"""
+@app.route("/gui")
+def returnGuiPage():
+    return render_template("gui.html")
+
+"""
+/guislider
+POST
+Gets the values from the 6 degrees of power gui sliders
+"""
+@app.route('/guislider', methods = ['POST'])
+def getSliderValues():
+    # ['value'] = value of slider (0-10 currently)
+    # ['slider'] = which slider (Yaw, Pitch, etc.)
+    data = request.json
+    print(data['slider'])
+    print(data['value'])
+    return(jsonify(""))
 
 """
 Server start.
