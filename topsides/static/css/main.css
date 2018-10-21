@@ -1,3 +1,75 @@
+@font-face{
+    font-family: Roboto;
+    font-weight: normal;
+    src: url("font/Roboto/Roboto-Regular.ttf");
+}
+
+@font-face{
+    font-family: Roboto;
+    font-style: italic;
+    font-weight: normal;
+    src: url("font/Roboto/Roboto-Italic.ttf");
+}
+
+@font-face{
+    font-family: Roboto;
+    src: url("font/Roboto/Roboto-Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face{
+    font-family: Roboto;
+    font-style: italic;
+    src: url("font/Roboto/Roboto-BoldItalic.ttf");
+    font-weight: bold;
+}
+
+@font-face{
+    font-family: Roboto;
+    src: url("font/Roboto/Roboto-Black.ttf");
+    font-weight: bolder;
+}
+
+@font-face{
+    font-family: Roboto;
+    font-style: italic;
+    src: url("font/Roboto/Roboto-BlackItalic.ttf");
+    font-weight: bolder;
+}
+
+@font-face{
+    font-family: Roboto;
+    src: url("font/Roboto/Roboto-Thin.ttf");
+    font-weight: lighter;
+}
+
+@font-face{
+    font-family: Roboto;
+    font-style: italic;
+    src: url("font/Roboto/Roboto-ThinItalic.ttf");
+    font-weight: lighter;
+}
+
+
 p, h1, h2, h3, h4, h5, h6{
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    font-family: "Roboto";
+}
+
+.btn{
+    padding: 8px 12px;
+    font-family: "Roboto", Arial, sans-serif;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+.btn-primary{
+    color: white;
+    background-color: rgb(86, 151, 255);
+}
+
+.btn-danger{
+    color: white;
+    background-color: rgb(255, 66, 66);
 }
