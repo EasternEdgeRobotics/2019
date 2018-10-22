@@ -23,7 +23,7 @@ function getProfiles(){
  */
 function editProfile(id){
     setProfileEiitPanel(id);
-    openProfileEditPanel();
+    //openProfileEditPanel();
 }
 
 

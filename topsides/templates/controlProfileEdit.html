@@ -5,6 +5,7 @@
         
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/profileHandle.js')}}" type="text/javascript"></script>
     </head>
     <body>
@@ -15,16 +16,15 @@
                 {% for profile in profiles %}
                     <div class="profile-panel">
                         <p>{{profile["name"]}}</p>
-                        <button class="btn btn-primary" onclick="editProfile({{profile['id']}})">EDIT</button>
-                        <button class="btn btn-danger" onclick="deleteProfile({{profile['id']}})">DELETE</button>
+                        <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="editProfile({{profile['id']}})">EDIT</button>
+                        <button class="btn btn-danger modal-trigger" modal-id="modalEditProfile" onclick="deleteProfile({{profile['id']}})">DELETE</button>
                     </div>
                 {% endfor %}
             </div>
         </div>
-        <div id="panelEditProfile" class="hidden">
-            <div class="black-overlay"></div>
-            <div class="panel-edit-profile">
-
+        <div id="modalEditProfile" class="modal">
+            <div class="modal-content"> 
+                
             </div>
         </div>
 
