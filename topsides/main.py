@@ -73,7 +73,7 @@ INPUT:
 """
 @app.route("/deleteProfile", methods=["POST"])
 def deleteProfile():
-    profileID = request.args.get('profileID')
+    profileID = request.json["profileId"]
     if(profileID is None):
         return "Failed, profileID not read correct or is not a number"
     else:

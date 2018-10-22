@@ -21,7 +21,6 @@ function runPythonGET(scriptName, data, returnFunction){
         dataType: "json",
         data: data,
         success: function(data){
-            console.log("fds");
             returnFunction(data);
         }
     });

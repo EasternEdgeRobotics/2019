@@ -29,3 +29,38 @@
         font-size: 18px;
         font-weight: bold;
     }
+
+/*-------------------------------   PROFILE EDIT   --------------------------------------------*/
+
+#panelEditProfile{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.panel-edit-profile{
+    position: fixed;
+    top: 50px;
+    width: 60%;
+    max-width: 1000px;
+    left: 20%;
+    height: 500px;
+    transition: 0.5s;
+    z-index: 5;
+    background-color: aqua;
+}
+
+#panelEditProfile.hidden .panel-edit-profile{
+    transform: translateY(100px);
+    opacity: 0;
+    z-index: -1;
+}
+
+#panelEditProfile.hidden{
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
+
