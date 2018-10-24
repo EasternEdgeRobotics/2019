@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/gui.css')}}" type="text/css"  />
+
+        <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            var allInputs = $(".slider");
+            allInputs.on('input', function() {
+              var inputArtribute = $( this ).attr('name');
+              var inputValue = $( this ).val();
+              getNewSliderValues(inputArtribute, inputValue)
+            });
+          });
+        </script>
+    </head>
+    <body>
+        <h1>GUI:</h1>
+        <fieldset>
+          <legend>Power in six degrees of freedom</legend>
+          <label for="surge">Forward / Backward (Surge)</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="surge" name="surge">
+          <label for="heave">Up / Down (Heave)</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="heave" name="heave">
+          <label for="sway">Left / Right (Sway)</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="sway" name="sway">
+          <label for="yaw">Yaw</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="yaw" name="yaw">
+          <label for="pitch">Pitch</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="pitch" name="pitch">
+          <label for="roll">Roll</label>
+          <input type="range" min="0" max="10" step="1" class="slider" id="roll" name="roll">
+      </fieldset>
+      <br/>
+      <div class="eer-logo-img"></div>
+    </body>
+</html>

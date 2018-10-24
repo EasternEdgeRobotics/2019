@@ -1,7 +1,7 @@
 
 /**runPythonGET
 *
-*    @params 
+*    @params
 *        scriptName:
 *            -the name of the function to run. Declared in the @app.route in python file
 *
@@ -30,7 +30,7 @@ function runPythonGET(scriptName, data, returnFunction){
 
 /** runPythonPOST
 *
-*    @params 
+*    @params
 *        scriptName:
 *            -the name of the function to run. Declared in the @app.route in python file
 *
@@ -60,10 +60,10 @@ function runPythonPOST(scriptName, data, returnFunction){
 
 
 /** HandleSliderValues
- * 
+ *
  *  Empty function for handling slider values.
  *  joystick values will be handled on the server side (Python)
- * 
+ *
  */
 function HandleSliderValues(){
 
@@ -73,22 +73,16 @@ function HandleSliderValues(){
 
 
  /** GetAllValues
-  * 
+  *
   *  Cleaner function to run a GET command to server and return all nessessary values in a single server call
   *  instead of all seperate.
-  * 
+  *
   */
  function GetAllValues(){
-     
- }
-
-
-
-
 
  
 
-
+ }
  /*
 
 
@@ -134,7 +128,3 @@ $(document).ready(function(){
         e.stopPropagation();
     });
 });
-
-
-
-
