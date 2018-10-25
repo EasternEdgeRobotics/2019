@@ -39,7 +39,7 @@ simple reciever function for testing client to server comms for joystick input. 
 
 INPUT:
     Json Body Format: {x: double, y: double, z: double, thumbstick}
-    
+
 """
 @app.route("/joystickValueTest", methods=["POST"])
 def getJoytickValuesFromJavascript():
@@ -110,6 +110,26 @@ def getSliderValues():
     print(data['slider'])
     print(data['value'])
     return(jsonify(""))
+
+"""
+Return page for the development input
+"""
+@app.route("/dev")
+def returnDevPage():
+    return render_template("dev.html")
+
+"""
+/devinput
+POST
+Gets the values from the dev input
+"""
+@app.route('/devinput', methods = ['POST'])
+def getDevInput():
+    # devData is the variable the stores the data submitted from the webpage.
+    # it is printed out to console for testing purposes.
+    devData = request.json
+    print(devData)
+    return jsonify("")
 
 """
 Server start.

@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DEVELOPMENT</title>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}" type="text/css"  />
+        <link rel="stylesheet" href="{{url_for('static', filename='css/gui.css')}}" type="text/css"  />
+
+        <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/dev.js')}}" type="text/javascript"></script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $("#devform").submit(function( event ) {
+              var inputValue = $("#message").val();
+              event.preventDefault();
+              getDevInput(inputValue)
+            });
+          });
+        </script>
+    </head>
+    <body>
+      <h1>DEVELOPMENT:</h1>
+      <form id="devform">
+      <textarea id="message" name="message" rows="30" cols="100" placeholder="Any message here will be sent to the server to be stored in a variable and printed for testing purposes."></textarea>
+      <br />
+      <br />
+      <input type="submit" class="button">
+      </form>
+      <br/>
+      <div class="eer-logo-img"></div>
+    </body>
+</html>

@@ -27,6 +27,31 @@ legend {
     padding: 3px 6px;
 }
 
+/* Textarea */
+textarea {
+    padding: 20px 20px;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    background-color: #ffffff;
+    resize: none;
+}
+
+/* Buttons */
+.button {
+    opacity: 0.7;
+    background-color: #0000FF;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover {
+    opacity: 1;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
 }
