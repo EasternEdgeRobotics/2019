@@ -20,7 +20,7 @@ try:
     ## this will be changed when joystick is used
     ## Use common sense when inputing time
     tTime = sys.argv[3];
-    ## set run time to minTime in user input is not between and including maxTime and minTime
+    ## set run time to minTime if user input is not between and including maxTime and minTime
     tTime = tTime if (tTime <= maxTime and tTime >= minTime) else minTime;
     ## 8 ports are available for thrusters.
     PORTS = [None,1,2,3,4,5,6,7,8];
