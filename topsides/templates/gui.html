@@ -1,38 +1,58 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="{{url_for('static', filename='css/gui.css')}}" type="text/css"  />
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GUI</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/gui.css')}}" type="text/css"  />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}" type="text/css"  />
 
-        <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
-        <script type="text/javascript">
-          $(document).ready(function() {
-            var allInputs = $(".slider");
-            allInputs.on('input', function() {
-              var inputArtribute = $( this ).attr('name');
-              var inputValue = $( this ).val();
-              getNewSliderValues(inputArtribute, inputValue)
-            });
-          });
-        </script>
-    </head>
+    <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        var sliderInputs = $(".slider");
+        sliderInputs.on('input', function() {
+          var inputAttribute = $( this ).attr('name');
+          var inputValue = $( this ).val();
+          getNewSliderValues(inputAttribute, inputValue)
+        });
+      });
+    </script>
+</head>
     <body>
-        <h1>GUI:</h1>
-        <fieldset>
-          <legend>Power in six degrees of freedom</legend>
-          <label for="surge">Forward / Backward (Surge)</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="surge" name="surge">
-          <label for="heave">Up / Down (Heave)</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="heave" name="heave">
-          <label for="sway">Left / Right (Sway)</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="sway" name="sway">
-          <label for="yaw">Yaw</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="yaw" name="yaw">
-          <label for="pitch">Pitch</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="pitch" name="pitch">
-          <label for="roll">Roll</label>
-          <input type="range" min="0" max="10" step="1" class="slider" id="roll" name="roll">
-      </fieldset>
+      <h1>GUI:</h1>
+      <fieldset>
+        <br />
+        <legend>Power in six degrees of freedom</legend>
+        <label for="surge">Forward / Backward (Surge)</label>
+        <label for="surge" id="outputsurge">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="surge" name="surge">
+        <br />
+        <br />
+        <label for="heave">Up / Down (Heave)</label>
+        <label for="heave" id="outputheave">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="heave" name="heave">
+        <br />
+        <br />
+        <label for="sway">Left / Right (Sway)</label>
+        <label for="sway" id="outputsway">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="sway" name="sway">
+        <br />
+        <br />
+        <label for="yaw">Yaw</label>
+        <label for="yaw" id="outputyaw">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="yaw" name="yaw">
+        <br />
+        <br />
+        <label for="pitch">Pitch</label>
+        <label for="pitch" id="outputpitch">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="pitch" name="pitch">
+        <br />
+        <br />
+        <label for="roll">Roll</label>
+        <label for="roll" id="outputroll">50</label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="roll" name="roll">
+    </fieldset>
       <br/>
       <div class="eer-logo-img"></div>
     </body>
