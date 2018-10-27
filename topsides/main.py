@@ -2,8 +2,12 @@ from flask import Flask, render_template, redirect, jsonify, request
 import json
 import random
 import profileHandle
+import topsidesComms
+import threading
 
 app = Flask(__name__)
+
+t = threading.Thread(target=topsidesComms.startComms)
 
 """
 Base url for opening the GUI. This route will return the index.html
@@ -109,12 +113,15 @@ def getSliderValues():
     data = request.json
     print(data['slider'])
     print(data['value'])
+    topsidesComms.send.put("print.py value")
     return(jsonify(""))
 
 """
 Server start.
 This is a standard python function that is True when this file is called from the command line (python3 main.py)
-(This statement is false for calls to the server)
+(This statement is false for calls to the server)  
 """
 if __name__ == "__main__":
-    app.run(debug = True, host='0.0.0.0')
+    t.start()
+    if topsidesComms.received.get() == "bound":
+        app.run(debug = True,host = '0.0.0.0', use_reloader = True, port = 80)
