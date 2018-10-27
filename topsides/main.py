@@ -4,6 +4,7 @@ import random
 import profileHandle
 import topsidesComms
 import threading
+import sys
 
 app = Flask(__name__)
 
@@ -113,7 +114,7 @@ def getSliderValues():
     data = request.json
     print(data['slider'])
     print(data['value'])
-    topsidesComms.send.put("print.py value")
+    topsidesComms.send.put("print.py " + str(data['value']))
     return(jsonify(""))
 
 """

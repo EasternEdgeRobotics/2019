@@ -41,8 +41,7 @@ def startComms():
             break
         #TODO: Change to saving to log file on error
         #receive response from raspi and log if error
-        outputData, addr = s.recvfrom(1024)
+        '''outputData, addr = s.recvfrom(1024)
+        print(outputData, file=sys.stderr)
         outputData = outputData.decode("utf-8")
-        received.put(outputData)
-        #TODO: move to a get on the server
-        print(received.get())
+        received.put(outputData)'''
