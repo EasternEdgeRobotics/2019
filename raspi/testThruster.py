@@ -16,4 +16,4 @@ servo = maestro.Controller();
 ## Initialize the control module with maestro channel and thruster port
 dt = control.Thruster(servo, PORTS[tChan]);
 ## run the thruster for tTime
-dt._fly(tSpeed);
+dt.Fly(tSpeed);

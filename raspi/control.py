@@ -6,7 +6,7 @@
 ## stable robot. High values increase responsiveness, but can lead to a tippy robot.
 ## Try values around 50 to 100.
 
-response = 70;
+RESPONSE = 70;
 
 ## Motor Controller limits measured in maestro units
 ## Values should be adjusted so that the center, stops the thrusters;
@@ -24,14 +24,14 @@ class Thruster:
         self.ch = ch;
         ## Init thruster accel and speed parameters
         self.maestro.setAccel(ch, 0);
-        self.maestro.setSpeed(ch, response);
+        self.maestro.setSpeed(ch, RESPONSE);
         #thruster min/max and center Values
         self.min_s = MIN_SPEED;
         self.max_s = MAX_SPEED;
         self.center_s = CENTER_SPEED;
 
     # Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits
-    def _thrusterScale(self, thruster):
+    def ThrusterScale(self, thruster):
         if (thruster >= 0) :
             t = int(self.center_s + (self.max_s - self.center_s) * thruster);
         else:
@@ -40,12 +40,12 @@ class Thruster:
 
     ## Drive thrusters given speed parameters
     ## Valid inputs range between -1.0 and 1.0.
-    def _fly(self, speed):
-        thruster = self._thrusterScale(speed);
+    def Fly(self, speed):
+        thruster = self.ThrusterScale(speed);
         self.maestro.setTarget(self.ch, thruster);
 
-    def _stop(self):
+    def Stop(self):
         self.maestro.setTarget(self.ch, self.center_s);
 
-    def close(self):
-        self._stop();
+    def Close(self):
+        self.Stop();
