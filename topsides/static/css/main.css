@@ -128,3 +128,9 @@ p, h1, h2, h3, h4, h5, h6{
     transform: none;
     opacity: 1;
 }
+
+.input-text{
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 20px;
+}
