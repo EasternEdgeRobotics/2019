@@ -10,7 +10,11 @@ var connectedJoysticks = null
  */
 function refreshJoysticks(){
     connectedJoysticks = navigator.getGamepads();
-    console.log(connectedJoysticks);
+}
+
+function getJoysticks(){
+    refreshJoysticks();
+    return connectedJoysticks;
 }
 
 

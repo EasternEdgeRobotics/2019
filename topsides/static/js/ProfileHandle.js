@@ -20,9 +20,21 @@ class ProfileHandle{
         }
     }
 
+    getNextId(){
+        let highest = 0;
+        for(let i = 0; i < this._profiles.length ; i++){
+            if(this._profiles[i]['id'] >= highest){
+                highest = this._profiles[i]['id'] + 1;
+            }
+        }
+        return highest;
+    }
+
     
     saveProfile(profile){
+        runPythonPOST("saveProfile", JSON.stringify(profile), function(){
 
+        });
     }
 
     /** deleteProfile

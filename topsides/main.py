@@ -95,6 +95,13 @@ def deleteProfile():
         profileHandle.deleteProfile(int(profileID))
         return "success"
 
+
+@app.route("/saveProfile", methods=["POST"])
+def saveProfile():
+    profileHandle.saveProfile(request.json)
+    return json.dumps("yikes")
+
+
 """
 /testGetPressure
 GET

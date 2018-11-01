@@ -54,3 +54,39 @@
     clear: both;
 }
 
+.gamepad-selector{
+    padding: 20px;
+    border-radius: 25PX;
+    box-shadow: 1px 1px 15px rgba(0,0,0,0.5);
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.gamepad-selector:hover{
+    background-color: rgb(240,240,240);
+}
+
+#joystick-selector-container{
+    margin-top: 20px;
+}
+
+#joystick-selector-container .selector{
+    display: inline-block;
+    padding: 10px 10px;
+    /* box-shadow: 2px 0px 10px -5px rgba(0,0,0,1); */
+    border-color: rgba(80,80,80, 0.5);
+    border-top: 1px solid rgba(80,80,80, 0.5);
+    border-right: 1px solid rgba(80,80,80, 0.5);
+    border-left: 1px solid rgba(80,80,80, 0.5);
+    border-radius: 10px 10px 0 0;
+}
+
+.gamepad-edit{
+    padding: 50px;
+    display: none;
+    background-color: rgb(200,200,255);
+}
+
+.gamepad-edit.visible{
+    display: block;
+}

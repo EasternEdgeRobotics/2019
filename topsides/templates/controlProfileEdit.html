@@ -12,6 +12,8 @@
             var profileToEdit = null;
             var PROFILEHANDLE;
             var CONTROLOPTIONS;
+            var gamepads = getJoysticks();
+
             runPythonGET("getProfiles", null, function(data){
                 PROFILEHANDLE = new ProfileHandle(data);
             });
@@ -33,44 +35,106 @@
             
             function editProfile_click(id){ //sets all the fields in the edit panel to the current values of that profile in the json and opens the panel
                 var profile = PROFILEHANDLE.getProfileById(id);
+                profileToEdit = profile;
+                clearProfileEdit();
 
                 $.each($(".control-edit-input"), function(i, element){
-                    let feild = $(element).attr("input-id");
-                    let val = profile[feild];
+                    let field = $(element).attr("input-id");
+                    let val = profile[field];
 
                     element.value = val;
                 });
 
+
                 $.each(profile["gamepads"], function(i, gamepad){
-                    console.log(gamepad);
-                    let gamepadSelectorString = "<div class='selector' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
-                    let gamepadEditPanelString = "<div>";
-
-                    $.each(gamepad["axes"], function(i2, axes){
-                        gamepadEditPanelString += "<input class='joystick-axis-input' input-id='" + i2 + "' />"
-                    });
-
-                    $.each(gamepad["buttons"], function(i2, button){
-
-                    });
-
-                    gamepadEditPanelString += "</div>"
-
-                    $("#joystick-selector-container").append(gamepadSelectorString);
-                    $("#current-joystick-container").append(gamepadEditPanelString);
+                    addGamepadInfo(i, gamepad);
                 });
             }
 
-            function openGamepadMenu(){
+            function addGamepadInfo(i, gamepad){
+                let gamepadSelectorString = "<div class='selector' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
+                let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'>";
 
+                $.each(gamepad["axes"], function(i2, axes){
+                    gamepadEditPanelString += "<select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'><option value=''></option>" + CONTROLOPTIONS.getAxesOptionsString() + "</select>";
+
+                });
+
+                $.each(gamepad["buttons"], function(i2, button){
+                    gamepadEditPanelString += "<select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value; class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select>"
+                });
+
+                gamepadEditPanelString += "</div>"
+
+                $("#joystick-selector-container").append(gamepadSelectorString);
+                $("#current-joystick-container").append(gamepadEditPanelString);
+
+                $.each($(".joystick-axis-input"), function(i2, obj){
+                    $(obj).val(gamepad["axes"][i2]);
+                });
+
+                $.each($(".button-input"), function(i2, obj){
+                    $(obj).val(gamepad["buttons"][i2]);
+                });
+            }
+
+            function openGamepadMenu_click(){
+                gamepads = getJoysticks();
+                console.log(gamepads);
+                $("#addGamepadContainer").html("");
+                let noGamepads = true;
+                $.each(gamepads, function(i, obj){
+                    if(obj != undefined){
+                        noGamepads = false;
+                        $("#addGamepadContainer").append("<div class='gamepad-selector' onclick='addGamepad(" + i + "); $(" + '"' + "#modalAddGamepad" + '"' + ").toggleClass(" + '"' + "visible" + '"' + ");'><p>" + obj["id"] + "</p></div>");
+                    }
+                });
+
+                if(noGamepads){
+                    $("#addGamepadContainer").append("<p>No gamepads connected.</p><p>If there is one connected try moving an axis and retry adding it. If it still doesn't show up, the gamepad may be broken or not suppoerted.</p>")
+                }
             }
 
             function clearProfileEdit(){
-                $(".control-edit-input")
+                $.each($(".control-edit-input"), function(i, obj){
+                    obj.value = "";
+                });
+
+                $("#joystick-selector-container").html("");
+                $("#current-joystick-container").html("");
+            }
+
+            function addGamepad(index){
+                gamepad = gamepads[index];
+                
+                newGamepad = {"name":"", "buttons": [], "axes":[]}
+                
+                $.each(gamepad["axes"], function(i, obj){
+                    newGamepad['axes'][i] = '';
+                });
+
+                $.each(gamepad["buttons"], function(i, obj){
+                    newGamepad['buttons'][i] = '';
+                });
+                
+                profileToEdit["gamepads"].push(newGamepad);
+                addGamepadInfo(profileToEdit["gamepads"].length, newGamepad);
+
+                console.log(profileToEdit);
             }
 
             function newProfile_click(id){
                 clearProfileEdit();
+                profileToEdit = {"name":"", "id": PROFILEHANDLE.getNextId(), "gamepads":[]};
+            }
+
+            function openGamepadPanel_click(open){
+                $(".gamepad-edit").toggleClass("visible", false);
+                $("#gamepadEdit"+open).toggleClass("visible", true);
+            }
+
+            function saveProfile_click(){
+                PROFILEHANDLE.saveProfile(profileToEdit);
             }
         </script>
     </head>
@@ -97,6 +161,7 @@
                 <div class="header">
                     <input class="input-text control-edit-input" input-id="name" style="clear: both; display: block;" type="text" placeholder="Name" />
                 </div>
+                <div class='btn btn-primary modal-trigger' style="width: 130px; text-align: center;" modal-id='modalAddGamepad' onclick='openGamepadMenu_click();'>Add Gamepad</div>
                 <div id="joystick-selector-container">
                     <!-- Placeholder for joystick selectors to go -->
 
@@ -104,8 +169,15 @@
                 <div id="current-joystick-container">
 
                 </div>
+                <button class="btn btn-primary" onclick="saveProfile_click()">Save</button>
             </div>
         </div>
+
+        <div id="modalAddGamepad" class="modal">
+            <div class="modal-content" id="addGamepadContainer">
+
+            </div>
+        </div> 
 
     </body>
 </html>

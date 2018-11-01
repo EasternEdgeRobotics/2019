@@ -31,3 +31,24 @@ def deleteProfile(id):
         for element in data:
             if(int(element["id"]) == int(id)):
                 del element
+
+
+def saveProfile(profile):
+    print(profile["id"])
+    added = False
+    with open("json/controlProfiles.json", "r+") as file:
+        data = json.load(file)
+        for element in data:
+            if(int(element["id"]) == int(profile["id"])):
+                element = profile
+                added = True
+
+        if not added:
+            data.append(profile)
+
+        file.seek(0)        
+        json.dump(data, file, indent=4)
+        file.truncate() 
+        
+
+    
