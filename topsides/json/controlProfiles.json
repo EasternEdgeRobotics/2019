@@ -2,14 +2,19 @@
     {
         "name": "Andrew's Profile",
         "id" : 0,
-        "gamepads:":[
+        "gamepads":[
             {
+                "name": "Joystick 1",
                 "buttons": {
-                    
-                },
-                "axes": [
+                    "0":{
 
-                ]
+                    }
+                },
+                "axes": {
+                    "0":{
+
+                    }
+                }
             }
         ]
     },
@@ -18,9 +23,9 @@
         "id" : 1,
         "gamepads":[
             {
-                "buttons": {
+                "buttons": [
                     
-                },
+                ],
                 "axes": [
 
                 ]

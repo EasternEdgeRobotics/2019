@@ -5,9 +5,23 @@
         
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/profileHandle.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/ProfileHandle.js')}}" type="text/javascript"></script>
         <script>
+            var profileToEdit = null;
+            var PROFILEHANDLE;
+            var CONTROLOPTIONS;
+            runPythonGET("getProfiles", null, function(data){
+                PROFILEHANDLE = new ProfileHandle(data);
+            });
+
+            runPythonGET("getControlOptions", null, function(data){
+                CONTROLOPTIONS = new ControlOptions(data);
+            });
+
+            
+
             /**
              * Edit Modal fill logic
              * - input elements have a class of control-edit-input and an attribute "input-id"
@@ -18,23 +32,45 @@
             */
             
             function editProfile_click(id){ //sets all the fields in the edit panel to the current values of that profile in the json and opens the panel
-                var profile = getProfileById(id);
-                var PROFILEHANDLE = new profileHandle();
+                var profile = PROFILEHANDLE.getProfileById(id);
 
-                $.each($(".control-edit-input"), function(){
-                    let feild = $(this).attr("input-id");
+                $.each($(".control-edit-input"), function(i, element){
+                    let feild = $(element).attr("input-id");
                     let val = profile[feild];
+
+                    element.value = val;
                 });
 
-                $.each(profile["joysticks"])
+                $.each(profile["gamepads"], function(i, gamepad){
+                    console.log(gamepad);
+                    let gamepadSelectorString = "<div class='selector' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
+                    let gamepadEditPanelString = "<div>";
+
+                    $.each(gamepad["axes"], function(i2, axes){
+                        gamepadEditPanelString += "<input class='joystick-axis-input' input-id='" + i2 + "' />"
+                    });
+
+                    $.each(gamepad["buttons"], function(i2, button){
+
+                    });
+
+                    gamepadEditPanelString += "</div>"
+
+                    $("#joystick-selector-container").append(gamepadSelectorString);
+                    $("#current-joystick-container").append(gamepadEditPanelString);
+                });
+            }
+
+            function openGamepadMenu(){
+
             }
 
             function clearProfileEdit(){
                 $(".control-edit-input")
             }
 
-            function newProfile(id){
-
+            function newProfile_click(id){
+                clearProfileEdit();
             }
         </script>
     </head>
@@ -52,7 +88,7 @@
                 {% endfor %}
                 <div class="profile-panel">
                     <p>New Profile</p>
-                    <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="newProfileEdit();">NEW</button>
+                    <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="newProfile_click();">NEW</button>
                 </div>
             </div>
         </div>
@@ -61,11 +97,11 @@
                 <div class="header">
                     <input class="input-text control-edit-input" input-id="name" style="clear: both; display: block;" type="text" placeholder="Name" />
                 </div>
-                <div class="joystick-selector">
+                <div id="joystick-selector-container">
                     <!-- Placeholder for joystick selectors to go -->
 
                 </div>
-                <div class="current-joystick">
+                <div id="current-joystick-container">
 
                 </div>
             </div>

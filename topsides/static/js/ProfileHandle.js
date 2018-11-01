@@ -1,26 +1,24 @@
 class ProfileHandle{
-    construcor(){
-        this.profiles = getProfiles();
+    constructor(data){
+        this._profiles = data;
+        console.log(data);
     }
 
-    get profiles(){
-        return this.profiles;
+    static get profiles(){
+        return this._profiles;
     }
 
     getProfiles(){
-        runPythonGET("getProfiles", null, function(data){
-            profiles = data;
-        });
+        
     }
-
+    
     getProfileById(id){
-        for(let i = 0; i < profiles.length ; i++){
-            if(profiles[i]['id'] == id){
-                return profiles[i];
+        for(let i = 0; i < this._profiles.length ; i++){
+            if(this._profiles[i]['id'] == id){
+                return this._profiles[i];
             }
         }
     }
-
 
     
     saveProfile(profile){
