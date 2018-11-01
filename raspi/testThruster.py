@@ -1,6 +1,7 @@
 ## This is a simple program to run thrusters/servo motors using the python maestro module
 import sys
-from libraries.maestro import * ## this needs to be fixed
+sys.path.append('libraries')
+import maestro
 import control
 
 ## Input through system command, the channel of the thruster
@@ -15,5 +16,5 @@ PORTS = [0,1,2,3,4,5,6,7,8];
 servo = maestro.Controller();
 ## Initialize the control module with maestro channel and thruster port
 dt = control.Thruster(servo, PORTS[tChan]);
-## run the thruster for tTime
+## run the thruster
 dt.Fly(tSpeed);
