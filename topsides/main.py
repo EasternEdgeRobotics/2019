@@ -63,6 +63,21 @@ def getProfiles():
 
 
 """
+getControlOptions
+GET
+
+returns the control possibilities for mapping gamepads. This function loads the JSON file controls.json
+"""
+@app.route("/getControlOptions", methods=["GET"])
+def getControlOptions():
+    try:
+        with open("json/controls.json") as file:
+            data = json.load(file)
+            return json.dumps(data)
+    except Exception as e:
+        return json.dumps("Problem loading json: " + str(e))
+
+"""
 deleteProfile
 POST
 
