@@ -1,12 +1,6 @@
 ## module to control the thruster using the maestro library
 
 
-## When using motor controllers, the maestro's speed setting can be used to tune the
-## responsiveness of the robot.  Low values dampen acceleration, making for a more
-## stable robot. High values increase responsiveness, but can lead to a tippy robot.
-## Try values around 50 to 100.
-
-RESPONSE = 70;
 
 ## Motor Controller limits measured in maestro units
 ## Values should be adjusted so that the center, stops the thrusters;
@@ -16,9 +10,14 @@ CENTER_SPEED = 6000;
 MAX_SPEED = 8000;
 
 class Thruster:
+    ## When using motor controllers, the maestro's speed setting can be used to tune the
+    ## responsiveness of the robot.  Low values dampen acceleration, making for a more
+    ## stable robot. High values increase responsiveness, but can lead to a tippy robot.
+    ## Try values around 50 to 100.
+    RESPONSE = 70;
+
     # Pass the maestro controller object and the maestro channel numbers being used
     # for the thruster's motor controller.
-
     def __init__(self, maestro, ch):
         self.maestro = maestro;
         self.ch = ch;
