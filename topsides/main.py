@@ -46,28 +46,33 @@ def setThrusterValues(data):
     B = -1.0
     C = 0.0
 
-    setThruster = [C,C,C,C,C,C];
+    thrusterValues = [0,0,0,0,0,0]
 
-    if(data['y'] > 0):
-        setThruster = [F, B, B, F, C, C]
-    elif(data['y'] < 0):
-        setThruster = [B, F, F, B, C, C]
-    elif(data['x'] > 0):
-        setThruster = [F, F, B, B, C, C]
-    elif(data['x'] < 0):
-        setThruster = [B, B, F, F, C, C]
-    elif(data['thumbstick'] > 0):
-        setThruster = [C, C, C, C, F, F]
-    elif(data['thumbstick'] < 0):
-        setThruster = [C, C, C, C, B, B]
-    elif(data['z'] > 0):
-        setThruster = [F, B, F, B, C, C]
-    elif(data['z'] < 0):
-        setThruster = [B, F, B, F, C, C]
-    else:
-        setThruster = [C, C, C, C, C, C]
+    thrusterValues[0] += data['y']
+    thrusterValues[1] += -data['y']
+    thrusterValues[2] += -data['y']
+    thrusterValues[3] += data['y']
 
-    return setThruster
+    thrusterValues[0] += data['x']
+    thrusterValues[1] += data['x']
+    thrusterValues[2] += -data['x']
+    thrusterValues[3] += -data['x']
+
+    thrusterValues[0] += data['z']
+    thrusterValues[1] += -data['z']
+    thrusterValues[2] += data['z']
+    thrusterValues[3] += -data['z']
+
+    thrusterValues[4] += -data['thumbstick']
+    thrusterValues[5] += -data['thumbstick']
+
+    for x in range(len(thrusterValues)):
+        if(thrusterValues[x] > 1.0):
+            thrusterValues[x] = 1.0
+        elif(thrusterValues[x] < -1.0):
+            thrusterValues[x] = -1.0
+
+    return thrusterValuess
 
 @app.route("/joystickValueTest", methods=["POST"])
 def getJoytickValuesFromJavascript():
