@@ -40,13 +40,59 @@ INPUT:
     Json Body Format: {x: double, y: double, z: double, thumbstick}
 
 """
+
+def setThrusterValues(tDirect, tPos):
+    F = 1.0
+    B = -1.0
+    C = 0.0
+
+    setThruster = [C,C,C,C,C,C];
+
+    if(tDirect == "surge" and tPos == 1):
+        setThruster = [F, B, B, F, C, C]
+    elif(tDirect == "surge" and tPos == -1):
+        setThruster = [B, F, F, B, C, C]
+    elif(tDirect == "sway" and tPos == 1):
+        setThruster = [F, F, B, B, C, C]
+    elif(tDirect == "sway" and tPos == -1):
+        setThruster = [B, B, F, F, C, C]
+    elif(tDirect == "heave" and tPos == 1):
+        setThruster = [C, C, C, C, F, F]
+    elif(tDirect == "heave" and tPos == -1):
+        setThruster = [C, C, C, C, B, B]
+    elif(tDirect == "pitch" and tPos == 1):
+        setThruster = [C, C, C, C, F, B]
+    elif(tDirect == "pitch" and tPos == -1):
+        setThruster = [C, C, C, C, B, F]
+    elif(tDirect == "yaw" and tPos == 1):
+        setThruster = [F, B, F, B, C, C]
+    elif(tDirect == "yaw" and tPos == -1):
+        setThruster = [B, F, B, F, C, C]
+    else:
+        setThruster = [C, C, C, C, C, C]
+
+    return setThruster
+
 @app.route("/joystickValueTest", methods=["POST"])
 def getJoytickValuesFromJavascript():
     # CODE HERE FOR RECEIVING CLIENT SIDE CONTROLS TEST @KEIFF
     # to get json data: <<VAR>> = request.json
 
+    # ['direction'] = 1 or -1
+    # ['slider'] = which slider (Yaw, Pitch, etc.)
+    data = request.json
+    print(data['slider'])
+    print(data['direction'])
+
+    ## store the thruster values in a list
+    setThruster = setThrusterValues(data['slider'], int(data['direction']));
+    ## call the fControl rov file and pass it [port, value]
+    for x in range(len(setThruster)):
+        ## This will most likely produce a file path error
+        topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]));
+
     # below is temp code for testing
-    print(request.json)  # prints json recieved
+    # print(request.json)  # prints json recieved
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
 
