@@ -1,1 +1,3 @@
 *.pyc
+raspi/add.py
+raspi/print.py
