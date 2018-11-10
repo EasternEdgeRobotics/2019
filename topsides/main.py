@@ -27,13 +27,12 @@ def editProfilePage():
     return render_template("controlProfileEdit.html", profiles=profiles)
 
 
-
 """
 Return page for control input testing
 """
 @app.route("/testJoystick")
 def testJoystickPage():
-    return render_template("controlTest.html") #return html page for testing joystick
+    return render_template("controlTest.html")  # return html page for testing joystick
 
 
 """
@@ -44,16 +43,16 @@ simple reciever function for testing client to server comms for joystick input. 
 
 INPUT:
     Json Body Format: {x: double, y: double, z: double, thumbstick}
-    
+
 """
 @app.route("/joystickValueTest", methods=["POST"])
 def getJoytickValuesFromJavascript():
-    #CODE HERE FOR RECIEVING CLIENT SIDE CONTROLS TEST @KEIFF
-    #to get json data: <<VAR>> = request.json
+    # CODE HERE FOR RECEIVING CLIENT SIDE CONTROLS TEST @KEIFF
+    # to get json data: <<VAR>> = request.json
 
-    #below is temp code for testing
-    print(request.json) #prints json recieved
-    return(jsonify("lol")) #returns lol in json as filler (server crashes if nothing is returned)
+    # below is temp code for testing
+    print(request.json)  # prints json recieved
+    return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
 
 """
@@ -64,7 +63,7 @@ returns the control profiles from memory as json
 """
 @app.route("/getProfiles", methods=["GET"])
 def getProfiles():
-    return json.dumps(profileHandle.loadProfiles()) #responds json containing all profiles
+    return json.dumps(profileHandle.loadProfiles())  # responds json containing all profiles
 
 
 """
@@ -85,15 +84,18 @@ def deleteProfile():
         profileHandle.deleteProfile(int(profileID))
         return "success"
 
+
 """
 /testGetPressure
 GET
+
 returns a random value simulating a pressure sensor
 """
 @app.route("/testGetPressure")
 def testGetPressure():
     value = random.randint(99, 105)
     return json.dumps(value)
+
 
 """
 Return page for the control gui
@@ -102,10 +104,12 @@ Return page for the control gui
 def returnGuiPage():
     return render_template("gui.html")
 
+
 """
 /guislider
 POST
-Gets the values from the 6 degrees of power gui sliders
+
+gets the values from the 6 degrees of power gui sliders
 """
 @app.route('/guislider', methods = ['POST'])
 def getSliderValues():
@@ -114,7 +118,31 @@ def getSliderValues():
     data = request.json
     print(data['slider'])
     print(data['value'])
-    return(jsonify(""))
+    return jsonify("")
+
+
+"""
+Return page for the development input
+"""
+@app.route("/dev")
+def returnDevPage():
+    return render_template("dev.html")
+
+
+"""
+/devinput
+POST
+
+gets the values from the dev input
+"""
+@app.route('/devinput', methods = ['POST'])
+def getDevInput():
+    # devData is the variable the stores the data submitted from the webpage.
+    # it is printed out to console for testing purposes.
+    devData = request.json
+    print(devData)
+    return jsonify("")
+
 
 """
 Server start.
