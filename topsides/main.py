@@ -83,8 +83,6 @@ def getJoytickValuesFromJavascript():
         ## This will most likely produce a file path error
         topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]));
 
-    # below is temp code for testing
-    # print(request.json)  # prints json recieved
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
 
