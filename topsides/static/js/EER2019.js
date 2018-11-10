@@ -1,7 +1,7 @@
 
 /**runPythonGET
 *
-*    @params 
+*    @params
 *        scriptName:
 *            -the name of the function to run. Declared in the @app.route in python file
 *
@@ -17,9 +17,11 @@ function runPythonGET(scriptName, data, returnFunction){
     $.ajax({
         type: "GET",
         url: "http://localhost:5000/" + scriptName,
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: data,
         success: function(data){
+            console.log("fds");
             returnFunction(data);
         }
     });
@@ -29,7 +31,7 @@ function runPythonGET(scriptName, data, returnFunction){
 
 /** runPythonPOST
 *
-*    @params 
+*    @params
 *        scriptName:
 *            -the name of the function to run. Declared in the @app.route in python file
 *
@@ -45,6 +47,7 @@ function runPythonPOST(scriptName, data, returnFunction){
     $.ajax({
         type: "POST",
         url: "http://localhost:5000/" + scriptName,
+        contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: data,
         success: function(data){
@@ -58,10 +61,10 @@ function runPythonPOST(scriptName, data, returnFunction){
 
 
 /** HandleSliderValues
- * 
+ *
  *  Empty function for handling slider values.
  *  joystick values will be handled on the server side (Python)
- * 
+ *
  */
 function HandleSliderValues(){
 
@@ -71,16 +74,11 @@ function HandleSliderValues(){
 
 
  /** GetAllValues
-  * 
+  *
   *  Cleaner function to run a GET command to server and return all nessessary values in a single server call
   *  instead of all seperate.
-  * 
+  *
   */
  function GetAllValues(){
-     
+
  }
-
-
-
-
-

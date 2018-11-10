@@ -8,13 +8,19 @@
     padding: 0px 50px;
 }
 
+    .profile-select-container h1{
+        font-size: 48px;
+        margin-bottom: 80px;
+    }
+
 .profile-panel{
     min-width: 200px;
     display: inline-block;
-    background-color: aquamarine;
+    border-radius: 15px;
     text-align: center;
     padding: 10px 20px;
     margin: 5px;
+    box-shadow: 1px 1px 7px rgba(0, 0, 0, 0.5);
 
 }
 

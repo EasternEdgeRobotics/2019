@@ -5,6 +5,7 @@
         
         <script src="static/js/jquery-3.3.1.min.js"></script>
         <script src="static/js/joystickTest.js"></script>
+        <script src="static/js/profileHandle.js"></script>
     </head>
     <body>
 
@@ -14,8 +15,8 @@
                 {% for profile in profiles %}
                     <div class="profile-panel">
                         <p>{{profile["name"]}}</p>
-                        <button>EDIT</button>
-                        <button>DELETE</button>
+                        <button class="btn btn-primary" onclick="editProfile({{profile['id']}})">EDIT</button>
+                        <button class="btn btn-danger" onclick="deleteProfile({{profile['id']}})">DELETE</button>
                     </div>
                 {% endfor %}
             </div>

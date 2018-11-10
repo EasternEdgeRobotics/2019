@@ -14,22 +14,8 @@
         ]
     },
     {
-        "name": "Andrew's Profile",
-        "id" : 0,
-        "joysticks:":[
-            {
-                "buttons": {
-                    
-                },
-                "axes": [
-
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Andrew's Profile",
-        "id" : 0,
+        "name": "Test 2",
+        "id" : 1,
         "joysticks:":[
             {
                 "buttons": {
