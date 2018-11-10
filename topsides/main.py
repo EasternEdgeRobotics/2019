@@ -72,7 +72,7 @@ def setThrusterValues(data):
         elif(thrusterValues[x] < -1.0):
             thrusterValues[x] = -1.0
 
-    return thrusterValuess
+    return thrusterValues
 
 @app.route("/joystickValueTest", methods=["POST"])
 def getJoytickValuesFromJavascript():
