@@ -28,15 +28,7 @@ def editProfilePage():
 
 
 """
-Return page for control input testing
-"""
-@app.route("/testJoystick")
-def testJoystickPage():
-    return render_template("controlTest.html")  # return html page for testing joystick
-
-
-"""
-joystickValueTest
+joystickValue
 POST
 
 simple reciever function for testing client to server comms for joystick input. Json containing joystick values is attached
@@ -79,19 +71,19 @@ def setThrusterValues(data):
 
     return thrusterValues
 
-@app.route("/joystickValueTest", methods=["POST"])
+@app.route("/joystickValue", methods=["POST"])
 def getJoytickValuesFromJavascript():
     # CODE HERE FOR RECEIVING CLIENT SIDE CONTROLS TEST @KEIFF
     # to get json data: <<VAR>> = request.json
 
     data = request.json
 
-    ## store the thruster values in a list
-    setThruster = setThrusterValues(data);
-    ## call the fControl rov file and pass it [port, value]
+    # store the thruster values in a list
+    setThruster = setThrusterValues(data)
+    # call the fControl rov file and pass it [port, value]
     for x in range(len(setThruster)):
-        ## This will most likely produce a file path error
-        topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]));
+        # This will most likely produce a file path error
+        topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]))
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
@@ -188,7 +180,7 @@ def getDevInput():
 """
 Server start.
 This is a standard python function that is True when this file is called from the command line (python3 main.py)
-(This statement is false for calls to the server)  
+(This statement is false for calls to the server)
 """
 if __name__ == "__main__":
     t.start()
