@@ -38,48 +38,44 @@ INPUT:
 
 """
 
-def setThrusterValues(data):
+def setThrusterValues(tDirect, tPos):
     F = 1.0
     B = -1.0
     C = 0.0
 
-    thrusterValues = [0,0,0,0,0,0]
+    setThruster = [C, C, C, C, C, C]
 
-    thrusterValues[0] += data['y']
-    thrusterValues[1] += -data['y']
-    thrusterValues[2] += -data['y']
-    thrusterValues[3] += data['y']
-
-    thrusterValues[0] += data['x']
-    thrusterValues[1] += data['x']
-    thrusterValues[2] += -data['x']
-    thrusterValues[3] += -data['x']
-
-    thrusterValues[0] += data['z']
-    thrusterValues[1] += -data['z']
-    thrusterValues[2] += data['z']
-    thrusterValues[3] += -data['z']
-
-    thrusterValues[4] += -data['thumbstick']
-    thrusterValues[5] += -data['thumbstick']
-
-    for x in range(len(thrusterValues)):
-        if(thrusterValues[x] > 1.0):
-            thrusterValues[x] = 1.0
-        elif(thrusterValues[x] < -1.0):
-            thrusterValues[x] = -1.0
-
-    return thrusterValues
+    if(tDirect == "surge" and tPos == 1):
+        setThruster = [F, B, B, F, C, C]
+    elif(tDirect == "surge" and tPos == -1):
+        setThruster = [B, F, F, B, C, C]
+    elif(tDirect == "sway" and tPos == 1):
+        setThruster = [F, F, B, B, C, C]
+    elif(tDirect == "sway" and tPos == -1):
+        setThruster = [B, B, F, F, C, C]
+    elif(tDirect == "heave" and tPos == 1):
+        setThruster = [C, C, C, C, F, F]
+    elif(tDirect == "heave" and tPos == -1):
+        setThruster = [C, C, C, C, B, B]
+    elif(tDirect == "pitch" and tPos == 1):
+        setThruster = [C, C, C, C, F, B]
+    elif(tDirect == "pitch" and tPos == -1):
+        setThruster = [C, C, C, C, B, F]
+    elif(tDirect == "yaw" and tPos == 1):
+        setThruster = [F, B, F, B, C, C]
+    elif(tDirect == "yaw" and tPos == -1):
+        setThruster = [B, F, B, F, C, C]
+    else:
+        setThruster = [C, C, C, C, C, C]
+    return setThruster
 
 @app.route("/joystickValue", methods=["POST"])
 def getJoytickValuesFromJavascript():
-    # CODE HERE FOR RECEIVING CLIENT SIDE CONTROLS TEST @KEIFF
-    # to get json data: <<VAR>> = request.json
 
     data = request.json
 
     # store the thruster values in a list
-    setThruster = setThrusterValues(data)
+    setThruster = setThrusterValues(data['slider'], int(data['direction']))
     # call the fControl rov file and pass it [port, value]
     for x in range(len(setThruster)):
         # This will most likely produce a file path error
