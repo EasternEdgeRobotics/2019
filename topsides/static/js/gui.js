@@ -1,7 +1,12 @@
-/** getNewSliderValues
-*
-*  gets the values from the 6 degrees of power gui sliders for the server and
+/**
+*  Gets the values from the 6 degrees of power gui sliders for the server and
 *  front end display.
+*
+*   @param {string} inputAttribute
+*    name of the slider axis
+*
+*   @param {int} inputValue
+*    value of the slider
 */
 function getNewSliderValues(inputAttribute, inputValue) {
  runPythonPOST("guislider", JSON.stringify({ slider: inputAttribute, value: inputValue }), function() {
@@ -10,9 +15,14 @@ function getNewSliderValues(inputAttribute, inputValue) {
  });
 }
 
-/** getPresetValue
+/**
+ *  Gets the values from the preset button for the server and front end display.
  *
- *  gets the values from the preset button for the server and front end display.
+ *  @param {string} inputAttribute
+ *   name of the slider axis
+ *
+ *  @param {int} inputValue
+ *   value from the text box
  */
 function getPresetValue(inputAttribute, inputValue) {
   for(i = 0; i < inputAttribute.length; i++) {
@@ -25,9 +35,14 @@ function getPresetValue(inputAttribute, inputValue) {
   console.log("preset button pressed and new slider values has been sent to server");
 }
 
-/** startCountDown
+/**
+*  Starts the coutdown timer.
 *
-*  starts the coutdown timer.
+*  @param {int} duration
+*   time to run
+*
+*  @param {string} display
+*   id from gui.html to display to
 */
 function startCountDown(duration, display) {
   var timer = duration, minutes, seconds;

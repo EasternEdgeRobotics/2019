@@ -1,11 +1,14 @@
+<!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Index</title>
         <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" type="text/css"  />
 
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script>
-            //Test repeating function for getting values from python
+            // Test repeating function for getting values from python
             setInterval(function(){
                 runPythonGET("testGetPressure", null ,function(data){
                     $("#testPressure").html(data);
@@ -17,7 +20,8 @@
         <div class="eer-logo-img"></div>
         <br/>
 
-        <p>Hey sup this is Troake! So this is just a test page I had set up. Below is a test thingy I made for value indicators. The example below is GETing a pseudo pressure value from the server each tick. Also below is a link to the profile edit page</p>
+        <p>Test for value indicators. The example below is
+          GETing a pseudo pressure value from the server on each tick.</p>
 
         <div class="status-value-container">
             <div class="status-value status-value-outer">
@@ -28,9 +32,8 @@
             </div>
         </div>
 
-        <a href="editprofile"><h3>Profile Edit</h3></a>
-        <a href="testJoystick"><h3>Joystick Test</h3></a>
-        <a href="gui"><h3>Gui Test</h3></a>
-        <a href="dev"><h3>Dev Test</h3></a>
+        <a href="editprofile"><h3>Edit profiles</h3></a>
+        <a href="gui"><h3>Gui</h3></a>
+        <a href="dev"><h3>Development page</h3></a>
     </body>
 </html>

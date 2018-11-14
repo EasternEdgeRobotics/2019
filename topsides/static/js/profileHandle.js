@@ -19,9 +19,9 @@ function getProfiles(){
 
 
 /**
- * 
+ *
  * @param {int} id - id value for the profile
- *  
+ *
  */
 function editProfile(id){
 
@@ -29,7 +29,7 @@ function editProfile(id){
 
 
 /**
- * 
+ *
  * @param {int} id - id value for the profile
  */
 function deleteProfile(id){
