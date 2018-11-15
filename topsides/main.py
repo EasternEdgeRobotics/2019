@@ -34,31 +34,31 @@ def editProfilePage():
 
 def setThrusterValues(tDirect, tPos):
     """Set the thruster values."""
-    F = 1.0
-    B = -1.0
+    F = 0.5
+    B = -0.5
     C = 0.0
 
     setThruster = [C, C, C, C, C, C]
 
-    if(tDirect == "surge" and tPos == 1):
+    if(tDirect == "Surge" and tPos == 1):
         setThruster = [F, B, B, F, C, C]
-    elif(tDirect == "surge" and tPos == -1):
+    elif(tDirect == "Surge" and tPos == -1):
         setThruster = [B, F, F, B, C, C]
-    elif(tDirect == "sway" and tPos == 1):
+    elif(tDirect == "Sway" and tPos == 1):
         setThruster = [F, F, B, B, C, C]
-    elif(tDirect == "sway" and tPos == -1):
+    elif(tDirect == "Sway" and tPos == -1):
         setThruster = [B, B, F, F, C, C]
-    elif(tDirect == "heave" and tPos == 1):
+    elif(tDirect == "Heave" and tPos == 1):
         setThruster = [C, C, C, C, F, F]
-    elif(tDirect == "heave" and tPos == -1):
+    elif(tDirect == "Heave" and tPos == -1):
         setThruster = [C, C, C, C, B, B]
-    elif(tDirect == "pitch" and tPos == 1):
+    elif(tDirect == "Pitch" and tPos == 1):
         setThruster = [C, C, C, C, F, B]
-    elif(tDirect == "pitch" and tPos == -1):
+    elif(tDirect == "Pitch" and tPos == -1):
         setThruster = [C, C, C, C, B, F]
-    elif(tDirect == "yaw" and tPos == 1):
+    elif(tDirect == "Yaw" and tPos == 1):
         setThruster = [F, B, F, B, C, C]
-    elif(tDirect == "yaw" and tPos == -1):
+    elif(tDirect == "Yaw" and tPos == -1):
         setThruster = [B, F, B, F, C, C]
     else:
         setThruster = [C, C, C, C, C, C]
@@ -77,10 +77,11 @@ def getJoytickValuesFromJavascript():
     data = request.json
     # store the thruster values in a list
     setThruster = setThrusterValues(data['slider'], int(data['direction']))
+    print(setThruster)
     # call the fControl rov file and pass it [port, value]
     for x in range(len(setThruster)):
         # This will most likely produce a file path error
-        topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]))
+        topsidesComms.send.put("fControl.py " + str(x) + " " + str(setThruster[x]))
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 

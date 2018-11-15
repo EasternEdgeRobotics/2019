@@ -23,7 +23,7 @@ class Thruster:
         self.ch = ch
         # Init thruster accel and speed parameters
         self.maestro.setAccel(ch, 0)
-        self.maestro.setSpeed(ch, RESPONSE)
+        self.maestro.setSpeed(ch, self.RESPONSE)
         # thruster min/max and center Values
         self.min_s = MIN_SPEED
         self.max_s = MAX_SPEED
@@ -44,6 +44,7 @@ class Thruster:
         Valid inputs range between -1.0 and 1.0.
         """
         thruster = self.ThrusterScale(speed)
+        print(thruster)
         self.maestro.setTarget(self.ch, thruster)
 
     def Stop(self):
