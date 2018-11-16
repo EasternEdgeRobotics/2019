@@ -34,9 +34,10 @@
 
 .panel-edit-profile{
     position: fixed;
-    top: 50px;
+    top: 10%;
     width: 60%;
     max-width: 1000px;
+    height: 80%;
     left: 20%;
     height: 500px;
     transition: 0.5s;
@@ -48,6 +49,12 @@
     transform: translateY(100px);
     opacity: 0;
     z-index: -1;
+}
+
+#modalEditProfile .modal-content{
+    top: 10%;
+    max-height: 80%;
+    overflow-y: scroll;
 }
 
 .joystick-selector{
@@ -78,15 +85,51 @@
     border-top: 1px solid rgba(80,80,80, 0.5);
     border-right: 1px solid rgba(80,80,80, 0.5);
     border-left: 1px solid rgba(80,80,80, 0.5);
+    border-bottom: 1px solid rgba(80,80,80, 0.5);
     border-radius: 10px 10px 0 0;
+    max-width: 200px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-bottom: -2px;
+    background-color: rgb(255,255,255);
+}
+
+#joystick-selector-container .selector.active{
+    border-bottom: none;
 }
 
 .gamepad-edit{
     padding: 50px;
     display: none;
-    background-color: rgb(200,200,255);
+    background-color: rgb(255,255,255);
+    border: 1px solid rgba(0,0,0,0.5);
+    text-align: center;
 }
 
 .gamepad-edit.visible{
     display: block;
+}
+
+.control-group{
+    margin: 10px;
+}
+
+.control-group.buttons{
+    display: inline-block;
+}
+
+    .control-group p{
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .control-group select{
+        display: inline-block;
+    }
+
+.control-type-group{
+    max-width: 60%;
+    display: inline-block;
+    vertical-align: top;
 }

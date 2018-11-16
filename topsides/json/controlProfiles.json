@@ -1,26 +1,63 @@
 [
     {
-        "name": "Andrew's Profile",
+        "name": "fgdgfd",
         "id": 0,
         "gamepads": [
             {
-                "name": "Joystick 1",
-                "axes": [
-                    "sway"
-                ],
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
                     ""
                 ]
             }
         ]
     },
     {
-        "name": "Test 2",
+        "name": "test2",
         "id": 1,
         "gamepads": [
             {
-                "buttons": [],
-                "axes": []
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ]
             }
         ]
     }

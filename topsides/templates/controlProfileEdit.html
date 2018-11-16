@@ -54,15 +54,18 @@
             function addGamepadInfo(i, gamepad){
                 let gamepadSelectorString = "<div class='selector' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
                 let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'>";
-
+                gamepadEditPanelString += "<div class='control-type-group'>";
                 $.each(gamepad["axes"], function(i2, axes){
-                    gamepadEditPanelString += "<select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'><option value=''></option>" + CONTROLOPTIONS.getAxesOptionsString() + "</select>";
+                    gamepadEditPanelString += "<div class='control-group'><p>Axes " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'><option value=''></option>" + CONTROLOPTIONS.getAxesOptionsString() + "</select></div>";
 
                 });
-
+                gamepadEditPanelString += "</div>";
+                
+                gamepadEditPanelString += "<div class='control-type-group'>";
                 $.each(gamepad["buttons"], function(i2, button){
-                    gamepadEditPanelString += "<select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value; class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select>"
+                    gamepadEditPanelString += "<div class='control-group buttons'><p>Button " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value; class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select></div>"
                 });
+                gamepadEditPanelString += "</div>";
 
                 gamepadEditPanelString += "</div>"
 
@@ -106,8 +109,7 @@
 
             function addGamepad(index){
                 gamepad = gamepads[index];
-                
-                newGamepad = {"name":"", "buttons": [], "axes":[]}
+                newGamepad = {"name": gamepad["id"], "buttons": [], "axes":[]}
                 
                 $.each(gamepad["axes"], function(i, obj){
                     newGamepad['axes'][i] = '';
@@ -119,8 +121,6 @@
                 
                 profileToEdit["gamepads"].push(newGamepad);
                 addGamepadInfo(profileToEdit["gamepads"].length, newGamepad);
-
-                console.log(profileToEdit);
             }
 
             function newProfile_click(id){
@@ -131,10 +131,18 @@
             function openGamepadPanel_click(open){
                 $(".gamepad-edit").toggleClass("visible", false);
                 $("#gamepadEdit"+open).toggleClass("visible", true);
+                $(".selector").toggleClass("active", false);
+                $("#gamepadSelector" + open).toggleClass("active", true);
             }
 
             function saveProfile_click(){
+                $(".input-text").each(function(){
+                    var attrToChange = "" + $(this).attr("input-id");
+                    var valToSet = $(this).val();
+                    profileToEdit[attrToChange] = valToSet;
+                });
                 PROFILEHANDLE.saveProfile(profileToEdit);
+                location.reload();
             }
         </script>
     </head>

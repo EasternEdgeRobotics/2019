@@ -38,17 +38,20 @@ def saveProfile(profile):
     added = False
     with open("json/controlProfiles.json", "r+") as file:
         data = json.load(file)
-        for element in data:
-            if(int(element["id"]) == int(profile["id"])):
-                element = profile
+        for i in range(0,len(data)):
+            if(str(data[i]["id"]) == str(profile["id"])):
+                data[i] = profile
                 added = True
 
         if not added:
             data.append(profile)
 
+        print(data)
+
+
         file.seek(0)        
         json.dump(data, file, indent=4)
-        file.truncate() 
+        file.truncate()
         
 
     
