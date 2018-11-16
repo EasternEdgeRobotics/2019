@@ -60,6 +60,8 @@ def setThrusterValues(tDirect, tPos):
         setThruster = [F, B, F, B, C, C]
     elif(tDirect == "Yaw" and tPos == -1):
         setThruster = [B, F, B, F, C, C]
+    elif(tDirect == "All" and tPos == 0):
+        setThruster = [C, C, C, C, C, C]
     else:
         setThruster = [C, C, C, C, C, C]
     return setThruster
