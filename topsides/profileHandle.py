@@ -1,12 +1,15 @@
+"""Loads and deletes control profiles."""
 import json
 
-""" loadProfiles
-Loads the profiles json file and returns it as a json object
 
-If the file can't be loaded, the function returns a string containing the error.
-
-"""
 def loadProfiles():
+    """
+    Loads the profiles json file and returns it as a json object.
+
+    If the file can't be loaded, the function returns a string containing the error.
+
+    :return: profile json object or string containing error
+    """
     try:
         with open("json/controlProfiles.json") as file:
             data = json.load(file)
@@ -15,16 +18,12 @@ def loadProfiles():
         return ("Problem loading json: " + str(e))
 
 
-"""
-deleteProfile
-
-deletes a control profile from memory
-
-@params:
-    - id: id of profile to delete from memory
-
-"""
 def deleteProfile(id):
+    """
+    Deletes a control profile from memory.
+
+    :params id: id of profile to delete from memory
+    """
     print(id)
     with open("json/controlProfiles.json") as file:
         data = json.load(file)
