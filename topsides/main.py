@@ -63,6 +63,7 @@ def setThrusterValues(tDirect, tPos):
     elif(tDirect == "All" and tPos == 0):
         setThruster = [C, C, C, C, C, C]
     else:
+        # This should never run. Error should be sent to the dev page when it has an error log
         setThruster = [C, C, C, C, C, C]
     return setThruster
 
