@@ -83,7 +83,7 @@ def getJoytickValuesFromJavascript():
 
     ## store the thruster values in a list
     setThruster = setThrusterValues(data);
-    ## call the fControl rov file and pass it [port, value]
+    ## call the fControl rov file and pass it [port,  value]
     for x in range(len(setThruster)):
         ## This will most likely produce a file path error
         topsidesComms.send.put("fControl.py " + str(x) + str(setThruster[x]));
