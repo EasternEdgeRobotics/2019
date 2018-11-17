@@ -40,10 +40,6 @@ while True:
     response = "done"
     try:
         exec(open(file).read())
-    except ValueError as e:
-        response = str(e)
-    except FileNotFoundError as e:
-        response = str(e)
     except Exception as e:
         response = str(e)
     del sys.argv[1:]
