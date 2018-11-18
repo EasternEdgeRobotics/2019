@@ -63,6 +63,7 @@ def setThrusterValues(tDirect, tPos):
     elif(tDirect == "All" and tPos == 0):
         setThruster = [C, C, C, C, C, C]
     else:
+        # This should never run. Error should be sent to the dev page when it has an error log
         setThruster = [C, C, C, C, C, C]
     return setThruster
 
@@ -86,6 +87,24 @@ def getJoytickValuesFromJavascript():
         topsidesComms.send.put("fControl.py " + str(x) + " " + str(setThruster[x]))
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
+
+
+@app.route("/runscript", methods=["POST"])
+def getScriptValuesFromJavascript():
+    """
+    Simple script name reciever to run on raspberry pi.
+
+    Input: Json Body Format: scriptname
+
+    POST method
+    """
+    data = request.json
+
+    print(data)
+
+    topsidesComms.send.put("scripts.py " + data)
+
+    return jsonify("")  # returns json as filler (server crashes if nothing is returned)
 
 
 @app.route("/getProfiles", methods=["GET"])

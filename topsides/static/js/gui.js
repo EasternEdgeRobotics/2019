@@ -36,6 +36,18 @@ function getPresetValue(inputAttribute, inputValue) {
 }
 
 /**
+*  Gets the values from the script button to run a script on the raspberry pi.
+*
+*   @param {int} inputValue
+*    name of shell script to run from text box
+*/
+function getScriptValue(inputValue) {
+ runPythonPOST("runscript", JSON.stringify(inputValue), function() {
+   console.log("running script");
+ });
+}
+
+/**
 *  Starts the coutdown timer.
 *
 *  @param {int} duration

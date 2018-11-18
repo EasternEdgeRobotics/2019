@@ -45,6 +45,22 @@
         }
       });
 
+      // Handle script button
+      var preset = $('#scriptButton');
+      preset.click(function() {
+        var inputValue = $('#scriptValue').val();
+        getScriptValue(inputValue);
+      });
+
+      // Handle script button enter key
+      $('#scriptValue').keypress(function (e) {
+        var key = e.which;
+        if(key == 13) {
+          $('#scriptButton').click();
+          return false;
+        }
+      });
+
       // Handle joystick input
       setInterval(function(){
         var joyValues = getNewJoystickValues();
@@ -96,6 +112,16 @@
       <div>
         Run ends in <span id="timerText">00:00</span> minutes
         <button type="button" id="startTimer" class="button">Start timer</button>
+      </div>
+      </div>
+      <br />
+      <br />
+      <div class="card">
+      <legend>Run script</legend>
+      <br />
+      <div>
+        <input type="text" id="scriptValue" placeholder="Value">
+        <button type="button" id="scriptButton" class="button">Run script</button>
       </div>
       </div>
     </div>
