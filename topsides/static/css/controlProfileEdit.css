@@ -124,6 +124,11 @@
         margin-right: 5px;
     }
 
+    .control-group p.triggered{
+        color: rgb(0, 0, 0);
+        font-weight: bold;
+    }
+
     .control-group select{
         display: inline-block;
     }
