@@ -2,24 +2,26 @@
     <head>
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/joystickTest.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/ControlHandler.js')}}"></script>
+        <script src="{{url_for('static', filename='js/ProfileHandle.js')}}"></script>
         
         <script>
-            setInterval(function(){
-                var joyValues = getNewJoystickValues();
-                if(joyValues == false){
-                    return;
-                }else{
-                    runPythonPOST("joystickValueTest", JSON.stringify(joyValues), function(){
-                        console.log("new values sent to server!");   
-                    });
-                }
-            }, 80);
+            var profileHandler;
+            var controlHandler = new ControlHandler();
+            runPythonGET("getProfiles", null, function(data){
+                profileHandler = new ProfileHandle(data);
+                controlHandler.profile = profileHandler.profiles[0];
+            });
+
+            function test(){
+                console.log(controlHandler.parseControls());
+            }
         </script>
     </head>
     <body>
         <p style="font-size: 24px; font-weight: bold;">Troake</p>
         <p style="font-size: 18px;">Blank page for testing joystick inputs. Values are read on loop, currently twice every second just for testing. If the values for the joystick are different than the last read, the new values are sent to the server.</p>
         <p style="font-size: 18px">Open up the developer's panel to see the posts to the server and console for logging</p>
+        <button onclick="test();">TEST</button>
     </body>
 </html>

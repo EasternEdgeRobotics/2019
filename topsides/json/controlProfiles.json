@@ -6,7 +6,7 @@
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "",
+                    "test1",
                     "",
                     "",
                     "",
@@ -20,7 +20,7 @@
                     ""
                 ],
                 "axes": [
-                    "",
+                    "sway",
                     "",
                     "",
                     "",

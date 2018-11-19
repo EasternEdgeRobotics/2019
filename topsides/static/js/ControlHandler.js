@@ -1,23 +1,26 @@
+//adds gamepad to _gamepads and gives it a blank profile when plugged in
+function gamepadConnected(gamepad, controlhandler){
+    console.log(gamepad);
+    controlhandler._gamepads[gamepad.index]["gamepad"] = gamepad.index;
+    controlhandler._gamepads[gamepad.index]["gamepad_index"] = gamepad.index;
+}
+
+//removes gamepad from _gamepads and gives it a blank profile when unplugged
+function gamepadDisconnected(gamepad, controlhandler){
+    controlhandler._gamepads[gamepad['index']]["gamepad"] = null;
+    controlhandler._gamepads[gamepad['index']]["profile"] = null; 
+}
+
+
 class ControlHandler{
     constructor(){
         this._gamepads = [{profile:null,gamepad_index:null},{profile:null,gamepad_index:null},{profile:null,gamepad_index:null},{profile:null,gamepad_index:null}];
         this._profile = null;
 
-        window.addEventListener("gamepadconnected", this.gamepadConnected(e));
-        window.addEventListener("gamepaddisconnected", this.gamepadDisconnected(e));
+        var self = this;
+        window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
+        window.addEventListener("gamepaddisconnected", function(e){gamepadDisconnected(e.gamepad, self);});
         
-    }
-
-    //adds gamepad to _gamepads and gives it a blank profile when plugged in
-    gamepadConnected(gamepad){
-        this._gamepads[gamepad['index']]["gamepad"] = gamepad.index;
-        this._gamepads[gamepad['index']]["profile"] = null;
-    }
-
-    //removes gamepad from _gamepads and gives it a blank profile when unplugged
-    gamepadDisconnected(gamepad){
-        this._gamepads[gamepad['index']]["gamepad"] = null;
-        this._gamepads[gamepad['index']]["profile"] = null; 
     }
 
     //getter for _gamepads
@@ -36,22 +39,25 @@ class ControlHandler{
      * 
      */
     parseControls(){
+        var _profile = this._profile;
+        var _gamepads = this._gamepads;
         if(this._profile != null){
-            let i = 0;
-            var returnControls = [null,null,null,null];
-            this._gamepads.forEach(function(obj){
-                if(obj.profile != null){
-                    returnControls[i] = {};
-                    let tempGamepad = navigator.getGamepads()[i];
-                    $.each(tempGamepad.axes, function(axes_index, axes_value){
-                        returnControls[obj.profile.axes[axes_index]] = axes_value;
-                    });
+            var returnControls = {}; //blank array to hold parsed controls
+            $.each(_gamepads, function(i, obj){
+                if(obj != null && obj != undefined){
+                    let tempGamepad = navigator.getGamepads()[obj['gamepad_index']];
+                    if(tempGamepad != null){
+                        $.each(tempGamepad.axes, function(axes_index, axes_value){
+                            if(_profile.gamepads[i].axes[axes_index] != "")
+                            returnControls[_profile.gamepads[i].axes[axes_index]] = axes_value;
+                        });
 
-                    $.each(tempGamepad.buttons, function(button_index, button_value){
-                        returnControls[obj.profile.buttons[button_index]] = button_value;
-                    });
+                        $.each(tempGamepad.buttons, function(button_index, button_value){
+                            if(_profile.gamepads[i].buttons[button_index] != "")
+                            returnControls[_profile.gamepads[i].buttons[button_index]] = button_value.value;
+                        });
+                    }
                 }
-                i++;
             });
             return returnControls;
         }
@@ -70,14 +76,28 @@ class ControlHandler{
      */
     isValidProfile(p){
         let tempGamepads = navigator.getGamepads();
+        let usedGamepadIndexs = [];
+        let points = 0;
         p.gamepads.forEach(function(gamepad){
-            tempGamepads.forEach(function(tempGamepad){
-                if(gamepad.id == tempGamepad.id){
-                    tempGamepads.splice(tempGamepad.index, tempGamepad.index+1);
-                    break;
+            if(gamepad != null){
+                for(let i = 0 ; i < tempGamepads.length ; i++){
+                    let tempGamepad = tempGamepads[i];
+                    if(tempGamepad != null && !usedGamepadIndexs.includes(i)){
+                        if(gamepad.name == tempGamepad.id){
+                            usedGamepadIndexs.push(i);
+                            points++;
+                            break;
+                        }
+                    }
                 }
-            });
+            }else{
+                points++;
+            }
         });
+        if(points >= p.gamepads.length){
+            return true;
+        }
+        return false;
     }
 
 

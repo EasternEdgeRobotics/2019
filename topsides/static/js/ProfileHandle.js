@@ -1,15 +1,10 @@
 class ProfileHandle{
     constructor(data){
         this._profiles = data;
-        console.log(data);
     }
 
-    static get profiles(){
+    get profiles(){
         return this._profiles;
-    }
-
-    getProfiles(){
-        
     }
     
     getProfileById(id){
