@@ -52,7 +52,7 @@
             }
 
             function addGamepadInfo(i, gamepad){
-                let gamepadSelectorString = "<div class='selector' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
+                let gamepadSelectorString = "<div class='selector " + (i ==0? "active": "") +"' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
                 let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
                 
                 gamepadEditPanelString += "<div class='control-type-group'>";
@@ -84,7 +84,6 @@
 
             function openGamepadMenu_click(){
                 gamepads = getJoysticks();
-                console.log(gamepads);
                 $("#addGamepadContainer").html("");
                 let noGamepads = true;
                 $.each(gamepads, function(i, obj){
@@ -172,6 +171,15 @@
                 });
             }
 
+
+            function deleteProfile(id){
+                runPythonPOST("deleteProfile", JSON.stringify({profileId:id}), function(){
+                    alert("Delete Sucessful!");
+                    location.reload();
+                });
+            }
+            
+
             setInterval(function(){updateMenuIndicators();}, 10);
         </script>
     </head>
@@ -184,7 +192,7 @@
                     <div class="profile-panel">
                         <p>{{profile["name"]}}</p>
                         <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="editProfile_click({{profile['id']}})">EDIT</button>
-                        <button class="btn btn-danger modal-trigger" modal-id="modalEditProfile" onclick="deleteProfile({{profile['id']}})">DELETE</button>
+                        <button class="btn btn-danger" onclick="deleteProfile({{profile['id']}})">DELETE</button>
                     </div>
                 {% endfor %}
                 <div class="profile-panel">

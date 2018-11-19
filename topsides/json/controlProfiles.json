@@ -22,38 +22,7 @@
                 "axes": [
                     "sway",
                     "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ]
-            }
-        ]
-    },
-    {
-        "name": "test2",
-        "id": 1,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "",
-                    "",
-                    "",
+                    "surge",
                     "",
                     "",
                     ""

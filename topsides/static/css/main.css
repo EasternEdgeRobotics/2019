@@ -97,7 +97,7 @@ p, h1, h2, h3, h4, h5, h6{
 .modal .modal-content{
     width: 900px;
     min-height: 100px;
-    margin: 10% auto;
+    margin: 30px auto;
     transition: 0.5s;
     transform: translateY(50px);
     padding: 15px;

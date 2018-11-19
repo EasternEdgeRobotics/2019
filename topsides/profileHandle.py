@@ -26,11 +26,17 @@ deletes a control profile from memory
 """
 def deleteProfile(id):
     print(id)
-    with open("json/controlProfiles.json") as file:
+    with open("json/controlProfiles.json", "r+") as file:
         data = json.load(file)
-        for element in data:
+        print(data)
+        for i in range(0, len(data)):
+            element = data[i]
             if(int(element["id"]) == int(id)):
-                del element
+                del data[i]
+
+        file.seek(0)
+        json.dump(data, file, indent=4)
+        file.truncate()
 
 
 def saveProfile(profile):
