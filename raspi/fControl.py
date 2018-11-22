@@ -4,8 +4,6 @@ sys.path.append('libraries')
 import maestro
 import control
 
-
-
 # Input through system command, the channel of the thruster
 # this input must be between and including 0-5
 tChan = int(sys.argv[1])
@@ -18,7 +16,6 @@ PORTS = [2, 1, 15, 17, 0, 16]
 # Inits the maestro controller from the library.
 servo = maestro.Controller()
 # Initialize the control module with maestro channel and thruster port
-dt = control.Thruster(servo, int(PORTS[tChan])) #PORTS[tChan])
-# run the thruster
+dt = control.Thruster(servo, int(PORTS[tChan]))
+# Run the thruster
 dt.Fly(tSpeed)
-
