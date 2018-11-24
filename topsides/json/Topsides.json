@@ -1,0 +1,7 @@
+{
+    "ipHost": "192.168.88.2",
+    "portHost": 8001,
+    "ipSend": "192.168.88.4",
+    "portSend": 8000,
+    "flaskPort": 80
+}

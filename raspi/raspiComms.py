@@ -1,12 +1,13 @@
 """Communicate from server to client side."""
 import socket
 import sys
+from RaspiGlobals import GLOBALS
 
 # TODO: Change to topsides ip
-ipSend = '192.168.88.42'
-portSend = 8001
-ipHost = '192.168.88.4'
-portHost = 8000
+ipSend = GLOBALS['ipSend']
+portSend = GLOBALS['portSend']
+ipHost = GLOBALS['ipHost']
+portHost = GLOBALS['portHost']
 
 
 #try opening a socket for communication
