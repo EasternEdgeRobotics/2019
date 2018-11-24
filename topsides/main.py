@@ -20,6 +20,10 @@ def returnGui():
     """
     return render_template("index.html")
 
+@app.route("/controlTest")
+def controlTestPage():
+    return render_template("controlTest.html")
+
 
 @app.route("/editprofile")
 def editProfilePage():

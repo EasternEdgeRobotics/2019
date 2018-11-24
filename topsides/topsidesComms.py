@@ -18,7 +18,7 @@ def startComms():
     # TODO: Change to raspi ip
     ipSend = '192.168.88.4'
     portSend = 8000
-    ipHost = '192.168.88.42'
+    ipHost = '192.168.88.2'
     portHost = 8001
 
     # try opening a socket for communication
