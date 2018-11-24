@@ -8,7 +8,6 @@ portSend = 8001
 ipHost = '192.168.88.4'
 portHost = 8000
 
-#yo
 
 #try opening a socket for communication
 try:
