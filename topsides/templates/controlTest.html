@@ -16,6 +16,10 @@
             function test(){
                 console.log(controlHandler.parseControls());
             }
+
+            function testValid(){
+                console.log(controlHandler.isValidProfile(profileHandler.profiles[0]));
+            }
         </script>
     </head>
     <body>
@@ -23,5 +27,6 @@
         <p style="font-size: 18px;">Blank page for testing joystick inputs. Values are read on loop, currently twice every second just for testing. If the values for the joystick are different than the last read, the new values are sent to the server.</p>
         <p style="font-size: 18px">Open up the developer's panel to see the posts to the server and console for logging</p>
         <button onclick="test();">TEST</button>
+        <button onclick="testValid();">Is Valid Profile?</button>
     </body>
 </html>

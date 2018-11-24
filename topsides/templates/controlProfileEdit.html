@@ -120,7 +120,9 @@
                 });
                 
                 profileToEdit["gamepads"].push(newGamepad);
-                addGamepadInfo(profileToEdit["gamepads"].length, newGamepad);
+                console.log(profileToEdit["gamepads"]);
+                console.log(profileToEdit["gamepads"].length);
+                addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
 
             function newProfile_click(id){
@@ -153,10 +155,8 @@
                     if(gamepad == null)
                         return;
                     $.each(gamepad.axes, function(i2, axes){
-                        console.log(axes);
                         if(Math.abs(axes) > 0.8){
                             $("#iPg"+i+"a"+i2).toggleClass("triggered", true);
-                            console.log("#iPj"+i+"a"+i2);
                         }else{
                             $("#iPg"+i+"a"+i2).toggleClass("triggered", false);
                         }

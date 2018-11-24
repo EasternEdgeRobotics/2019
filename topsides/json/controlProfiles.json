@@ -1,12 +1,12 @@
 [
     {
-        "name": "fgdgfd",
+        "name": "Test1",
         "id": 0,
         "gamepads": [
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "test1",
+                    "",
                     "",
                     "",
                     "",
@@ -21,10 +21,38 @@
                 ],
                 "axes": [
                     "sway",
-                    "",
                     "surge",
+                    "yaw",
+                    "heave",
+                    "",
+                    ""
+                ]
+            },
+            {
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "buttons": [
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "rotateCam1",
+                    "",
+                    "rotateCam2",
                     ""
                 ]
             }
