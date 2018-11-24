@@ -1,6 +1,6 @@
 [
     {
-        "name": "Test1",
+        "name": "Test",
         "id": 0,
         "gamepads": [
             {
@@ -20,22 +20,17 @@
                     ""
                 ],
                 "axes": [
-                    "sway",
                     "surge",
-                    "yaw",
-                    "heave",
+                    "",
+                    "",
+                    "",
                     "",
                     ""
                 ]
             },
             {
-                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
                     "",
                     "",
                     "",
@@ -50,9 +45,11 @@
                     ""
                 ],
                 "axes": [
-                    "rotateCam1",
+                    "sway",
+                    "pitch",
                     "",
-                    "rotateCam2",
+                    "",
+                    "",
                     ""
                 ]
             }

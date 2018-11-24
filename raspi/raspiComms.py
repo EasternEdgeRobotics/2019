@@ -7,6 +7,8 @@ portSend = 5001
 ipHost = 'localhost'
 portHost = 5000
 
+#yo
+
 #try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

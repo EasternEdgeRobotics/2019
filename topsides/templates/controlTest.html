@@ -3,30 +3,54 @@
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/ControlHandler.js')}}"></script>
+        <script src="{{url_for('static', filename='js/ControlOptions.js')}}"></script>
         <script src="{{url_for('static', filename='js/ProfileHandle.js')}}"></script>
         
         <script>
-            var profileHandler;
+            //initializing profile handler, controlhandler, controloptions
+            var profileHandler = new ProfileHandle();
             var controlHandler = new ControlHandler();
-            runPythonGET("getProfiles", null, function(data){
-                profileHandler = new ProfileHandle(data);
+            var controlOptions = new ControlOptions();
+
+            setTimeout(function(){
+                //delay 1s to set controlHandler's profile to first profile
                 controlHandler.profile = profileHandler.profiles[0];
-            });
+                
+                //Below is code that generates html for each control type and adds it to page
+                $.each(controlOptions.axes, function(i,axes){
+                    $("#controlInsert").append("<div='control-group' style='display: block; margin: 10px;'><p style='display: inline-block;'>" + axes + ": </p><p style='display: inline-block;' id='" + axes + "val'>0</p></div>");
+                });
 
-            function test(){
-                console.log(controlHandler.parseControls());
-            }
+                $.each(controlOptions.buttons, function(i,axes){
+                    $("#controlInsert").append("<div='control-group' style='display: block; margin: 10px;'><p style='display: inline-block;'>" + axes + ": </p><p style='display: inline-block;' id='" + axes + "val'>0</p></div>");
+                });
+            }, 1000);
+            
+            
+            //Below is code that updates <p> tags of control values
+            setInterval(function(){
+                $.each(controlHandler.parseControls(), function(i, control){
+                    if(i != null){
+                        $("#"+i+"val").html(parseInt(control*100)/100);
+                    }
+                });
+            }, 30);
 
+    
             function testValid(){
                 console.log(controlHandler.isValidProfile(profileHandler.profiles[0]));
+                
             }
+
         </script>
     </head>
     <body>
         <p style="font-size: 24px; font-weight: bold;">Troake</p>
         <p style="font-size: 18px;">Blank page for testing joystick inputs. Values are read on loop, currently twice every second just for testing. If the values for the joystick are different than the last read, the new values are sent to the server.</p>
         <p style="font-size: 18px">Open up the developer's panel to see the posts to the server and console for logging</p>
-        <button onclick="test();">TEST</button>
         <button onclick="testValid();">Is Valid Profile?</button>
+
+        <div id="controlInsert">
+        </div>
     </body>
 </html>

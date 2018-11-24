@@ -1,12 +1,30 @@
 class ProfileHandle{
-    constructor(data){
-        this._profiles = data;
+
+    //Constructor, runs GET for profiles and stores information (asyncronously)
+    constructor(){
+        var profileHandler = this;
+        runPythonGET("getProfiles", null, function(data){
+            profileHandler._profiles = data;
+        });
     }
 
+    //getter for profiles, therefore you can use profilehandler.profiles to get the profiles
     get profiles(){
         return this._profiles;
     }
-    
+
+
+    /** getProfileByID
+     * 
+     *  @description
+     *      returns the JSON of the profile with that specific ID.
+     * 
+     *  @param {int} id: The ID of the profile to return
+     * 
+     * `@returns
+     *      -JSON: profile json
+     * 
+     */
     getProfileById(id){
         for(let i = 0; i < this._profiles.length ; i++){
             if(this._profiles[i]['id'] == id){
@@ -15,6 +33,15 @@ class ProfileHandle{
         }
     }
 
+    /** getNextId
+     * 
+     *  @description
+     *      returns the integer of the next avaliable unique id when saving new profiles
+     * 
+     *  @returns
+     *      next unique id
+     * 
+     */
     getNextId(){
         let highest = 0;
         for(let i = 0; i < this._profiles.length ; i++){
@@ -25,7 +52,14 @@ class ProfileHandle{
         return highest;
     }
 
-    
+    /** saveProfile
+     * 
+     *  @description
+     *      Runs python post to save the new or edited profile to the JSON
+     * 
+     *  @param {JSON} profile - Profile JSON to save. Can be new or an edited version of an existing profile
+     * 
+     */
     saveProfile(profile){
         runPythonPOST("saveProfile", JSON.stringify(profile), function(){
 

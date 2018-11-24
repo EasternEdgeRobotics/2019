@@ -1,7 +1,14 @@
-//adds gamepad to _gamepads and gives it a blank profile when plugged in
+/**gamepadConnected
+ * 
+ *  event called when a gamepad is connected
+ *  maps the gamepad to a gamepad in the profile if required
+ * 
+ * 
+ */
 function gamepadConnected(gamepad, controlhandler){
     console.log(navigator.getGamepads());
     var doLink = false;
+    alreadyRegistered = false;
 
     if(controlhandler._profile != null){
         $.each(controlhandler._profile.gamepads, function(profile_gamepad_index, profile_gamepad){
@@ -12,36 +19,14 @@ function gamepadConnected(gamepad, controlhandler){
                         doLink = false;
                     }
                 });
-                if(doLink){
+                if(doLink && !alreadyRegistered){
+                    alreadyRegistered = true;
                     controlhandler._gamepads[gamepad.index] = profile_gamepad_index;
                     console.log("GAMEPAD AT INDEX " + gamepad.index + " CONNECTED AND LINKED TO PROFILE GAMEPAD " + profile_gamepad_index);
                 }
             }
         });
     }
-    /*if(controlhandler._profile != null){
-        let done = false;
-        $.each(controlhandler._profile.gamepads, function(profile_index, profile_gamepad){
-            $.each(controlhandler._gamepads, function(gampead_index, registered_gamepad){ //loop through each registerd gamepad
-                if(!done){
-                    if(registered_gamepad.profile_index == profile_index){//if this profile index is already registered
-                        return;
-                    }
-                    if(profile_gamepad.name == gamepad.id){//if profiles wanted gamepad is gamepad
-                        controlhandler._gamepads.push({profile_index: profile_index, gamepad_index: gamepad.index});
-                        
-                        console.log("ADDED GAMEPAD AT INDEX " + gamepad.index + " AND LINKED IT TO PROFILE GAMEPAD " + profile_index);
-                        done =true;
-                    }    
-                }
-            });
-        });
-    }else{
-        controlhandler._gamepads.push({profile_index: null, gamepad_index: gamepad.index});
-        console.log("ADDED NEW JOYSTICK WITH NO PROFILE LINK");
-    }*/
-
-
 
 }
 
@@ -84,26 +69,27 @@ class ControlHandler{
      */
     parseControls(){
         var gamepads = navigator.getGamepads();
-        var parsedControls = {};
+        var parsedControls = {}; //empty preset
 
+        //gets instances to use in nested functions
         var _profile = this._profile;
         var _gamepads = this._gamepads;
 
 
-        if(_profile != null){
-            $.each(_gamepads, function(gamepad_index, profile_gamepad_index){
-                if(profile_gamepad_index != null || profile_gamepad_index != undefined){
-                    let gamepad = gamepads[gamepad_index];
-                    if(gamepad != null){
-                        $.each(_profile.gamepads[profile_gamepad_index].axes, function(axes_index, mapped_control){
-                            if(mapped_control != ""){
-                                parsedControls[mapped_control] = gamepad.axes[axes_index];
+        if(_profile != null){//if there is a function
+            $.each(_gamepads, function(gamepad_index, profile_gamepad_index){//loop through each mapped profile gamepads
+                if(profile_gamepad_index != null || profile_gamepad_index != undefined){//if it exists
+                    let gamepad = gamepads[gamepad_index]; //gets the gamepad linked to that profile_index
+                    if(gamepad != null){ //if the gamepad exists
+                        $.each(_profile.gamepads[profile_gamepad_index].axes, function(axes_index, mapped_control){ //loop through each axes controls of the profile
+                            if(mapped_control != ""){ //if the axes is mapped to something aka not empty string
+                                parsedControls[mapped_control] = gamepad.axes[axes_index]; //set the control option mapped to the value of the gamepad
                             }
                         });
 
-                        $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){
-                            if(mapped_control != ""){
-                                parsedControls[mapped_control] = gamepad.buttons[button_index].value;
+                        $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){ //loop through each button controls of the profile
+                            if(mapped_control != ""){//if the button is mapped to something aka not empty string
+                                parsedControls[mapped_control] = gamepad.buttons[button_index].value; //set the control option mapped to the value of the gamepad
                             }
                         });
                     }
@@ -112,31 +98,6 @@ class ControlHandler{
         }
 
         return parsedControls;
-
-        /*
-        var _profile = this._profile;
-        var _gamepads = this._gamepads;
-        if(this._profile != null){
-            var returnControls = {}; //blank array to hold parsed controls
-            $.each(_gamepads, function(i, obj){
-                if(obj != null && obj != undefined){
-                    let tempGamepad = navigator.getGamepads()[obj['gamepad_index']];
-                    if(tempGamepad != null){
-                        $.each(tempGamepad.axes, function(axes_index, axes_value){
-                            if(_profile.gamepads[i].axes[axes_index] != "")
-                            returnControls[_profile.gamepads[i].axes[axes_index]] = axes_value;
-                        });
-
-                        $.each(tempGamepad.buttons, function(button_index, button_value){
-                            if(_profile.gamepads[i].buttons[button_index] != "")
-                            returnControls[_profile.gamepads[i].buttons[button_index]] = button_value.value;
-                        });
-                    }
-                }
-            });
-            return returnControls;
-        }
-        return null;*/
     }
 
     /** isValidProfile
@@ -153,6 +114,8 @@ class ControlHandler{
      */
     isValidProfile(p){
         var desiredCounts = {};
+
+        //counts how many of each controller is required by the profile
         $.each(p.gamepads, function(i, gamepad){
             if(desiredCounts[gamepad.name] == undefined || desiredCounts[gamepad.name] == null){
                 desiredCounts[gamepad.name] = 1;
@@ -163,7 +126,7 @@ class ControlHandler{
 
         var connectedCounts = {};
         let gamepads = navigator.getGamepads();
-        console.log(gamepads)
+        //counts the amount of each type of joystick connected
 ;        $.each(gamepads, function(i, gamepad){
             if(gamepad !=null){
                 if(connectedCounts[gamepad.id] == undefined || connectedCounts[gamepad.id] == null){
@@ -175,6 +138,7 @@ class ControlHandler{
         });
 
         var isGood = true;
+        //compares the desired counts and actual counts
         $.each(desiredCounts, function(i,amount){
             console.log("fdsf" + connectedCounts[i]);
             if(amount != connectedCounts[i]){
@@ -193,18 +157,25 @@ class ControlHandler{
         var _gamepads = this._gamepads;
         console.log("PROFILE SET");
 
-
+        //Auto setting the gamepads
         var gamepads = navigator.getGamepads();
+        //loop through each required gamepad in the profile
         $.each(p.gamepads, function(profile_gamepad_index, profile_gamepad){
+            let done =false
+            //loop through each connected gamepad
             $.each(gamepads, function(gamepad_index, gamepad){
-                if(gamepad!=null){
-                    if(profile_gamepad.name == gamepad.id){
-                        if(_gamepads[gamepad_index] == null){
-                            _gamepads[gamepad_index] = profile_gamepad_index;
-                            //DONE
-                            console.log("GAMEPAD AT INDEX " + gamepad_index + " DETECTED AND ASSIGNED TO PROFILE INDEX " + profile_gamepad_index);
+                if(!done){//used to stop double mapping
+                    //if there is a gamepad connected
+                    if(gamepad!=null){
+                        if(profile_gamepad.name == gamepad.id){ //if the id of the connected gamepad is equal to the required id
+                            if(_gamepads[gamepad_index] == null){//if the gamepad isn't already mapped
+                                _gamepads[gamepad_index] = profile_gamepad_index;
+                                //Set map the gamepad to the profile gamepad
+                                console.log("GAMEPAD AT INDEX " + gamepad_index + " DETECTED AND ASSIGNED TO PROFILE INDEX " + profile_gamepad_index);
+                                done = true;
+                            }
+                            
                         }
-                        
                     }
                 }
             });

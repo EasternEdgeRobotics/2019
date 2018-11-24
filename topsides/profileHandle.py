@@ -38,7 +38,14 @@ def deleteProfile(id):
         json.dump(data, file, indent=4)
         file.truncate()
 
+"""
+saveProfile
 
+saves or adds a new profile to the JSON
+
+@params:
+    - profile: profile JSON to save to the file
+"""
 def saveProfile(profile):
     print(profile["id"])
     added = False
