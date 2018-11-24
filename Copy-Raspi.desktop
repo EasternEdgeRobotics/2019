@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Copy Raspi
+Exec=./copy-raspi
+Terminal=true
+Type=Application
+Categories=Application
+Name[en_CA]=Copy Raspi
