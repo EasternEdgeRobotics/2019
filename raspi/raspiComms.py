@@ -8,7 +8,9 @@ portSend = 8001
 ipHost = '192.168.88.4'
 portHost = 8000
 
-# try opening a socket for communication
+#yo
+
+#try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:

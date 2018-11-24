@@ -25,8 +25,45 @@ def deleteProfile(id):
     :params id: id of profile to delete from memory
     """
     print(id)
-    with open("json/controlProfiles.json") as file:
+    with open("json/controlProfiles.json", "r+") as file:
         data = json.load(file)
-        for element in data:
+        print(data)
+        for i in range(0, len(data)):
+            element = data[i]
             if(int(element["id"]) == int(id)):
-                del element
+                del data[i]
+
+        file.seek(0)
+        json.dump(data, file, indent=4)
+        file.truncate()
+
+"""
+saveProfile
+
+saves or adds a new profile to the JSON
+
+@params:
+    - profile: profile JSON to save to the file
+"""
+def saveProfile(profile):
+    print(profile["id"])
+    added = False
+    with open("json/controlProfiles.json", "r+") as file:
+        data = json.load(file)
+        for i in range(0,len(data)):
+            if(str(data[i]["id"]) == str(profile["id"])):
+                data[i] = profile
+                added = True
+
+        if not added:
+            data.append(profile)
+
+        print(data)
+
+
+        file.seek(0)        
+        json.dump(data, file, indent=4)
+        file.truncate()
+        
+
+    

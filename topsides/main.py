@@ -88,31 +88,50 @@ def getJoytickValuesFromJavascript():
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
+"""
+Returns the control profiles from memory as json.
 
+GET method
+
+:return: Json containing all profiles
+"""
 @app.route("/getProfiles", methods=["GET"])
 def getProfiles():
-    """
-    Returns the control profiles from memory as json.
-
-    GET method
-
-    :return: Json containing all profiles
-    """
     return json.dumps(profileHandle.loadProfiles())  # responds json containing all profiles
 
 
+"""
+getControlOptions
+GET
+
+returns the control possibilities for mapping gamepads. This function loads the JSON file controls.json
+"""
+@app.route("/getControlOptions", methods=["GET"])
+def getControlOptions():
+    try:
+        with open("json/controls.json") as file:
+            data = json.load(file)
+            return json.dumps(data)
+    except Exception as e:
+        return json.dumps("Problem loading json: " + str(e))
+
+"""
+deleteProfile
+POST
+Deletes the requested profile from memory.
+
+Input: Json Body Format: {id: int}
+
+POST method
+
+:return: string "Failed, profileID not read correct or is not a number" or "success"
+"""
+
 @app.route("/deleteProfile", methods=["POST"])
 def deleteProfile():
-    """
-    Deletes the requested profile from memory.
-
-    Input: Json Body Format: {id: int}
-
-    POST method
-
-    :return: string "Failed, profileID not read correct or is not a number" or "success"
-    """
+    
     profileID = request.args.get('profileID')
+    profileID = request.json["profileId"]
     if(profileID is None):
         return "Failed, profileID not read correct or is not a number"
     else:
@@ -120,15 +139,19 @@ def deleteProfile():
         return "success"
 
 
+@app.route("/saveProfile", methods=["POST"])
+def saveProfile():
+    profileHandle.saveProfile(request.json)
+    return json.dumps("yikes")
+
+
+"""
+/testGetPressure
+GET
+returns a random value simulating a pressure sensor
+"""
 @app.route("/testGetPressure")
 def testGetPressure():
-    """
-    Returns a random value simulating a pressure sensor.
-
-    GET method
-
-    :return: random int value simulating a pressure sensor
-    """
     value = random.randint(99, 105)
     return json.dumps(value)
 
