@@ -10,10 +10,12 @@ tChan = int(sys.argv[1])
 # Receives speed from and including -1.0 - 1.0
 tSpeed = float(sys.argv[2])
 # 6 ports are available for thrusters.
-PORTS = [0, 1, 2, 3, 4, 5]
+# 2 1 3 5 0 4
+# 2 1 15 17 0 16
+PORTS = [2, 1, 15, 17, 0, 16]
 # Inits the maestro controller from the library.
 servo = maestro.Controller()
 # Initialize the control module with maestro channel and thruster port
-dt = control.Thruster(servo, PORTS[tChan])
-# run the thruster
+dt = control.Thruster(servo, int(PORTS[tChan]))
+# Run the thruster
 dt.Fly(tSpeed)

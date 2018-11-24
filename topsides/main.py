@@ -41,25 +41,25 @@ def setThrusterValues(tDirect, tPos):
     setThruster = [C, C, C, C, C, C]
 
     if(tDirect == "Surge" and tPos == 1):
-        setThruster = [F, B, B, F, C, C]
-    elif(tDirect == "Surge" and tPos == -1):
-        setThruster = [B, F, F, B, C, C]
-    elif(tDirect == "Sway" and tPos == 1):
-        setThruster = [F, F, B, B, C, C]
-    elif(tDirect == "Sway" and tPos == -1):
-        setThruster = [B, B, F, F, C, C]
-    elif(tDirect == "Heave" and tPos == 1):
-        setThruster = [C, C, C, C, F, F]
-    elif(tDirect == "Heave" and tPos == -1):
-        setThruster = [C, C, C, C, B, B]
-    elif(tDirect == "Pitch" and tPos == 1):
-        setThruster = [C, C, C, C, F, B]
-    elif(tDirect == "Pitch" and tPos == -1):
-        setThruster = [C, C, C, C, B, F]
-    elif(tDirect == "Yaw" and tPos == 1):
-        setThruster = [F, B, F, B, C, C]
-    elif(tDirect == "Yaw" and tPos == -1):
         setThruster = [B, F, B, F, C, C]
+    elif(tDirect == "Surge" and tPos == -1):
+        setThruster = [F, B, F, B, C, C]
+    elif(tDirect == "Sway" and tPos == 1):
+        setThruster = [B, B, B, B, C, C]
+    elif(tDirect == "Sway" and tPos == -1):
+        setThruster = [F, F, F, F, C, C]
+    elif(tDirect == "Heave" and tPos == 1):
+        setThruster = [C, C, C, C, B, F]
+    elif(tDirect == "Heave" and tPos == -1):
+        setThruster = [C, C, C, C, F, B]
+    elif(tDirect == "Pitch" and tPos == 1):
+        setThruster = [C, C, C, C, F, F]
+    elif(tDirect == "Pitch" and tPos == -1):
+        setThruster = [C, C, C, C, B, B]
+    elif(tDirect == "Yaw" and tPos == 1):
+        setThruster = [F, B, B, F, C, C]
+    elif(tDirect == "Yaw" and tPos == -1):
+        setThruster = [B, B, F, B, C, C]
     elif(tDirect == "All" and tPos == 0):
         setThruster = [C, C, C, C, C, C]
     else:

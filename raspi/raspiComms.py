@@ -3,10 +3,10 @@ import socket
 import sys
 
 # TODO: Change to topsides ip
-ipSend = 'localhost'
-portSend = 5001
-ipHost = 'localhost'
-portHost = 5000
+ipSend = '192.168.88.42'
+portSend = 8001
+ipHost = '192.168.88.4'
+portHost = 8000
 
 # try opening a socket for communication
 try:
@@ -24,7 +24,7 @@ while True:
     data = data.decode("utf-8")
     if data == "exit":
         break
-
+    print(data)
     # identify the file name and arguements
     nextSpace = data.find(".py") + 3
     file = data[0:nextSpace]
