@@ -5,6 +5,7 @@ import random
 import profileHandle
 import topsidesComms
 import threading
+from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
 
@@ -19,6 +20,10 @@ def returnGui():
     :return: rendered index.html web page
     """
     return render_template("index.html")
+
+@app.route("/controlTest")
+def controlTestPage():
+    return render_template("controlTest.html")
 
 
 @app.route("/editprofile")
@@ -217,4 +222,4 @@ This is a standard python function that is True when this file is called from th
 if __name__ == "__main__":
     t.start()
     if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=80)
+        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'])
