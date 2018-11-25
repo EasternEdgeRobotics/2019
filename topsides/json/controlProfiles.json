@@ -1,6 +1,6 @@
 [
     {
-        "name": "Test",
+        "name": "Test Profile",
         "id": 0,
         "gamepads": [
             {
@@ -20,7 +20,7 @@
                     ""
                 ],
                 "axes": [
-                    "surge",
+                    "yaw",
                     "",
                     "",
                     "",
@@ -45,8 +45,8 @@
                     ""
                 ],
                 "axes": [
-                    "sway",
-                    "pitch",
+                    "",
+                    "surge",
                     "",
                     "",
                     "",
