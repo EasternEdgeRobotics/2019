@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+google-chrome localhost &
+echo easternedge | sudo python3 topsides/main.py
