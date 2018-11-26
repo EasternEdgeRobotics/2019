@@ -2,12 +2,14 @@
 from flask import Flask, render_template, jsonify, request
 import json
 import random
-import profileHandle
+from profileAPI import profile_api
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
+
+app.register_blueprint(profile_api)
 
 t = threading.Thread(target=topsidesComms.startComms)
 
@@ -22,15 +24,6 @@ def returnGui():
     return render_template("index.html")
 
 
-@app.route("/editprofile")
-def editProfilePage():
-    """
-    Return page for control profile edit.
-
-    :return: rendered controlProfileEdit.html web page
-    """
-    profiles = profileHandle.loadProfiles()
-    return render_template("controlProfileEdit.html", profiles=profiles)
 
 
 def setThrusterValues(tDirect, tPos):
@@ -89,16 +82,6 @@ def getJoytickValuesFromJavascript():
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
-"""
-Returns the control profiles from memory as json.
-
-GET method
-
-:return: Json containing all profiles
-"""
-@app.route("/getProfiles", methods=["GET"])
-def getProfiles():
-    return json.dumps(profileHandle.loadProfiles())  # responds json containing all profiles
 
 
 """
@@ -116,34 +99,7 @@ def getControlOptions():
     except Exception as e:
         return json.dumps("Problem loading json: " + str(e))
 
-"""
-deleteProfile
-POST
-Deletes the requested profile from memory.
 
-Input: Json Body Format: {id: int}
-
-POST method
-
-:return: string "Failed, profileID not read correct or is not a number" or "success"
-"""
-
-@app.route("/deleteProfile", methods=["POST"])
-def deleteProfile():
-    
-    profileID = request.args.get('profileID')
-    profileID = request.json["profileId"]
-    if(profileID is None):
-        return "Failed, profileID not read correct or is not a number"
-    else:
-        profileHandle.deleteProfile(int(profileID))
-        return "success"
-
-
-@app.route("/saveProfile", methods=["POST"])
-def saveProfile():
-    profileHandle.saveProfile(request.json)
-    return json.dumps("yikes")
 
 
 """
