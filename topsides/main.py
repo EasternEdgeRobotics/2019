@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, request
 import json
 import random
 from profileAPI import profile_api
+from controlAPI import control_api
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
@@ -10,6 +11,7 @@ from TopsidesGlobals import GLOBALS
 app = Flask(__name__)
 
 app.register_blueprint(profile_api)
+app.register_blueprint(control_api)
 
 t = threading.Thread(target=topsidesComms.startComms)
 
@@ -83,21 +85,6 @@ def getJoytickValuesFromJavascript():
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
 
-
-"""
-getControlOptions
-GET
-
-returns the control possibilities for mapping gamepads. This function loads the JSON file controls.json
-"""
-@app.route("/getControlOptions", methods=["GET"])
-def getControlOptions():
-    try:
-        with open("json/controls.json") as file:
-            data = json.load(file)
-            return json.dumps(data)
-    except Exception as e:
-        return json.dumps("Problem loading json: " + str(e))
 
 
 
