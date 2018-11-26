@@ -15,7 +15,7 @@
             var profileToEdit = null;
             var PROFILEHANDLE;
             var CONTROLOPTIONS = new ControlOptions();
-            var gamepads = getJoysticks();
+            var gamepads = navigator.getGamepads();
             
 
             runPythonGET("getProfiles", null, function(data){
@@ -107,7 +107,7 @@
              * 
             */
             function openGamepadMenu_click(){
-                gamepads = getJoysticks();
+                gamepads = navigator.getGamepads();
 
                 $("#addGamepadContainer").html(""); //resets modal
 

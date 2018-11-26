@@ -10,6 +10,7 @@ from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
 
+#registering APIs
 app.register_blueprint(profile_api)
 app.register_blueprint(control_api)
 
