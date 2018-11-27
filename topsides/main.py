@@ -4,6 +4,7 @@ import json
 import random
 from profileAPI import profile_api
 from controlAPI import control_api
+from notificationAPI import notification_api
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
@@ -13,6 +14,7 @@ app = Flask(__name__)
 #registering APIs
 app.register_blueprint(profile_api)
 app.register_blueprint(control_api)
+app.register_blueprint(notification_api)
 
 t = threading.Thread(target=topsidesComms.startComms)
 

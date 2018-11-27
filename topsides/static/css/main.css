@@ -83,6 +83,8 @@ p, h1, h2, h3, h4, h5, h6{
     background-color: rgba(0,0,0,0.3);
 }
 
+
+/*-------------------------MODAL----------------------------------------*/
 .modal{
     position: fixed;
     top: 0px;
@@ -128,6 +130,43 @@ p, h1, h2, h3, h4, h5, h6{
     transform: none;
     opacity: 1;
 }
+
+
+
+/*-----------------------------------------SNACKBAR-------------------------------------------------------*/
+
+
+.snackbar{
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    transition: 0.5s;
+    min-height: 0px;
+    min-width: 200px;
+    opacity: 0;
+}
+
+.snackbar.good{
+    background-color: rgba(124, 255, 140, 1);
+}
+
+.snackbar.warning{
+    background-color: rgba(255, 206, 122, 1);
+}
+
+.snackbar.danger{
+    background-color: rgba(255, 81, 81, 1);
+}
+
+.snackbar.visible{
+    opacity: 1;
+    min-height: 100px;
+}
+
+
+
+
+/*------------------------------------------------------------------------------------------------*/
 
 .input-text{
     padding: 10px;
