@@ -49,7 +49,7 @@ class Controller:
     def sendCmd(self, cmd):
         cmdStr = self.PololuCmd + cmd
         if PY2:
-            self.usb.write(cmdStr)
+            self.usb.write(cmdStr.encode())
         else:
             self.usb.write(bytes(cmdStr,'latin-1'))
 

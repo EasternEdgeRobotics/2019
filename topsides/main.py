@@ -2,11 +2,19 @@
 from flask import Flask, render_template, jsonify, request
 import json
 import random
-import profileHandle
+from profileAPI import profile_api
+from controlAPI import control_api
+from notificationAPI import notification_api
 import topsidesComms
 import threading
+from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
+
+#registering APIs
+app.register_blueprint(profile_api)
+app.register_blueprint(control_api)
+app.register_blueprint(notification_api)
 
 t = threading.Thread(target=topsidesComms.startComms)
 
@@ -20,16 +28,11 @@ def returnGui():
     """
     return render_template("index.html")
 
+@app.route("/controlTest")
+def controlTestPage():
+    return render_template("controlTest.html")
 
-@app.route("/editprofile")
-def editProfilePage():
-    """
-    Return page for control profile edit.
 
-    :return: rendered controlProfileEdit.html web page
-    """
-    profiles = profileHandle.loadProfiles()
-    return render_template("controlProfileEdit.html", profiles=profiles)
 
 
 def setThrusterValues(tDirect, tPos):
@@ -41,26 +44,29 @@ def setThrusterValues(tDirect, tPos):
     setThruster = [C, C, C, C, C, C]
 
     if(tDirect == "Surge" and tPos == 1):
-        setThruster = [F, B, B, F, C, C]
-    elif(tDirect == "Surge" and tPos == -1):
-        setThruster = [B, F, F, B, C, C]
-    elif(tDirect == "Sway" and tPos == 1):
-        setThruster = [F, F, B, B, C, C]
-    elif(tDirect == "Sway" and tPos == -1):
-        setThruster = [B, B, F, F, C, C]
-    elif(tDirect == "Heave" and tPos == 1):
-        setThruster = [C, C, C, C, F, F]
-    elif(tDirect == "Heave" and tPos == -1):
-        setThruster = [C, C, C, C, B, B]
-    elif(tDirect == "Pitch" and tPos == 1):
-        setThruster = [C, C, C, C, F, B]
-    elif(tDirect == "Pitch" and tPos == -1):
-        setThruster = [C, C, C, C, B, F]
-    elif(tDirect == "Yaw" and tPos == 1):
-        setThruster = [F, B, F, B, C, C]
-    elif(tDirect == "Yaw" and tPos == -1):
         setThruster = [B, F, B, F, C, C]
+    elif(tDirect == "Surge" and tPos == -1):
+        setThruster = [F, B, F, B, C, C]
+    elif(tDirect == "Sway" and tPos == 1):
+        setThruster = [B, B, B, B, C, C]
+    elif(tDirect == "Sway" and tPos == -1):
+        setThruster = [F, F, F, F, C, C]
+    elif(tDirect == "Heave" and tPos == 1):
+        setThruster = [C, C, C, C, B, F]
+    elif(tDirect == "Heave" and tPos == -1):
+        setThruster = [C, C, C, C, F, B]
+    elif(tDirect == "Pitch" and tPos == 1):
+        setThruster = [C, C, C, C, F, F]
+    elif(tDirect == "Pitch" and tPos == -1):
+        setThruster = [C, C, C, C, B, B]
+    elif(tDirect == "Yaw" and tPos == 1):
+        setThruster = [F, B, B, F, C, C]
+    elif(tDirect == "Yaw" and tPos == -1):
+        setThruster = [B, B, F, B, C, C]
+    elif(tDirect == "All" and tPos == 0):
+        setThruster = [C, C, C, C, C, C]
     else:
+        # This should never run. Error should be sent to the dev page when it has an error log
         setThruster = [C, C, C, C, C, C]
     return setThruster
 
@@ -86,46 +92,17 @@ def getJoytickValuesFromJavascript():
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
 
 
-@app.route("/getProfiles", methods=["GET"])
-def getProfiles():
-    """
-    Returns the control profiles from memory as json.
-
-    GET method
-
-    :return: Json containing all profiles
-    """
-    return json.dumps(profileHandle.loadProfiles())  # responds json containing all profiles
 
 
-@app.route("/deleteProfile", methods=["POST"])
-def deleteProfile():
-    """
-    Deletes the requested profile from memory.
-
-    Input: Json Body Format: {id: int}
-
-    POST method
-
-    :return: string "Failed, profileID not read correct or is not a number" or "success"
-    """
-    profileID = request.args.get('profileID')
-    if(profileID is None):
-        return "Failed, profileID not read correct or is not a number"
-    else:
-        profileHandle.deleteProfile(int(profileID))
-        return "success"
 
 
+"""
+/testGetPressure
+GET
+returns a random value simulating a pressure sensor
+"""
 @app.route("/testGetPressure")
 def testGetPressure():
-    """
-    Returns a random value simulating a pressure sensor.
-
-    GET method
-
-    :return: random int value simulating a pressure sensor
-    """
     value = random.randint(99, 105)
     return json.dumps(value)
 
@@ -191,4 +168,4 @@ This is a standard python function that is True when this file is called from th
 if __name__ == "__main__":
     t.start()
     if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=80)
+        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'])

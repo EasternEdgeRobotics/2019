@@ -1,14 +1,16 @@
 """Communicate from server to client side."""
 import socket
 import sys
+from RaspiGlobals import GLOBALS
 
 # TODO: Change to topsides ip
-ipSend = 'localhost'
-portSend = 5001
-ipHost = 'localhost'
-portHost = 5000
+ipSend = GLOBALS['ipSend']
+portSend = GLOBALS['portSend']
+ipHost = GLOBALS['ipHost']
+portHost = GLOBALS['portHost']
 
-# try opening a socket for communication
+
+#try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
@@ -24,7 +26,7 @@ while True:
     data = data.decode("utf-8")
     if data == "exit":
         break
-
+    print(data)
     # identify the file name and arguements
     nextSpace = data.find(".py") + 3
     file = data[0:nextSpace]

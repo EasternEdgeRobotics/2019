@@ -26,8 +26,6 @@ function getNewJoystickValues(){
     if(JSON.stringify(newAxis) != JSON.stringify(axis)) {
         axis = newAxis
 
-        // Add before testing
-
         // Forwards (Surge=1)
         if(axis['y'] <= -0.8 && axis['thumbstick'] == -1 && axis['trigger'] == 0) {
           return { 'slider': 'Surge', 'direction': 1 };
@@ -68,10 +66,9 @@ function getNewJoystickValues(){
         if (axis['z'] <= -0.8) {
           return { 'slider': 'Yaw', 'direction': -1 };
         }
-        // Deadzone
+        // Stop (All = 0)
         if (axis['x'] <= 0.1 && axis['x'] >= -0.1 && axis['y'] <= 0.1 && axis['y'] >= -0.1) {
-          return false;
-          // Stop all sliders (All=0) return { 'slider': 'All', 'direction': 0 };
+          return { 'slider': 'All', 'direction': 0 };
         }
         // If no cases are met
         return false;
