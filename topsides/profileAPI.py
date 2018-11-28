@@ -1,5 +1,74 @@
 """Loads and deletes control profiles."""
 import json
+from flask import Blueprint, Flask, render_template, jsonify, request
+
+profile_api = Blueprint('profile_api', __name__)
+
+
+
+@profile_api.route("/editprofile")
+def editProfilePage():
+    """
+    Return page for control profile edit.
+
+    :return: rendered controlProfileEdit.html web page
+    """
+    profiles = loadProfiles()
+    return render_template("controlProfileEdit.html", profiles=profiles)
+
+
+"""
+Returns the control profiles from memory as json.
+
+GET method
+
+:return: Json containing all profiles
+"""
+@profile_api.route("/getProfiles", methods=["GET"])
+def getProfiles():
+    return json.dumps(loadProfiles())  # responds json containing all profiles
+
+
+"""
+deleteProfile
+POST
+Deletes the requested profile from memory.
+
+Input: Json Body Format: {id: int}
+
+POST method
+
+:return: string "Failed, profileID not read correct or is not a number" or "success"
+"""
+
+@profile_api.route("/deleteProfile", methods=["POST"])
+def deleteProfile():
+    
+    profileID = request.args.get('profileID')
+    profileID = request.json["profileId"]
+    if(profileID is None):
+        return "Failed, profileID not read correct or is not a number"
+    else:
+        deleteProfile(int(profileID))
+        return "success"
+
+
+"""
+saveProfile
+POST
+
+
+"""
+@profile_api.route("/saveProfile", methods=["POST"])
+def saveProfileRequest():
+    saveProfile(request.json)
+    return json.dumps("Profile Saved!")
+
+
+
+
+#--------------------- METHODS----------------------------------------------------------------
+
 
 
 def loadProfiles():

@@ -1,4 +1,9 @@
-//Variable to hold joysticks connected to client
+/**
+ * @deprecated
+ */
+
+
+/*//Variable to hold joysticks connected to client
 var connectedJoysticks = null
 
 
@@ -8,7 +13,7 @@ var connectedJoysticks = null
  *  @augments connectedJoysticks
  * 
  */
-function refreshJoysticks(){
+/*function refreshJoysticks(){
     connectedJoysticks = navigator.getGamepads();
 }
 
@@ -19,3 +24,4 @@ function getJoysticks(){
 
 
 refreshJoysticks();
+*/

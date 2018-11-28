@@ -140,7 +140,6 @@ class ControlHandler{
         var isGood = true;
         //compares the desired counts and actual counts
         $.each(desiredCounts, function(i,amount){
-            console.log("fdsf" + connectedCounts[i]);
             if(amount != connectedCounts[i]){
                 isGood = false;
             }
