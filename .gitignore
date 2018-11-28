@@ -1,1 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
 *.pyc
+# Operating system specfic files
+.DS_Store
+# Test files
+raspi/add.py
+raspi/print.py

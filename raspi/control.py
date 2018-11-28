@@ -6,6 +6,7 @@
 MIN_SPEED = 4000
 CENTER_SPEED = 6000
 MAX_SPEED = 8000
+RESPONSE = 70
 
 
 class Thruster:
@@ -15,7 +16,6 @@ class Thruster:
     # responsiveness of the robot.  Low values dampen acceleration, making for a more
     # stable robot. High values increase responsiveness, but can lead to a tippy robot.
     # Try values around 50 to 100.
-    RESPONSE = 70
 
     def __init__(self, maestro, ch):
         """Pass the maestro controller object and the maestro channel numbers being used for the thruster's motor controller."""
@@ -44,6 +44,7 @@ class Thruster:
         Valid inputs range between -1.0 and 1.0.
         """
         thruster = self.ThrusterScale(speed)
+        print(thruster)
         self.maestro.setTarget(self.ch, thruster)
 
     def Stop(self):

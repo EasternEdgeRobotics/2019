@@ -1,6 +1,7 @@
-/** getDevInput
+/**
+ *  Gets the values from the dev input textbox for the server.
  *
- *  gets the values from the dev input textbox for the server
+ *  @param {string} inputValue - string value from textarea
  */
 function getDevInput(inputValue) {
   runPythonPOST("devinput", JSON.stringify(inputValue), function(){
