@@ -39,13 +39,15 @@ def startComms():
     while True:
         # TODO: change from getting data from user to getting data from queue
         # send data to the raspi
-        inputData = send.get()
+        inputData = input()
         s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
         if inputData == "exit":
             break
         # TODO: Change to saving to log file on error
         # receive response from raspi and log if error
-        """outputData, addr = s.recvfrom(1024)
+        outputData, addr = s.recvfrom(1024)
         print(outputData, file=sys.stderr)
         outputData = outputData.decode("utf-8")
-        received.put(outputData)"""
+        received.put(outputData)
+
+startComms()
