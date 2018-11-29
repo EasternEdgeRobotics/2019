@@ -2,6 +2,7 @@
 import socket
 import sys
 import queue
+from TopsidesGlobals import GLOBALS
 
 send = queue.Queue()
 received = queue.Queue()
@@ -16,10 +17,10 @@ def startComms():
     messages to send to the ROV. It can send messages back using recieved
     """
     # TODO: Change to raspi ip
-    ipSend = 'localhost'
-    portSend = 8000
-    ipHost = 'localhost'
-    portHost = 8001
+    ipSend = GLOBALS['ipSend']
+    portSend = GLOBALS['portSend']
+    ipHost = GLOBALS['ipHost']
+    portHost = GLOBALS['portHost']
 
     # try opening a socket for communication
     try:

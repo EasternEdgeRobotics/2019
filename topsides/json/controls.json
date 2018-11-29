@@ -1,0 +1,4 @@
+{
+    "axes":["surge", "sway", "heave", "pitch", "roll", "yaw", "rotateCam1", "rotateCam2"],
+    "button":["pitchDown", "pitchUp"]
+}
