@@ -9,6 +9,9 @@ portSend = GLOBALS['portSend']
 ipHost = GLOBALS['ipHost']
 portHost = GLOBALS['portHost']
 
+print(ipHost)
+print(portHost)
+
 
 #try opening a socket for communication
 try:
