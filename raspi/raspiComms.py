@@ -4,9 +4,9 @@ import sys
 
 # TODO: Change to topsides ip
 ipSend = 'localhost'
-portSend = 5001
+portSend = 8001
 ipHost = 'localhost'
-portHost = 5000
+portHost = 8000
 
 # try opening a socket for communication
 try:

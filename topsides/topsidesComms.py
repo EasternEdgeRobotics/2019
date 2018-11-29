@@ -16,9 +16,9 @@ def startComms():
     messages to send to the ROV. It can send messages back using recieved
     """
     # TODO: Change to raspi ip
-    ipSend = '192.168.88.4'
+    ipSend = 'localhost'
     portSend = 8000
-    ipHost = '192.168.88.42'
+    ipHost = 'localhost'
     portHost = 8001
 
     # try opening a socket for communication
