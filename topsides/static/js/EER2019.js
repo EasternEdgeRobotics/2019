@@ -141,18 +141,34 @@ $(document).ready(function(){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+$(document).ready(function(){
+    $(".snackbar").html("<div class='snack'></div>");
+});
 
 
 /**openSnackbar
  * 
  *  opens a snackbar of an id with a message for an amount of time (ms)
  */
-function openSnackbar(id, message, time=3000){
+function openSnackbar(id, message, time=3000, requireExit = false){
+    $('.snackbar').toggleClass('visible', false);
     $.each($('.snackbar'), function (i, obj) {
         if($(obj).attr('id') == id){
             $(obj).toggleClass('visible', true);
-            $(obj).html(message);
-            setTimeout(function(){$(obj).toggleClass('visible', false)}, time);
+            $(obj).find(".snack").html("<p>" + message + "</p>");
+            if(!requireExit){
+                setTimeout(function(){$(obj).toggleClass('visible', false)}, time);
+            }else{
+                $(obj).find(".snack").append("<span onclick='closeSnackbar(" + '"' + id + '"' + ")'>&times</span>");
+            }
+        }
+    });
+}
+
+function closeSnackbar(id){
+    $.each($('.snackbar'), function (i, obj) {
+        if($(obj).attr('id') == id){
+            $(obj).toggleClass('visible', false);
         }
     });
 }
