@@ -5,6 +5,14 @@
 
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
+        <script>
+            var NOTIFICATIONHANDLER = new NotificationHandler();
+
+            function f(){
+                runPythonPOST("postNotification", null, function(){});
+            }
+        </script>
     </head>
     <body>
         <div class="snackbar good" id="testGood"></div>
@@ -13,5 +21,7 @@
         <button onclick="openSnackbar('testGood', 'This is a test!');">Test Good</button>
         <button onclick="openSnackbar('testWarn', 'This is a test!');">Test Warning</button>
         <button onclick="openSnackbar('testDang', 'This is a test!', 3000,true);">Test Danger</button>
+
+        <button onclick="f();">Send Notification</button>
     </body>
 </html>
