@@ -19,12 +19,12 @@ def notificationTest():
     def generator():
         global testNotifications
         while len(testNotifications) <= 0:
-            None
+            time.sleep(0.5)
 
         temp = testNotifications[0]
         del testNotifications[0]
-        print(testNotifications[0])
-        yield "data:" + temp + "\n\n"
+        yield "message:" + temp + "\n\n"
+        yield "type:" + "good" + "\n\n"
 
         
     return Response(generator(), mimetype='text/event-stream')
