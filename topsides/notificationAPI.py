@@ -8,9 +8,6 @@ notification_api.threaded = True
 
 topsidesComms = None
 
-lol = 0
-testNotifications = []
-
 def notificationAPI(comms):
     global topsidesComms
     topsidesComms = comms
@@ -24,13 +21,7 @@ def loadNotificationTestPage():
 def notificationTest():
 
     def generator():
-        global testNotifications
-        while len(testNotifications) <= 0:
-            time.sleep(0.5)
-
-        temp = testNotifications[0]
-        del testNotifications[0]
-        yield "data:" + str(json.dumps({'message':temp, 'type': 'good'})) + "\n\n"
+        yield "data:" + str(json.dumps({'message':topsidesComms.received.get(), 'type': 'info'})) + "\n\n"
 
         
     return Response(generator(), mimetype='text/event-stream')

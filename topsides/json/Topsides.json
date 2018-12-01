@@ -1,7 +1,7 @@
 {
-    "ipHost": "localhost",
+    "ipHost": "192.168.88.2",
     "portHost": 5001,
-    "ipSend": "localhost",
+    "ipSend": "192.168.88.4",
     "portSend": 5000,
     "flaskPort": 80
 }
