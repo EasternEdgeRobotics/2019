@@ -67,4 +67,4 @@ This is a standard python function that is True when this file is called from th
 if __name__ == "__main__":
     t.start()
     if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'])
+        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)

@@ -135,32 +135,89 @@ p, h1, h2, h3, h4, h5, h6{
 
 /*-----------------------------------------SNACKBAR-------------------------------------------------------*/
 
-
 .snackbar{
     position: absolute;
     bottom: 20px;
     left: 20px;
-    transition: 0.5s;
+    height: 0px;
     min-height: 0px;
-    min-width: 200px;
-    opacity: 0;
 }
 
-.snackbar.good{
+.snackbar .snack{
+    position: relative;
+    display: table;
+    transition-property: transform, opacity;
+    transition-duration: 0.5s;
+    opacity: 0;
+    transform: translateY(20px);
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    width: 400px;
+}
+
+.snackbar .snack p{
+    display: table-cell;
+    vertical-align: middle;
+    color: black;
+    font-weight: bold;
+}
+
+.snackbar .snack span{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.snackbar .snack span:hover{
+    transform: scale(1.1);
+}
+
+.snackbar.good .snack{
     background-color: rgba(124, 255, 140, 1);
 }
 
-.snackbar.warning{
+.snackbar.warning .snack{
     background-color: rgba(255, 206, 122, 1);
 }
 
-.snackbar.danger{
+.snackbar.danger .snack{
     background-color: rgba(255, 81, 81, 1);
 }
 
+    .snackbar.danger .snack p{
+        color: white;
+    }
+
+    .snackbar.danger .snack span{
+        color: white;
+    }
+
+.snackbar.info .snack{
+    border: 5px solid black;
+    border-radius: 15px;
+    border-color: rgb(95, 44, 124);
+}
+
 .snackbar.visible{
-    opacity: 1;
+    display: block;
     min-height: 100px;
+}
+
+.snackbar:not(.visible){
+    transition-delay: 0.5s;
+    transition-duration: 0s;
+    overflow: hidden;
+    transition-property: min-height, height, overflow;
+}
+
+.snackbar.visible .snack{
+    transform: none;
+
+    opacity: 1;
 }
 
 
