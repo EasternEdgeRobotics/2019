@@ -9,10 +9,6 @@ portSend = GLOBALS['portSend']
 ipHost = GLOBALS['ipHost']
 portHost = GLOBALS['portHost']
 
-print(ipHost)
-print(portHost)
-
-
 #try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -42,7 +38,7 @@ while True:
     sys.argv.append(data[lastSpace:])
 
     # try opening and executing the file
-    response = "done"
+    response = "Done"
     try:
         exec(open(file).read())
     except Exception as e:

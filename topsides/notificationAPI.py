@@ -6,9 +6,15 @@ import json
 notification_api = Blueprint("notification_api", __name__)
 notification_api.threaded = True
 
+topsidesComms = None
+
 lol = 0
 testNotifications = []
 
+def notificationAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return notification_api
 
 @notification_api.route("/testNotificationsPage")
 def loadNotificationTestPage():

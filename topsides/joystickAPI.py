@@ -1,8 +1,13 @@
 """Joystick controls."""
 from flask import Blueprint, jsonify, request
-import topsidesComms
 
 joystick_api = Blueprint("joystick_api", __name__)
+topsidesComms = None
+
+def joystickAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return joystick_api
 
 
 def setThrusterValues(tDirect, tPos):
@@ -43,6 +48,7 @@ def setThrusterValues(tDirect, tPos):
 
 @joystick_api.route("/joystickValue", methods=["POST"])
 def getJoytickValuesFromJavascript():
+    global topsidesComms
     """
     Simple joystick input reciever.
 

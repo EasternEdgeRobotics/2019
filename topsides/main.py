@@ -3,10 +3,10 @@ from flask import Flask, render_template
 import json
 import random
 from profileAPI import profile_api
-from controlAPI import control_api
-from notificationAPI import notification_api
-from joystickAPI import joystick_api
-from devAPI import dev_api
+from controlAPI import controlAPI
+from notificationAPI import notificationAPI
+from joystickAPI import joystickAPI
+from devAPI import devAPI
 from guiAPI import gui_api
 import topsidesComms
 import threading
@@ -16,10 +16,10 @@ app = Flask(__name__)
 
 # Registering APIs
 app.register_blueprint(profile_api)
-app.register_blueprint(control_api)
-app.register_blueprint(notification_api)
-app.register_blueprint(joystick_api)
-app.register_blueprint(dev_api)
+#app.register_blueprint(controlAPI(topsidesComms))
+app.register_blueprint(notificationAPI(topsidesComms))
+app.register_blueprint(joystickAPI(topsidesComms))
+app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(gui_api)
 
 # Setup threading for communications
