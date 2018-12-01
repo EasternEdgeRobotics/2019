@@ -1,5 +1,6 @@
 from flask import Blueprint, Flask, render_template, jsonify, request, Response
 import time
+import json
 
 
 notification_api = Blueprint("notification_api", __name__)
@@ -23,8 +24,7 @@ def notificationTest():
 
         temp = testNotifications[0]
         del testNotifications[0]
-        yield "message:" + temp + "\n\n"
-        yield "type:" + "good" + "\n\n"
+        yield "data:" + str(json.dumps({'message':temp, 'type': 'good'})) + "\n\n"
 
         
     return Response(generator(), mimetype='text/event-stream')

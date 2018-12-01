@@ -11,7 +11,7 @@
 
             $(document).ready(function(){
                 NOTIFICATIONHANDLER = new NotificationHandler();
-                NOTIFICATIONHANDLER.addSnackbar("testGood");
+                NOTIFICATIONHANDLER.setSnackbar("testGood");
                 NOTIFICATIONHANDLER.start();
             });
             
@@ -22,13 +22,7 @@
         </script>
     </head>
     <body>
-        <div class="snackbar good" id="testGood"></div>
-        <div class="snackbar warning" id="testWarn"></div>
-        <div class="snackbar danger" id="testDang"></div>
-        <div class="snackbar info"></div>
-        <button onclick="openSnackbar('testGood', 'This is a test!');">Test Good</button>
-        <button onclick="openSnackbar('testWarn', 'This is a test!');">Test Warning</button>
-        <button onclick="openSnackbar('testDang', 'This is a test!', 3000,true);">Test Danger</button>
+        <div class="snackbar notification info" id="testGood"></div>
 
         <button onclick="f();">Send Notification</button>
     </body>

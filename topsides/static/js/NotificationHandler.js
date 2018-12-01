@@ -1,11 +1,11 @@
 class NotificationHandler{
     constructor(){
-        this._snackbarIDs = [];
+        this._snackbarIDs = "";
     }
 
 
     get snackbars(){
-        return this._snackbarIDs;
+        return this._snackbarID;
     }
 
 
@@ -15,9 +15,9 @@ class NotificationHandler{
      * 
      * @param {string} elementID 
      */
-    addSnackbar(elementID){
-        if($("#" + elementID).hasClass("snackbar")){
-            this._snackbarIDs.push(elementID);
+    setSnackbar(elementID){
+        if($("#" + elementID).hasClass("notification")){
+            this._snackbarID = elementID;
         }
     }
 
@@ -28,15 +28,20 @@ class NotificationHandler{
      * 
      */
     start(){
-        var _snackbarIDs = this._snackbarIDs;
+        var id = this._snackbarID;
         
         //Creating EventSource to read stream from server
         var eventSource = new EventSource("notificationTest");
         eventSource.onmessage = function(e){ //when stream recieves message
-            $.each(_snackbarIDs, function(i, id){//open registered snackbars with message
-                //TODO - add message type logic
-                openSnackbar(id, e.data);
-            });
+            let data = JSON.parse(e.data); //parse data to JSON
+            $("#"+id).attr("class", "snackbar");
+            $("#"+id).toggleClass(data.type, true);
+            if(data.type != "danger"){
+                //force the have to manually close
+                openSnackbar(id, data.message);
+            }else{
+                openSnackbar(id, data.message, 0, true);
+            }
         };
     }
 
