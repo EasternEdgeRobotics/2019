@@ -40,12 +40,14 @@ def startComms():
         # TODO: change from getting data from user to getting data from queue
         # send data to the raspi
         inputData = send.get()
+        print("sent data: " + inputData)
         s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
         if inputData == "exit":
             break
         # TODO: Change to saving to log file on error
         # receive response from raspi and log if error
-        '''outputData, addr = s.recvfrom(1024)
+        outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
+        print("received response: " + outputData)
         print(outputData, file=sys.stderr)
-        received.put(outputData)'''
+        received.put(outputData)

@@ -45,3 +45,4 @@ while True:
         response = str(e)
     del sys.argv[1:]
     s.sendto(response.encode('utf-8'), (ipSend, portSend))
+    print("sent response: " + response)
