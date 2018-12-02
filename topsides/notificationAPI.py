@@ -6,9 +6,12 @@ import json
 notification_api = Blueprint("notification_api", __name__)
 notification_api.threaded = True
 
-lol = 0
-testNotifications = []
+topsidesComms = None
 
+def notificationAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return notification_api
 
 @notification_api.route("/testNotificationsPage")
 def loadNotificationTestPage():
@@ -18,13 +21,7 @@ def loadNotificationTestPage():
 def notificationTest():
 
     def generator():
-        global testNotifications
-        while len(testNotifications) <= 0:
-            time.sleep(0.5)
-
-        temp = testNotifications[0]
-        del testNotifications[0]
-        yield "data:" + str(json.dumps({'message':temp, 'type': 'good'})) + "\n\n"
+        yield "data:" + str(json.dumps({'message':topsidesComms.received.get(), 'type': 'info'})) + "\n\n"
 
         
     return Response(generator(), mimetype='text/event-stream')

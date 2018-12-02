@@ -39,7 +39,7 @@ def startComms():
     while True:
         # TODO: change from getting data from user to getting data from queue
         # send data to the raspi
-        inputData = input()
+        inputData = send.get()
         s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
         if inputData == "exit":
             break
@@ -49,5 +49,3 @@ def startComms():
         outputData = outputData.decode("utf-8")
         print(outputData, file=sys.stderr)
         received.put(outputData)
-
-startComms()

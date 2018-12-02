@@ -3,6 +3,12 @@ from flask import Blueprint, render_template, jsonify, request
 
 dev_api = Blueprint("dev_api", __name__)
 
+topsidesComms = None
+
+def devAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return dev_api
 
 @dev_api.route("/dev")
 def returnDevPage():
@@ -26,5 +32,5 @@ def getDevInput():
     # devData is the variable the stores the data submitted from the webpage.
     # it is printed out to console for testing purposes.
     devData = request.json
-    print(devData)
+    topsidesComms.send.put(devData)
     return jsonify("")

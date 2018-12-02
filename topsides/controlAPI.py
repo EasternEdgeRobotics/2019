@@ -3,6 +3,12 @@ from flask import Blueprint, Flask, render_template, jsonify, request
 
 control_api = Blueprint("control_api", __name__)
 
+topsidesComms = None
+
+def controlAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return control_api
 
 """
 getControlOptions

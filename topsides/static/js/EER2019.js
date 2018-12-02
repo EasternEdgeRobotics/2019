@@ -172,3 +172,24 @@ function closeSnackbar(id){
         }
     });
 }
+
+
+/**
+ *  @name Snackbar
+ *  @author Keif/Troake
+ * 
+ *  @description - Bar at the bottom of any page to appear when wanted for an amount of time
+ * 
+ * HOW TO USE:
+ *      1. Create a div with the [.snackbar] class and any ID of your choice
+ * 
+ * NOTE:
+ *      - For the system notifications, set the id of the snackbar to notification.
+ *          This will automatically link it to the incoming notifications
+ */
+$(document).ready(function() {
+        var note = new NotificationHandler();
+        note.setSnackbar('notification');
+        note.start();
+    }
+);
