@@ -1,4 +1,4 @@
-class ProfileHandle{
+class ProfileHandler{
 
     //Constructor, runs GET for profiles and stores information (asyncronously)
     constructor(){

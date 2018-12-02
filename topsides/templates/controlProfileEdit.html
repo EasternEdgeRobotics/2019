@@ -10,7 +10,7 @@
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
         <!--<script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>-->
-        <script src="{{url_for('static', filename='js/ProfileHandle.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
         <script>
             var profileToEdit = null;
             var PROFILEHANDLE;
@@ -19,7 +19,7 @@
             
 
             runPythonGET("getProfiles", null, function(data){
-                PROFILEHANDLE = new ProfileHandle(data);
+                PROFILEHANDLE = new ProfileHandler(data);
             });
 
             
