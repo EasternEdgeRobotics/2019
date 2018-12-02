@@ -9,7 +9,6 @@ portSend = GLOBALS['portSend']
 ipHost = GLOBALS['ipHost']
 portHost = GLOBALS['portHost']
 
-
 #try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -39,14 +38,11 @@ while True:
     sys.argv.append(data[lastSpace:])
 
     # try opening and executing the file
-    response = "done"
+    response = "Done"
     try:
         exec(open(file).read())
-    except ValueError as e:
-        response = str(e)
-    except FileNotFoundError as e:
-        response = str(e)
     except Exception as e:
         response = str(e)
     del sys.argv[1:]
     s.sendto(response.encode('utf-8'), (ipSend, portSend))
+    print("sent response: " + response)
