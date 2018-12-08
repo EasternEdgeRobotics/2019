@@ -38,6 +38,7 @@ sendControlValues
 POST
 
 parsed control values are sent to the server and eventually to the bot
+Thruster Vectoring done here
 
 @inputs:
     {JSON} Parsed data - example: {sway:0.563, surge:0.231, yaw: 0, etc....}
@@ -47,11 +48,24 @@ parsed control values are sent to the server and eventually to the bot
 def sendControlValues():
     try:
         data = request.json
-        v = data["heave"]
-        port = GLOBALS["thrusterPorts"]["fore-port-vert"]
-        print(port)
-        topsidesComms.send.put("fControl.py " + str(port) + " " + str(v))
-        print(v)
+
+        #TODO: THRUSTER VECTORING, current stuff is placeholder
+        trusterData = [
+            "fore-port-vert": data["heave"],
+            "fore-star-vert": data["heave"],
+            "aft-port-vert": data["heave"],
+            "aft-star-vert": data["heave"],
+
+            "fore-port-horz": data["surge"]+data["yaw"]+data["sway"],
+            "fore-star-horz": data["surge"]+data["yaw"]+data["sway"],
+            "aft-port-horz": data["surge"]+data["yaw"]+data["sway"],
+            "aft-star-horz": data["surge"]+data["yaw"]+data["sway"],
+        ]
+
+        for control in trusterData:
+            val = thrusterPorts[control]
+            topsidesComms.send.put("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+
         return "good"
     except(Exception):
         return "error"

@@ -30,7 +30,7 @@
             //Below is code that updates <p> tags of control values
             setInterval(function(){
                 var controls = controlHandler.parseControls();
-
+                controls["heave"] = controls["heave"]/1.5;
                 runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
 
                 $.each(controls, function(i, control){
