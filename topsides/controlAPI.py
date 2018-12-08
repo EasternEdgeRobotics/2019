@@ -1,5 +1,6 @@
 import json
 from flask import Blueprint, Flask, render_template, jsonify, request
+from TopsidesGlobals import GLOBALS
 
 control_api = Blueprint("control_api", __name__)
 
@@ -44,14 +45,16 @@ parsed control values are sent to the server and eventually to the bot
 """
 @control_api.route("/sendControlValues", methods=["POST"])
 def sendControlValues():
-    data = request.json
-
-    for control in data:
-        value = data[control]
-        #control: name (ex:"sway")
-        #value: int (ex:0.52)
-
-        #TODO: Send values to bot woohoo!
+    try:
+        data = request.json
+        v = data["heave"]
+        port = GLOBALS["thrusterPorts"]["fore-port-vert"]
+        print(port)
+        topsidesComms.send.put("fControl.py " + str(port) + " " + str(v))
+        print(v)
+        return "good"
+    except(Exception):
+        return "error"
 
 
 

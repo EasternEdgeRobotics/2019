@@ -8,17 +8,14 @@ notification_api.threaded = True
 
 topsidesComms = None
 
-<<<<<<< HEAD
 """
 returns the test page for notifications
 """
-=======
 def notificationAPI(comms):
     global topsidesComms
     topsidesComms = comms
     return notification_api
 
->>>>>>> b836b08113417750b9522be4a8140ae9ed850fce
 @notification_api.route("/testNotificationsPage")
 def loadNotificationTestPage():
     return render_template("notificationsTest.html")

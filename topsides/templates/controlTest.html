@@ -29,12 +29,16 @@
             
             //Below is code that updates <p> tags of control values
             setInterval(function(){
-                $.each(controlHandler.parseControls(), function(i, control){
+                var controls = controlHandler.parseControls();
+
+                runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+
+                $.each(controls, function(i, control){
                     if(i != null){
                         $("#"+i+"val").html(parseInt(control*100)/100);
                     }
                 });
-            }, 30);
+            }, 100);
 
     
             function testValid(){
