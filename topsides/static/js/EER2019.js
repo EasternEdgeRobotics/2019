@@ -20,6 +20,9 @@ function runPythonGET(scriptName, data, returnFunction){
         data: data,
         success: function(data){
             returnFunction(data);
+        },
+        error: function(data){
+            returnFunction(data);
         }
     });
 }
@@ -47,6 +50,9 @@ function runPythonPOST(scriptName, data, returnFunction){
         dataType: "json",
         data: data,
         success: function(data){
+            returnFunction(data);
+        },
+        error: function(data){
             returnFunction(data);
         }
     });

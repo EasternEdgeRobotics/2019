@@ -50,7 +50,7 @@ def sendControlValues():
         data = request.json
 
         #TODO: THRUSTER VECTORING, current stuff is placeholder
-        trusterData = [
+        trusterData = {
             "fore-port-vert": data["heave"],
             "fore-star-vert": data["heave"],
             "aft-port-vert": data["heave"],
@@ -60,7 +60,7 @@ def sendControlValues():
             "fore-star-horz": data["surge"]+data["yaw"]+data["sway"],
             "aft-port-horz": data["surge"]+data["yaw"]+data["sway"],
             "aft-star-horz": data["surge"]+data["yaw"]+data["sway"],
-        ]
+        }
 
         for control in trusterData:
             val = thrusterPorts[control]
