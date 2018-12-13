@@ -1,10 +1,16 @@
 import json
 from flask import Blueprint, Flask, render_template, jsonify, request
 from TopsidesGlobals import GLOBALS
+import random
+import string
+import datetime
 
 admin_api = Blueprint("admin_api", __name__)
 
 topsidesComms = None
+
+activeKey = None
+activeKeyExpiry = None
 
 def adminAPI(comms):
     global topsidesComms
@@ -19,8 +25,12 @@ def loadAdminLoginPage():
 
 @admin_api.route("/authAdminLogin", methods=["POST", "GET"])
 def attemptLogin():
+    global activeKey, activeKeyExpiry
     password = request.args.get("pass")
     if(password == GLOBALS["admin_password"]):
-        return "y"
+        key = "".join(random.choice(string.ascii_lowercase+string.digits) for i in range(0,50))
+        activeKey = key
+        activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(minutes=10)
+        return key
     else:
-        return "n"
+        return "Invalid Password!", 401

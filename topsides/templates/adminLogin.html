@@ -7,10 +7,15 @@
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script>
+
+            var KEY = "";
+
             function tryPassword(pass){
                 runPythonPOST("authAdminLogin?pass=" + pass, null, function(data){
-                    if(data.responseText == "y"){
-                        alert("Yes");
+                    if(data.status == 200){
+                        alert("Success!");
+                        KEY = data.responseText;
+                        console.log(KEY);
                     }
                 });
             }
