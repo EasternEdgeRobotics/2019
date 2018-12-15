@@ -18,12 +18,18 @@
     var controlHandler = new ControlHandler();
     var controlOptions = new ControlOptions();
 
-    setTimeout(function(){
-      //setting profile of controlHandler to first profile from profile handler
-      controlHandler.profile = profileHandler.profiles[1];
-    }, 5);
-
     $(document).ready(function() {
+      //Set up profile changer
+      profileHandler.profiles.forEach(function(profile){
+        $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
+      });
+      $(".profile-select").change(function(){
+        controlHandler.profile = profileHandler.getProfileById($(this).val());
+      });
+
+
+
+
       // Handle sliders
       var sliderInputs = $(".slider");
       sliderInputs.on('input', function() {
@@ -108,20 +114,24 @@
     <br />
     <div class="column">
       <div class="card">
-      <legend>Power sliders quick set</legend>
-      <br />
-      <input type="text" id="presetValue" placeholder="Value">
-      <button type="button" id="presetButton" class="button">Set Slider Values</button>
-    </div>
+        <legend>Power sliders quick set</legend>
+        <br />
+        <input type="text" id="presetValue" placeholder="Value">
+        <button type="button" id="presetButton" class="button">Set Slider Values</button>
+      </div>
       <br />
       <br />
       <div class="card">
-      <legend>Count down timer</legend>
-      <br />
-      <div>
-        Run ends in <span id="timerText">00:00</span> minutes
-        <button type="button" id="startTimer" class="button">Start timer</button>
+        <legend>Count down timer</legend>
+        <br />
+        <div>
+          Run ends in <span id="timerText">00:00</span> minutes
+          <button type="button" id="startTimer" class="button">Start timer</button>
+        </div>
       </div>
+      <div class="card">
+        <legend>Profile Select</legend>
+        <select class="profile-select"></select>
       </div>
     </div>
   </div>
