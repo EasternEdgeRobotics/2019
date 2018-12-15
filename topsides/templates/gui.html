@@ -19,6 +19,9 @@
     var controlHandler = new ControlHandler();
     var controlOptions = new ControlOptions();
     var notificationHandler = new NotificationHandler();
+    setTimeout(function(){
+      controlHandler.profile = profileHandler.profiles[0];
+    }, 5);
 
     $(document).ready(function() {
       //Set up Notification Handler
