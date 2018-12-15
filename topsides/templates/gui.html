@@ -13,18 +13,25 @@
   <script src="{{url_for('static', filename='js/ControlHandler.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
   <script>
     var profileHandler = new ProfileHandler();
     var controlHandler = new ControlHandler();
     var controlOptions = new ControlOptions();
+    var notificationHandler = new NotificationHandler();
 
     $(document).ready(function() {
+      //Set up Notification Handler
+      notificationHandler.setSnackbar("notification");
+      notificationHandler.start();
+
       //Set up profile changer
       profileHandler.profiles.forEach(function(profile){
         $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
       });
       $(".profile-select").change(function(){
         controlHandler.profile = profileHandler.getProfileById($(this).val());
+        notificationHandler.sendNotification("Profile set to " + controlHandler.profile.name, "info");
       });
 
 
@@ -129,6 +136,8 @@
           <button type="button" id="startTimer" class="button">Start timer</button>
         </div>
       </div>
+      <br />
+      <br />
       <div class="card">
         <legend>Profile Select</legend>
         <select class="profile-select"></select>
@@ -137,5 +146,6 @@
   </div>
   <br/>
   <div class="eer-logo-img footer"></div>
+  <div class="snackbar notification" id="notification"></div>
 </body>
 </html>
