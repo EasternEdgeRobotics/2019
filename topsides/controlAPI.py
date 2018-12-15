@@ -50,16 +50,17 @@ def sendControlValues():
         data = request.json
 
         #TODO: THRUSTER VECTORING, current stuff is placeholder
+        #.get(<index>, <default value if key doesn't exist>)
         trusterData = {
-            "fore-port-vert": data["heave"],
-            "fore-star-vert": data["heave"],
-            "aft-port-vert": data["heave"],
-            "aft-star-vert": data["heave"],
+            "fore-port-vert": data.get("heave", 0),
+            "fore-star-vert": data.get("heave", 0),
+            "aft-port-vert": data.get("heave", 0),
+            "aft-star-vert": data.get("heave", 0),
 
-            "fore-port-horz": data["surge"]+data["yaw"]+data["sway"],
-            "fore-star-horz": data["surge"]+data["yaw"]+data["sway"],
-            "aft-port-horz": data["surge"]+data["yaw"]+data["sway"],
-            "aft-star-horz": data["surge"]+data["yaw"]+data["sway"],
+            "fore-port-horz": data.get("surge", 0)+data.get("yaw", 0)+data.get("sway", 0),
+            "fore-star-horz": data.get("surge", 0)+data.get("yaw", 0)+data.get("sway", 0),
+            "aft-port-horz": data.get("surge", 0)+data.get("yaw", 0)+data.get("sway", 0),
+            "aft-star-horz": data.get("surge", 0)+data.get("yaw", 0)+data.get("sway", 0),
         }
 
         for control in trusterData:
@@ -69,6 +70,3 @@ def sendControlValues():
         return "good"
     except(Exception):
         return "error"
-
-
-

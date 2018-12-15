@@ -43,6 +43,7 @@ class ControlHandler{
         //[profileIndex...]
         this._gamepads = [null,null,null,null];
         this._profile = null;
+        this._previous = null;
 
         var self = this;
         window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
@@ -98,6 +99,33 @@ class ControlHandler{
         }
 
         return parsedControls;
+    }
+
+    /** parseControls()
+     * 
+     *  @description - Parses and maps gamepad values to the respected controls from the current profile. All valid controls are located in controls.json
+     *               - Will return values if they are different than the last read, otherwise returns null
+     * 
+     *  @returns
+     *      JSON - the values for controls to send to server
+     *      null - if there is an error or no current profile
+     * 
+     * 
+     */
+    parseControlsIfChanged(){
+        let parsed = this.parseControls();
+
+        if(parsed == null){
+            return null;
+        }
+        if(JSON.stringify(parsed) != this._previous){
+            console.log("fdsfds");
+            this._previous = JSON.stringify(parsed);
+            return parsed;
+        }
+
+        return null;
+
     }
 
     /** isValidProfile

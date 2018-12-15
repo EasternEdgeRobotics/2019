@@ -10,7 +10,19 @@
   <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
   <script>
+    var profileHandler = new ProfileHandler();
+    var controlHandler = new ControlHandler();
+    var controlOptions = new ControlOptions();
+
+    setTimeout(function(){
+      //setting profile of controlHandler to first profile from profile handler
+      controlHandler.profile = profileHandler.profiles[1];
+    }, 5);
+
     $(document).ready(function() {
       // Handle sliders
       var sliderInputs = $(".slider");
@@ -47,7 +59,20 @@
 
       // Handle joystick input
       setInterval(function(){
-        var joyValues = getNewJoystickValues();
+        //NEW CONTROL HANDLER
+
+        var controls = controlHandler.parseControlsIfChanged();
+        
+        if(controls == null) return;
+        //scaling each control based on sliders
+        $.each(controls, function(control, value){
+          controls[control] = value * ($("#" + control).val()/100);
+        });
+        runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+
+
+        //OLD STUFF
+        /*var joyValues = getNewJoystickValues();
         if(joyValues == false) {
           return;
         }
@@ -55,7 +80,7 @@
           runPythonPOST("joystickValue", JSON.stringify(joyValues), function(){
               console.log("new joystick values sent to server");
           });
-        }
+        }*/
       }, 100);
     });
   </script>
