@@ -6,7 +6,6 @@
  * 
  */
 function gamepadConnected(gamepad, controlhandler){
-    console.log(navigator.getGamepads());
     var doLink = false;
     alreadyRegistered = false;
 
@@ -207,10 +206,42 @@ class ControlHandler{
                 }
             });
         });
+        this._gamepads = _gamepads;
     }
 
     //getter for profile
     get profile(){
         return this._profile;
+    }
+
+    setGamepads(){
+        console.log("GAMEPAD MAPPING BEGIN");
+        var profile = this._profile;
+        var _gamepads = [null, null, null, null];
+        if(profile != null && this.isValidProfile(profile)){
+            $.each(profile.gamepads, function(profile_gamepadIndex, profile_gamepad){
+                console.log("MAPPING GAMEPAD #" + profile_gamepadIndex);
+                var movedGamepadIndex = null;
+                while(movedGamepadIndex == null){
+                    let gamepads = navigator.getGamepads();
+                    $.each(gamepads, function(gamepadIndex, gamepad){
+                        if(gamepad != null){
+                            if(_gamepads[gamepadIndex] == null)
+                            $.each(gamepad.buttons, function(i, input){
+                                if(Math.abs(input.value) > 0.8){
+                                    movedGamepadIndex = gamepadIndex;
+                                } 
+                            });
+                        }
+                    });
+                }
+                if(movedGamepadIndex != null)
+                    console.log("MAPPED TO GAMEPAD AT INDEX: " + movedGamepadIndex);
+                    _gamepads[movedGamepadIndex] = profile_gamepadIndex;
+            });
+            this._gamepads = _gamepads;
+        }else{
+            notificationHandler.sendNotification("Invalid Profile to Map", "warning");
+        }
     }
 }
