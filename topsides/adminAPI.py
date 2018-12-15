@@ -34,3 +34,16 @@ def attemptLogin():
         return key
     else:
         return "Invalid Password!", 401
+
+
+@admin_api.route("/adminpage", methods=["GET"])
+def getAdminPage():
+    global activeKey, activeKeyExpiry
+    key = request.args.get("key")
+    dnow = datetime.datetime.now()
+    try:
+        if(key == activeKey and dnow <= activeKeyExpiry):
+            return render_template("admin.html")
+    except(Exception):
+        None    
+    return "Unauthorized", 401
