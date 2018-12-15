@@ -21,7 +21,7 @@
                 ],
                 "axes": [
                     "yaw",
-                    "",
+                    "heave",
                     "",
                     "",
                     "",
@@ -49,6 +49,40 @@
                     "surge",
                     "",
                     "",
+                    "",
+                    ""
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Test2",
+        "id": 1,
+        "gamepads": [
+            {
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
                     "",
                     ""
                 ]

@@ -6,7 +6,6 @@
  * 
  */
 function gamepadConnected(gamepad, controlhandler){
-    console.log(navigator.getGamepads());
     var doLink = false;
     alreadyRegistered = false;
 
@@ -43,6 +42,7 @@ class ControlHandler{
         //[profileIndex...]
         this._gamepads = [null,null,null,null];
         this._profile = null;
+        this._previous = null;
 
         var self = this;
         window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
@@ -98,6 +98,33 @@ class ControlHandler{
         }
 
         return parsedControls;
+    }
+
+    /** parseControls()
+     * 
+     *  @description - Parses and maps gamepad values to the respected controls from the current profile. All valid controls are located in controls.json
+     *               - Will return values if they are different than the last read, otherwise returns null
+     * 
+     *  @returns
+     *      JSON - the values for controls to send to server
+     *      null - if there is an error or no current profile
+     * 
+     * 
+     */
+    parseControlsIfChanged(){
+        let parsed = this.parseControls();
+
+        if(parsed == null){
+            return null;
+        }
+        if(JSON.stringify(parsed) != this._previous){
+            console.log("fdsfds");
+            this._previous = JSON.stringify(parsed);
+            return parsed;
+        }
+
+        return null;
+
     }
 
     /** isValidProfile
@@ -179,10 +206,42 @@ class ControlHandler{
                 }
             });
         });
+        this._gamepads = _gamepads;
     }
 
     //getter for profile
     get profile(){
         return this._profile;
+    }
+
+    setGamepads(){
+        console.log("GAMEPAD MAPPING BEGIN");
+        var profile = this._profile;
+        var _gamepads = [null, null, null, null];
+        if(profile != null && this.isValidProfile(profile)){
+            $.each(profile.gamepads, function(profile_gamepadIndex, profile_gamepad){
+                console.log("MAPPING GAMEPAD #" + profile_gamepadIndex);
+                var movedGamepadIndex = null;
+                while(movedGamepadIndex == null){
+                    let gamepads = navigator.getGamepads();
+                    $.each(gamepads, function(gamepadIndex, gamepad){
+                        if(gamepad != null){
+                            if(_gamepads[gamepadIndex] == null)
+                            $.each(gamepad.buttons, function(i, input){
+                                if(Math.abs(input.value) > 0.8){
+                                    movedGamepadIndex = gamepadIndex;
+                                } 
+                            });
+                        }
+                    });
+                }
+                if(movedGamepadIndex != null)
+                    console.log("MAPPED TO GAMEPAD AT INDEX: " + movedGamepadIndex);
+                    _gamepads[movedGamepadIndex] = profile_gamepadIndex;
+            });
+            this._gamepads = _gamepads;
+        }else{
+            notificationHandler.sendNotification("Invalid Profile to Map", "warning");
+        }
     }
 }

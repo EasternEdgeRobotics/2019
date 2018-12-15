@@ -8,6 +8,7 @@ from notificationAPI import notificationAPI
 from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
+from adminAPI import adminAPI
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
@@ -16,10 +17,11 @@ app = Flask(__name__)
 
 # Registering APIs
 app.register_blueprint(profile_api)
-#app.register_blueprint(controlAPI(topsidesComms))
+app.register_blueprint(controlAPI(topsidesComms))
 app.register_blueprint(notificationAPI(topsidesComms))
 app.register_blueprint(joystickAPI(topsidesComms))
 app.register_blueprint(devAPI(topsidesComms))
+app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 
 # Setup threading for communications

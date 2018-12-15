@@ -10,8 +10,33 @@
   <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
   <script>
+    var profileHandler = new ProfileHandler();
+    var controlHandler = new ControlHandler();
+    var controlOptions = new ControlOptions();
+    var notificationHandler = new NotificationHandler();
+
     $(document).ready(function() {
+      //Set up Notification Handler
+      notificationHandler.setSnackbar("notification");
+      notificationHandler.start();
+
+      //Set up profile changer
+      profileHandler.profiles.forEach(function(profile){
+        $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
+      });
+      $(".profile-select").change(function(){
+        controlHandler.profile = profileHandler.getProfileById($(this).val());
+        notificationHandler.sendNotification("Profile set to " + controlHandler.profile.name, "info");
+      });
+
+
+
+
       // Handle sliders
       var sliderInputs = $(".slider");
       sliderInputs.on('input', function() {
@@ -47,7 +72,20 @@
 
       // Handle joystick input
       setInterval(function(){
-        var joyValues = getNewJoystickValues();
+        //NEW CONTROL HANDLER
+
+        var controls = controlHandler.parseControlsIfChanged();
+        if(controls == null) return;
+        //scaling each control based on sliders
+        console.log(controls);
+        $.each(controls, function(control, value){
+          controls[control] = value * ($("#" + control).val()/100);
+        });
+        runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+
+
+        //OLD STUFF
+        /*var joyValues = getNewJoystickValues();
         if(joyValues == false) {
           return;
         }
@@ -55,7 +93,7 @@
           runPythonPOST("joystickValue", JSON.stringify(joyValues), function(){
               console.log("new joystick values sent to server");
           });
-        }
+        }*/
       }, 100);
     });
   </script>
@@ -83,24 +121,32 @@
     <br />
     <div class="column">
       <div class="card">
-      <legend>Power sliders quick set</legend>
-      <br />
-      <input type="text" id="presetValue" placeholder="Value">
-      <button type="button" id="presetButton" class="button">Set Slider Values</button>
-    </div>
+        <legend>Power sliders quick set</legend>
+        <br />
+        <input type="text" id="presetValue" placeholder="Value">
+        <button type="button" id="presetButton" class="button">Set Slider Values</button>
+      </div>
       <br />
       <br />
       <div class="card">
-      <legend>Count down timer</legend>
-      <br />
-      <div>
-        Run ends in <span id="timerText">00:00</span> minutes
-        <button type="button" id="startTimer" class="button">Start timer</button>
+        <legend>Count down timer</legend>
+        <br />
+        <div>
+          Run ends in <span id="timerText">00:00</span> minutes
+          <button type="button" id="startTimer" class="button">Start timer</button>
+        </div>
       </div>
+      <br />
+      <br />
+      <div class="card">
+        <legend>Profile Select</legend>
+        <select class="profile-select"></select>
+        <button onclick="controlHandler.setGamepads();">Map Gamepads</button>
       </div>
     </div>
   </div>
   <br/>
-  <div class="eer-logo-img footer"></div>
+  <!--<div class="eer-logo-img footer"></div>-->
+  <div class="snackbar notification" id="notification"></div>
 </body>
 </html>
