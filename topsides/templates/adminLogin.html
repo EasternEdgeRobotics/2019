@@ -11,18 +11,21 @@
 
             var KEY = "";
 
+            var urlParms = new URLSearchParams(window.location.search);
+            if(urlParms.has("key")){
+                runPythonGET("adminpage?key=" + urlParms.get("key"), null, function(data2){
+                    if(data2.status == 200){
+                        $("#page").html(data2.responseText);
+                        $("#login").html("");
+                        $("#login").css("display", "none");
+                    }
+                });
+            }
+
             function tryPassword(pass){
                 runPythonPOST("authAdminLogin?pass=" + pass, null, function(data){
                     if(data.status == 200){
-                        KEY = data.responseText;
-                        runPythonGET("adminpage?key=" + KEY, null, function(data2){
-                            if(data2.status == 200){
-                                console.log("fds");
-                                $("#page").html(data2.responseText);
-                                $("#login").html("");
-                                $("#login").css("display", "none");
-                            }
-                        })
+                        window.location = window.location + "?key=" + data.responseText
                     }
                 });
             }

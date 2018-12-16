@@ -1,1 +1,44 @@
-Test
+<script>
+    modalPrep();
+
+    function saveTopsides(){
+        var json = {};
+        $.each($("#topsides-global").find("input"),function(i, obj){
+            json[$(obj).attr("name")] = $(obj).val();
+        });
+        console.log(json);
+        runPythonPOST("updateTopsidesGlobal", JSON.stringify(json), function(){
+            window.location.reload();
+        });
+    }
+
+    function saveRaspi(){
+
+    }
+</script>
+
+<button class="modal-trigger btn" modal-id="topsides-global">Edit Topsides Globals</button>
+<button class="modal-trigger btn" modal-id="raspi-global">Edit Raspi Globals</button>
+
+
+<div class="modal" id="topsides-global">
+    <div class="modal-content">
+        {% for global in topsides_globals %}
+        <div class="input-group">
+            <p>{{global}}</p>
+            {% if (isinstance(topsides_globals[global], int)) %}
+            <input id="topsides_{{global}}" type="number" name="{{global}}" value="{{topsides_globals[global]}}"/>
+            {% else %}
+            <input id="topsides_{{global}}" name="{{global}}" value="{{topsides_globals[global]}}"/>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <button onclick="saveTopsides();" class="btn btn-primary">Save</button>
+    </div>
+</div>
+
+<div class="modal" id="raspi-global">
+    <div class="modal-content">
+
+    </div>
+</div>

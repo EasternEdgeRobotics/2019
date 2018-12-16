@@ -85,5 +85,70 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Thruster Configuration",
+        "id": 2,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "heave",
+                    "roll",
+                    "pitch"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Troake",
+        "id": 3,
+        "gamepads": [
+            {
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "pitch"
+                ]
+            }
+        ]
     }
 ]

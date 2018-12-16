@@ -1,12 +1,11 @@
 {
     "admin_password": "whynick",
-    
     "ipHost": "localhost",
     "portHost": 5001,
     "ipSend": "localhost",
     "portSend": 5000,
     "flaskPort": 80,
-    "thrusterPorts":{
+    "thrusterPorts": {
         "fore-port-vert": 0,
         "fore-star-vert": 1,
         "aft-port-vert": 2,

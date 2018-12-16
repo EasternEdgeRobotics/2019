@@ -20,3 +20,16 @@
 #page{
 
 }
+
+#topsides-global{
+    
+}
+
+    .input-group{
+        display: inline-block;
+        margin: 10px;
+    }
+
+    .input-group *{
+        display: inline;
+    }
