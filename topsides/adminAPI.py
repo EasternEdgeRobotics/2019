@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, Flask, render_template, jsonify, request
-from TopsidesGlobals import GLOBALS
+from TopsidesGlobals import GLOBALS, RASPI_GLOBALS
+import TopsidesGlobals
 import random
 import string
 import datetime
@@ -34,3 +35,42 @@ def attemptLogin():
         return key
     else:
         return "Invalid Password!", 401
+
+
+@admin_api.route("/adminpage", methods=["GET"])
+def getAdminPage():
+    global activeKey, activeKeyExpiry
+    key = request.args.get("key")
+    dnow = datetime.datetime.now()
+    
+    try:
+        if(key == activeKey and dnow <= activeKeyExpiry):
+            copyT = dict(GLOBALS)
+            copyT.pop("admin_password")
+            copyT.pop("thrusterPorts")
+            copyR = dict(RASPI_GLOBALS)
+            return render_template("admin.html", topsides_globals=copyT, raspi_globals=copyR, isinstance=isinstance, int=int)
+    except Exception as e:
+        print(e)    
+    return "Unauthorized", 401
+
+
+@admin_api.route("/updateTopsidesGlobal", methods=["POST"])
+def updateTopsides():
+    data = request.json
+    try:
+        TopsidesGlobals.updateTopsidesGlobals(data)
+        return "Saved Topsides.json!"
+    except(Exception):
+        return "Error Saving Topsides.json!", 500
+
+
+@admin_api.route("/updateRaspiGlobal", methods=["POST"])
+def updateRaspi():
+    data = request.json
+    try:
+        TopsidesGlobals.updateRaspiGlobals(data)
+        return "Saved Raspi.json!"
+    except(Exception):
+        return "Error Saving Raspi.json!", 500
+

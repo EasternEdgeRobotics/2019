@@ -100,9 +100,8 @@ function HandleSliderValues(){
 
 
  */
-$(document).ready(function(){
 
-    /**
+ /**
      *  @name  Modal
      *  @author Troake 
      * 
@@ -117,6 +116,11 @@ $(document).ready(function(){
      *          - set the atrribute [modal-id] of that element to the id of the div in step 1.
      *  
      */
+$(document).ready(function(){
+    modalPrep();
+});
+
+function modalPrep(){
     $(".modal-content").prepend("<span class='modal-close'>&times</span>"); //adds X to close modal
     $(".modal-trigger").click(function(){ //click event for modal triggers
         var modalID = $(this).attr("modal-id");
@@ -130,8 +134,7 @@ $(document).ready(function(){
     $(".modal *").click(function(e){ //event to cancel previous event if child inside modal (aka content) is clicked.
         e.stopPropagation();
     });
-
-});
+}
 
 
 /**
