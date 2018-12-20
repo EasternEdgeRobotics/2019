@@ -9,15 +9,35 @@ class NotificationHandler{
     }
 
 
-    /** addSnackbar
+    /** setSnackbar
      * 
-     * @description - Registers a snackbar with the notifications. Keeps track of all ids of the snackbars. Ids must be aded before running start.
+     * @description - Registers the snackbar with the notifications.  Id must be added before running start.
      * 
      * @param {string} elementID 
      */
     setSnackbar(elementID){
         if($("#" + elementID).hasClass("notification")){
             this._snackbarID = elementID;
+        }
+    }
+
+    /**sendNotification
+     * 
+     * @description Displays a notification of a type with a message
+     * 
+     * @param {string} message 
+     * @param {string} type
+     * 
+     */
+    sendNotification(message, type){
+        var id = this._snackbarID;
+        $("#"+id).attr("class", "snackbar");
+        $("#"+id).toggleClass(type, true);
+        if(type != "danger"){
+            //force the have to manually close
+            openSnackbar(id, message);
+        }else{
+            openSnackbar(id, message, 0, true);
         }
     }
 

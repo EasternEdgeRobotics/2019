@@ -10,8 +10,36 @@
   <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
   <script>
+    var profileHandler = new ProfileHandler();
+    var controlHandler = new ControlHandler();
+    var controlOptions = new ControlOptions();
+    var notificationHandler = new NotificationHandler();
+    setTimeout(function(){
+      controlHandler.profile = profileHandler.profiles[0];
+    }, 5);
+
     $(document).ready(function() {
+      //Set up Notification Handler
+      notificationHandler.setSnackbar("notification");
+      notificationHandler.start();
+
+      //Set up profile changer
+      profileHandler.profiles.forEach(function(profile){
+        $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
+      });
+      $(".profile-select").change(function(){
+        controlHandler.profile = profileHandler.getProfileById($(this).val());
+        notificationHandler.sendNotification("Profile set to " + controlHandler.profile.name, "info");
+      });
+
+
+
+
       // Handle sliders
       var sliderInputs = $(".slider");
       sliderInputs.on('input', function() {
@@ -47,7 +75,24 @@
 
       // Handle joystick input
       setInterval(function(){
-        var joyValues = getNewJoystickValues();
+        //NEW CONTROL HANDLER
+
+        var controls = controlHandler.parseControlsIfChanged();
+        if(controls == null) return;
+        //scaling each control based on sliders
+        $.each(controls, function(control, value){
+          controls[control] = value * ($("#" + control).val()/100);
+          console.log();
+          if($("#pause")[0].checked != true){
+            controls[control] *= 0;
+          }
+        });
+        console.log(controls);
+        runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+
+
+        //OLD STUFF
+        /*var joyValues = getNewJoystickValues();
         if(joyValues == false) {
           return;
         }
@@ -55,7 +100,7 @@
           runPythonPOST("joystickValue", JSON.stringify(joyValues), function(){
               console.log("new joystick values sent to server");
           });
-        }
+        }*/
       }, 100);
     });
   </script>
@@ -64,43 +109,53 @@
   <div class="flex-container">
     <div class="column">
       <div class="card">
-      <legend>Power in six degrees of freedom</legend>
-      <br />
-      <label for="surge">Surge <span id="outputsurge">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="surge" name="surge" orient="vertical">
-      <label for="heave">Heave <span id="outputheave">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="heave" name="heave" orient="vertical">
-      <label for="sway">Sway <span id="outputsway">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="sway" name="sway" orient="vertical">
-      <label for="yaw">Yaw <span id="outputyaw">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="yaw" name="yaw" orient="vertical">
-      <label for="pitch">Pitch <span id="outputpitch">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="pitch" name="pitch" orient="vertical">
-      <label for="roll">Roll <span id="outputroll">50</span></label>
-      <input type="range" min="0" max="100" value="50" step="10" class="slider" id="roll" name="roll" orient="vertical">
-    </div>
+        <legend>Power in six degrees of freedom</legend>
+        <br />
+        <label for="surge">Surge <span id="outputsurge">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="surge" name="surge" orient="vertical">
+        <label for="heave">Heave <span id="outputheave">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="heave" name="heave" orient="vertical">
+        <label for="sway">Sway <span id="outputsway">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="sway" name="sway" orient="vertical">
+        <label for="yaw">Yaw <span id="outputyaw">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="yaw" name="yaw" orient="vertical">
+        <label for="pitch">Pitch <span id="outputpitch">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="pitch" name="pitch" orient="vertical">
+        <label for="roll">Roll <span id="outputroll">50</span></label>
+        <input type="range" min="0" max="100" value="50" step="10" class="slider" id="roll" name="roll" orient="vertical">
+        <input type="checkbox" id="pause" style="margin: 5px;"/>\
+        <label for="pause">Enable?</label>
+      </div>
     </div>
     <br />
     <div class="column">
       <div class="card">
-      <legend>Power sliders quick set</legend>
-      <br />
-      <input type="text" id="presetValue" placeholder="Value">
-      <button type="button" id="presetButton" class="button">Set Slider Values</button>
-    </div>
+        <legend>Power sliders quick set</legend>
+        <br />
+        <input type="text" id="presetValue" placeholder="Value">
+        <button type="button" id="presetButton" class="button">Set Slider Values</button>
+      </div>
       <br />
       <br />
       <div class="card">
-      <legend>Count down timer</legend>
-      <br />
-      <div>
-        Run ends in <span id="timerText">00:00</span> minutes
-        <button type="button" id="startTimer" class="button">Start timer</button>
+        <legend>Count down timer</legend>
+        <br />
+        <div>
+          Run ends in <span id="timerText">00:00</span> minutes
+          <button type="button" id="startTimer" class="button">Start timer</button>
+        </div>
       </div>
+      <br />
+      <br />
+      <div class="card">
+        <legend>Profile Select</legend>
+        <select class="profile-select"></select>
+        <button onclick="controlHandler.setGamepads();">Map Gamepads</button>
       </div>
     </div>
   </div>
   <br/>
-  <div class="eer-logo-img footer"></div>
+  <!--<div class="eer-logo-img footer"></div>-->
+  <div class="snackbar notification" id="notification"></div>
 </body>
 </html>
