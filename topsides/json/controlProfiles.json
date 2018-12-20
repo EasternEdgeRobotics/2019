@@ -124,12 +124,12 @@
             {
                 "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
                 "buttons": [
+                    "invert_global",
                     "",
                     "",
                     "",
-                    "",
-                    "",
-                    "",
+                    "heave_down",
+                    "heave_up",
                     "",
                     "",
                     "",

@@ -78,7 +78,7 @@
                 //for each button on joystick, add a selector box and label inside the gamepad edit menu (append to string)
                 gamepadEditPanelString += "<div class='control-type-group'>";
                 $.each(gamepad["buttons"], function(i2, button){
-                    gamepadEditPanelString += "<div class='control-group buttons'><p id='iPg" + i + "b" + i2 + "'>Button " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value; class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select></div>"
+                    gamepadEditPanelString += "<div class='control-group buttons'><p id='iPg" + i + "b" + i2 + "'>Button " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value;' class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select></div>"
                 });
                 gamepadEditPanelString += "</div>";//end of section in string
                 

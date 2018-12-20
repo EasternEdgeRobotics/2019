@@ -36,13 +36,18 @@ function gamepadDisconnected(gamepad, controlhandler){
 
 
 class ControlHandler{
-    constructor(){
+    constructor(options){
         //{profile_index:null,gamepad_index:null}
         
         //[profileIndex...]
         this._gamepads = [null,null,null,null];
         this._profile = null;
         this._previous = null;
+
+        this._CONTROLOPTIONS = options;
+
+        this._toggledControls = {};
+        this._previousToggledButtons = [{},{},{},{}];
 
         var self = this;
         window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
@@ -67,13 +72,16 @@ class ControlHandler{
      * 
      * 
      */
-    parseControls(){
+    _parseControls(){
         var gamepads = navigator.getGamepads();
         var parsedControls = {}; //empty preset
 
         //gets instances to use in nested functions
         var _profile = this._profile;
         var _gamepads = this._gamepads;
+        var _previousToggledButtons = this._previousToggledButtons;
+        var _toggledControls = this._toggledControls;
+        var _controloptions = this._CONTROLOPTIONS;
 
 
         if(_profile != null){//if there is a function
@@ -89,7 +97,27 @@ class ControlHandler{
 
                         $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){ //loop through each button controls of the profile
                             if(mapped_control != ""){//if the button is mapped to something aka not empty string
-                                parsedControls[mapped_control] = gamepad.buttons[button_index].value; //set the control option mapped to the value of the gamepad
+                                var value = gamepad.buttons[button_index].value;
+                                if(_controloptions.toggleButtons.includes(mapped_control)){
+                                    if(_previousToggledButtons[gamepad_index][mapped_control] != undefined){
+                                        if(value == 1){
+                                            if(_previousToggledButtons[gamepad_index][mapped_control] != value){
+                                                console.log("toggled");
+                                                _toggledControls[mapped_control] = Math.abs(_toggledControls[mapped_control] - 1);
+                                            }
+                                        }
+                                        _previousToggledButtons[gamepad_index][mapped_control] = value;
+                                    }else{
+                                        _previousToggledButtons[gamepad_index][mapped_control] = 0;
+                                        _toggledControls[mapped_control] = 0;
+                                    }
+                                    parsedControls[mapped_control] = _toggledControls[mapped_control];
+                                }
+                                
+                                else{
+                                    parsedControls[mapped_control] = value; //set the control option mapped to the value of the gamepad
+                                }
+
                             }
                         });
                     }
@@ -97,6 +125,8 @@ class ControlHandler{
             });
         }
 
+        this._toggledControls = _toggledControls;
+        this._previousToggledButtons = _previousToggledButtons;
         return parsedControls;
     }
 
@@ -112,13 +142,12 @@ class ControlHandler{
      * 
      */
     parseControlsIfChanged(){
-        let parsed = this.parseControls();
+        let parsed = this._parseControls();
 
         if(parsed == null){
             return null;
         }
         if(JSON.stringify(parsed) != this._previous){
-            console.log("fdsfds");
             this._previous = JSON.stringify(parsed);
             return parsed;
         }

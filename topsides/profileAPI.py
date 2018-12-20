@@ -61,6 +61,7 @@ POST
 """
 @profile_api.route("/saveProfile", methods=["POST"])
 def saveProfileRequest():
+    print(request.json)
     saveProfile(request.json)
     return json.dumps("Profile Saved!")
 

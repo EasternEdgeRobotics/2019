@@ -16,8 +16,8 @@
   <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
   <script>
     var profileHandler = new ProfileHandler();
-    var controlHandler = new ControlHandler();
     var controlOptions = new ControlOptions();
+    var controlHandler = new ControlHandler(controlOptions);
     var notificationHandler = new NotificationHandler();
     setTimeout(function(){
       controlHandler.profile = profileHandler.profiles[0];
@@ -81,8 +81,9 @@
         if(controls == null) return;
         //scaling each control based on sliders
         $.each(controls, function(control, value){
-          controls[control] = value * ($("#" + control).val()/100);
-          console.log();
+          if($("#" + control).length){
+            controls[control] = value * ($("#" + control).val()/100);
+          }
           if($("#pause")[0].checked != true){
             controls[control] *= 0;
           }
@@ -101,7 +102,7 @@
               console.log("new joystick values sent to server");
           });
         }*/
-      }, 100);
+      }, 30);
     });
   </script>
 </head>
