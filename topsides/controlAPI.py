@@ -12,6 +12,14 @@ def controlAPI(comms):
     topsidesComms = comms
     return control_api
 
+
+@control_api.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
+
 """
 getControlOptions
 GET
