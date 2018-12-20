@@ -1,17 +1,17 @@
 {
     "admin_password": "whynick",
-    "ipHost": "localhost",
+    "ipHost": "192.168.88.2",
     "portHost": 5001,
-    "ipSend": "localhost",
+    "ipSend": "192.168.88.5",
     "portSend": 5000,
     "flaskPort": 80,
     "thrusterPorts": {
-        "fore-port-vert": 0,
-        "fore-star-vert": 1,
-        "aft-port-vert": 2,
-        "aft-star-vert": 3,
+        "fore-port-vert": 1,
+        "fore-star-vert": 2,
+        "aft-port-vert": 5,
+        "aft-star-vert": 0,
         "fore-port-horz": 4,
-        "fore-star-horz": 5,
+        "fore-star-horz": 3,
         "aft-port-horz": 6,
         "aft-star-horz": 7
     }
