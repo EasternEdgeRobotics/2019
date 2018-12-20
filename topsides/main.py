@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 # Registering APIs
 app.register_blueprint(profile_api)
-#app.register_blueprint(controlAPI(topsidesComms))
+app.register_blueprint(controlAPI(topsidesComms))
 app.register_blueprint(notificationAPI(topsidesComms))
 app.register_blueprint(joystickAPI(topsidesComms))
 app.register_blueprint(devAPI(topsidesComms))
