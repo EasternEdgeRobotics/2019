@@ -1,5 +1,6 @@
 """Joystick controls."""
 from flask import Blueprint, jsonify, request
+from TopsidesGlobals import GLOBALS
 
 joystick_api = Blueprint("joystick_api", __name__)
 topsidesComms = None
@@ -63,6 +64,6 @@ def getJoytickValuesFromJavascript():
     # call the fControl rov file and pass it [port, value]
     for x in range(len(setThruster)):
         # This will most likely produce a file path error
-        topsidesComms.send.put("fControl.py " + str(x) + " " + str(setThruster[x]))
+        topsidesComms.send.put([GLOBALS['portSend1'],"fControl.py " + str(x) + " " + str(setThruster[x])])
 
     return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)

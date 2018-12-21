@@ -2,7 +2,8 @@
     "admin_password": "whynick",
     "ipHost": "localhost",
     "portHost": 5001,
-    "ipSend": "localhost",
+    "ipSend1": "localhost",
+    "ipSend2": "localhost",
     "portSend": 5000,
     "flaskPort": 80,
     "thrusterPorts": {

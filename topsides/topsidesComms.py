@@ -17,8 +17,7 @@ def startComms(start_flag):
     While the loop is running it will check the send queue for
     messages to send to the ROV. It can send messages back using recieved
     """
-    # TODO: Change to raspi ip
-    ipSend = GLOBALS['ipSend']
+    # get ports and local ip address from global file
     portSend = GLOBALS['portSend']
     ipHost = GLOBALS['ipHost']
     portHost = GLOBALS['portHost']
@@ -41,7 +40,7 @@ def startComms(start_flag):
     while True:
         # TODO: change from getting data from user to getting data from queue
         # send data to the raspi
-        inputData = send.get()
+        ipSend, inputData = send.get()
         s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
         if inputData == "exit":
             break
@@ -49,5 +48,5 @@ def startComms(start_flag):
         # receive response from raspi and log if error
         outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
-        print(outputData, file=sys.stderr)
+        print(outputData)
         received.put(outputData)

@@ -77,7 +77,7 @@ def sendControlValues():
 
         for control in trusterData:
             val = thrusterPorts[control]
-            topsidesComms.send.put("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+            topsidesComms.send.put([GLOBALS['ipSend1'], "fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val)])
 
         return "good"
     except(Exception):
