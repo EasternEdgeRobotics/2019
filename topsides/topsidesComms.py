@@ -2,13 +2,14 @@
 import socket
 import sys
 import queue
+import time
 from TopsidesGlobals import GLOBALS
 
 send = queue.Queue()
 received = queue.Queue()
 
 
-def startComms():
+def startComms(start_flag):
     """
     Comms start.
 
@@ -35,7 +36,8 @@ def startComms():
     # bind the ip and port of topsides to the socket and loop coms
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((ipHost, portHost))
-    received.put("bound")
+    # notify the server that the comms have been started
+    start_flag.set()
     while True:
         # TODO: change from getting data from user to getting data from queue
         # send data to the raspi

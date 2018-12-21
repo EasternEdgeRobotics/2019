@@ -25,7 +25,8 @@ app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 
 # Setup threading for communications
-t = threading.Thread(target=topsidesComms.startComms)
+start_flag = threading.Event()
+t = threading.Thread(target=topsidesComms.startComms, args=[start_flag])
 
 
 @app.route("/")
@@ -68,5 +69,6 @@ This is a standard python function that is True when this file is called from th
 """
 if __name__ == "__main__":
     t.start()
-    if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)
+    while not start_flag.wait(5):
+        print("topsidesComms not responding")
+    app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)
