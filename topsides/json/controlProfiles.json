@@ -63,10 +63,6 @@
                 ],
                 "friendly_name": "Main Controller"
             }
-<<<<<<< HEAD
-        ],
-        "undefined": "Main Controller"
-=======
         ]
     },
     {
@@ -124,6 +120,5 @@
                 ]
             }
         ]
->>>>>>> 08284d6afa5443257ba598f3a8e06a4290b5d77b
     }
 ]
