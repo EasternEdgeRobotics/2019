@@ -28,11 +28,102 @@
                     "sway",
                     "surge",
                     "yaw",
+                    "heave"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "One Joy",
+        "id": 4,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "heave",
+                    "roll",
                     "pitch"
                 ],
                 "friendly_name": "Main Controller"
             }
+<<<<<<< HEAD
         ],
         "undefined": "Main Controller"
+=======
+        ]
+    },
+    {
+        "name": "Mark's Bullshit",
+        "id": 5,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "",
+                    "",
+                    ""
+                ]
+            },
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "roll",
+                    "pitch",
+                    "heave",
+                    "",
+                    "",
+                    ""
+                ]
+            }
+        ]
+>>>>>>> 08284d6afa5443257ba598f3a8e06a4290b5d77b
     }
 ]

@@ -284,6 +284,13 @@ class ControlHandler{
             this._notificationHandler.sendNotification("Invalid Profile to Map", "warning");
         }
     }
+
+    finishedAssignGamepads(){
+        if(this._notificationHandler != null)
+            this._notificationHandler.sendNotification("Gamepads successfully assigned for profile: " + this._profile.name, "good");
+    }
+
+
 }
 
 var activeIntervals = [];
@@ -317,6 +324,7 @@ function assignGamepadStep(controlHandler, profile_gamepadIndex){
             //if finished
             clearIntervals();
             $("#popupAssignGamepads").css('display', "none");
+            controlHandler.finishedAssignGamepads();
         }
     }
 }

@@ -27,7 +27,7 @@
       //Set up Notification Handler
       notificationHandler.setSnackbar("notification");
       notificationHandler.start();
-
+      controlHandler.registerNotificationHandler(notificationHandler);
       //Set up profile changer
       profileHandler.profiles.forEach(function(profile){
         $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
