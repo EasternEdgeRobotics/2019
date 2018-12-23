@@ -25,6 +25,7 @@ class ControlOptions{
     //returns string to generate <select> options (USED ON PROFILEEDIT PAGE)
     getAxesOptionsString(){
         let returnString = "";
+        returnString += "<option value = '' disabled></option><option value=''>No Control</option><option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Axes Controls</option>";
         $.each(this._axes, function(i, obj){
             returnString += "<option value='" + obj + "'>" + obj + "</option>"
         });
@@ -34,9 +35,13 @@ class ControlOptions{
     //returns string to generate <select> options (USED ON PROFILEEDIT PAGE)
     getButtonOptionsString(){
         let returnString = "";
+        returnString += "<option value = '' disabled></option><option value = ''>No Control</option><option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Press Controls</option>";
         $.each(this._buttons, function(i, obj){
             returnString += "<option value='" + obj + "'>" + obj + "</option>"
         });
+
+        returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Toggle Controls</option>";
+
         $.each(this._toggleButtons, function(i, obj){
             returnString += "<option value='" + obj +"'>" + obj + "</option>";
         });

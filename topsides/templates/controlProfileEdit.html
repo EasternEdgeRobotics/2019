@@ -70,7 +70,7 @@
                 //for each axes on joystick, add a selector box and label inside the gamepad edit menu (append to string)
                 gamepadEditPanelString += "<div class='control-type-group'>";
                 $.each(gamepad["axes"], function(i2, axes){
-                    gamepadEditPanelString += "<div class='control-group'><p id='iPg" + i + "a" + i2 + "'>Axes " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'><option value=''></option>" + CONTROLOPTIONS.getAxesOptionsString() + "</select></div>";
+                    gamepadEditPanelString += "<div class='control-group'><p id='iPg" + i + "a" + i2 + "'>Axes " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getAxesOptionsString() + "</select></div>";
 
                 });
                 gamepadEditPanelString += "</div>"; //end of section in string
