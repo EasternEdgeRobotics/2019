@@ -29,8 +29,10 @@
                     "surge",
                     "yaw",
                     "pitch"
-                ]
+                ],
+                "friendly_name": "Main Controller"
             }
-        ]
+        ],
+        "undefined": "Main Controller"
     }
 ]

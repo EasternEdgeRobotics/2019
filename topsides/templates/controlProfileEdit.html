@@ -65,7 +65,7 @@
                 //initial starting string for gamepad selector on top of modal
                 let gamepadSelectorString = "<div class='selector " + (i ==0? "active": "") +"' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
                 //initial starting string for gamepad panel edit menu
-                let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
+                let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><input class='input-text' type='text' id='iPg" + i + "name' placeholder='Gamepad Name' value='" + gamepad["friendly_name"] + "'/><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
                 
                 
                 gamepadEditPanelString+= "<input type='hidden' class='hdnIdentity' id='gamepadID' value='" + gamepad['name'] + "'/> "
@@ -201,8 +201,18 @@
                 $(".input-text").each(function(){
                     var attrToChange = "" + $(this).attr("input-id");
                     var valToSet = $(this).val();
-                    profileToEdit[attrToChange] = valToSet;
+                    if(attrToChange != null && attrToChange != undefined && attrToChange != "")
+                        profileToEdit[attrToChange] = valToSet;
                 });
+
+                $('.gamepad-edit').each(function(){
+                    var gamepad_profile_id = $(this).find(".iPg").val();
+                    console.log(gamepad_profile_id);
+                    var gamepad_name = $(this).find("#iPg"+gamepad_profile_id + "name").val();
+                    console.log(gamepad_name);
+                    profileToEdit["gamepads"][gamepad_profile_id].friendly_name = gamepad_name;
+                });
+
                 PROFILEHANDLE.saveProfile(profileToEdit);
                 location.reload();
             }
