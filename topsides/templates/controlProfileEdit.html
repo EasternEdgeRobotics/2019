@@ -67,6 +67,12 @@
                 //initial starting string for gamepad panel edit menu
                 let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
                 
+                
+                gamepadEditPanelString+= "<input type='hidden' class='hdnIdentity' id='gamepadID' value='" + gamepad['name'] + "'/> "
+                gamepadEditPanelString+= "<input type='hidden' class='iPg' id='gamepadID' value='" + i + "'/> "
+                
+
+
                 //for each axes on joystick, add a selector box and label inside the gamepad edit menu (append to string)
                 gamepadEditPanelString += "<div class='control-type-group'>";
                 $.each(gamepad["axes"], function(i2, axes){
@@ -81,6 +87,8 @@
                     gamepadEditPanelString += "<div class='control-group buttons'><p id='iPg" + i + "b" + i2 + "'>Button " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value;' class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select></div>"
                 });
                 gamepadEditPanelString += "</div>";//end of section in string
+
+                gamepadEditPanelString += "<button class='btn btn-danger' onclick='removeGamepad(" + i + ");'>Remove Gamepad</button>"
                 
                 gamepadEditPanelString += "</div>"//end of entire panel
                 
@@ -162,6 +170,12 @@
                 addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
 
+            function removeGamepad(profileIndex){
+                profileToEdit["gamepads"].splice(profileIndex);
+                $("#gamepadEdit" + profileIndex).remove();
+                $("#gamepadSelector" + profileIndex).remove();
+            }
+
 
             /** newProfile_click
              * 
@@ -204,21 +218,34 @@
                 $.each(gamepads, function(i, gamepad){
                     if(gamepad == null)
                         return;
+                    
+                    var parent = null;
+
+                    $.each($(".hdnIdentity"), function(i2, obj){
+                        if($(this).val() == gamepad.id)
+                            parent = $(this).parent();
+                    });
+
+                    if(parent == null)
+                        return;
+
+                    var iPg = $(parent).find(".iPg").val();
+
                     $.each(gamepad.axes, function(i2, axes){
                         if(Math.abs(axes) > 0.8){
                             //every input name has an id along the lines of iPg{gamepad_id}a{axes_id} for identifying axes
-                            $("#iPg"+i+"a"+i2).toggleClass("triggered", true);
+                            $("#iPg"+iPg+"a"+i2).toggleClass("triggered", true);
                         }else{
-                            $("#iPg"+i+"a"+i2).toggleClass("triggered", false);
+                            $("#iPg"+iPg+"a"+i2).toggleClass("triggered", false);
                         }
                     });
 
                     $.each(gamepad.buttons, function(i2, button){
                         if(button.value == 1)
                             //every input name has an id along the lines of iPg{gamepad_id}a{button_id} for identifying buttons
-                            $("#iPg"+i+"b"+i2).toggleClass("triggered", true);
+                            $("#iPg"+iPg+"b"+i2).toggleClass("triggered", true);
                         else
-                            $("#iPg"+i+"b"+i2).toggleClass("triggered", false);
+                            $("#iPg"+iPg+"b"+i2).toggleClass("triggered", false);
                     });
                 });
             }
