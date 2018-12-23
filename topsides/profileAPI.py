@@ -88,20 +88,20 @@ def loadProfiles():
         return ("Problem loading json: " + str(e))
 
 
-def deleteProfile(id):
-    """
+"""
     Deletes a control profile from memory.
 
     :params id: id of profile to delete from memory
-    """
+"""
+def deleteProfile(id):
     print(id)
     with open("json/controlProfiles.json", "r+") as file:
         data = json.load(file)
-        print(data)
         for i in range(0, len(data)):
             element = data[i]
             if(int(element["id"]) == int(id)):
                 del data[i]
+                break
 
         file.seek(0)
         json.dump(data, file, indent=4)
