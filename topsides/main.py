@@ -1,5 +1,6 @@
 """Control Software Server for MATE 2019."""
 from flask import Flask, render_template
+from flask_cors import CORS
 import json
 import random
 from profileAPI import profile_api
@@ -14,6 +15,7 @@ import threading
 from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
+CORS(app)
 
 # Registering APIs
 app.register_blueprint(profile_api)
@@ -26,6 +28,14 @@ app.register_blueprint(gui_api)
 
 # Setup threading for communications
 t = threading.Thread(target=topsidesComms.startComms)
+
+
+@app.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
 
 
 @app.route("/")
