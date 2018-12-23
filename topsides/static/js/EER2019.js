@@ -59,6 +59,10 @@ function runPythonPOST(scriptName, data, returnFunction){
 }
 
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 //TODO --------------------------------------------------------------------------------------
 
 

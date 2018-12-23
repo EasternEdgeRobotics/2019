@@ -231,3 +231,26 @@ p, h1, h2, h3, h4, h5, h6{
     border-radius: 10px;
     font-size: 20px;
 }
+
+
+
+#popupAssignGamepads{
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+}
+
+#assignGamepadsText{
+    display: block;
+    margin: auto auto;
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    margin-top: 300px;
+    background-color: white;
+    padding: 30px;
+    font-size: 24px;
+}

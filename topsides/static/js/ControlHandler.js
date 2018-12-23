@@ -21,7 +21,6 @@ function gamepadConnected(gamepad, controlhandler){
                 if(doLink && !alreadyRegistered){
                     alreadyRegistered = true;
                     controlhandler._gamepads[gamepad.index] = profile_gamepad_index;
-                    console.log("GAMEPAD AT INDEX " + gamepad.index + " CONNECTED AND LINKED TO PROFILE GAMEPAD " + profile_gamepad_index);
                 }
             }
         });
@@ -44,10 +43,15 @@ class ControlHandler{
         this._profile = null;
         this._previous = null;
 
+        this._notificationHandler = null;
+
         this._CONTROLOPTIONS = options;
 
         this._toggledControls = {};
         this._previousToggledButtons = [{},{},{},{}];
+        $(document).ready(function(){
+            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p id='assignGamepadsText'></p></div>");
+        });
 
         var self = this;
         window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
@@ -55,9 +59,15 @@ class ControlHandler{
         
     }
 
+
     //getter for _gamepads
     get gamepads(){
         return this._gamepads;
+    }
+
+
+    registerNotificationHandler(handler){
+        this._notificationHandler = handler;
     }
 
 
@@ -226,7 +236,6 @@ class ControlHandler{
                             if(_gamepads[gamepad_index] == null){//if the gamepad isn't already mapped
                                 _gamepads[gamepad_index] = profile_gamepad_index;
                                 //Set map the gamepad to the profile gamepad
-                                console.log("GAMEPAD AT INDEX " + gamepad_index + " DETECTED AND ASSIGNED TO PROFILE INDEX " + profile_gamepad_index);
                                 done = true;
                             }
                             
@@ -245,32 +254,59 @@ class ControlHandler{
 
     setGamepads(){
         console.log("GAMEPAD MAPPING BEGIN");
+        document.getElementById("popupAssignGamepads").style['display'] = "block";
         var profile = this._profile;
         var _gamepads = [null, null, null, null];
+
+        var controlHandlerInstance = this;
         if(profile != null && this.isValidProfile(profile)){
-            $.each(profile.gamepads, function(profile_gamepadIndex, profile_gamepad){
-                console.log("MAPPING GAMEPAD #" + profile_gamepadIndex);
-                var movedGamepadIndex = null;
-                while(movedGamepadIndex == null){
-                    let gamepads = navigator.getGamepads();
-                    $.each(gamepads, function(gamepadIndex, gamepad){
-                        if(gamepad != null){
-                            if(_gamepads[gamepadIndex] == null)
-                            $.each(gamepad.buttons, function(i, input){
-                                if(Math.abs(input.value) > 0.8){
-                                    movedGamepadIndex = gamepadIndex;
-                                } 
-                            });
-                        }
-                    });
-                }
-                if(movedGamepadIndex != null)
-                    console.log("MAPPED TO GAMEPAD AT INDEX: " + movedGamepadIndex);
-                    _gamepads[movedGamepadIndex] = profile_gamepadIndex;
-            });
             this._gamepads = _gamepads;
+            
+            activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandlerInstance, 0)}, 50));
+            
         }else{
-            notificationHandler.sendNotification("Invalid Profile to Map", "warning");
+            if(this._notificationHandler != null)
+            this._notificationHandler.sendNotification("Invalid Profile to Map", "warning");
         }
     }
+}
+
+var activeIntervals = [];
+
+function assignGamepadStep(controlHandler, profile_gamepadIndex){
+    $("#assignGamepadsText").html("Press Button on a valid Gamepad to Assign it as <b>" + controlHandler.profile.gamepads[profile_gamepadIndex].friendly_name + "</b>.");
+
+    profile_gamepadIndex = profile_gamepadIndex;
+    profile_gamepad = controlHandler.profile.gamepads[profile_gamepadIndex];
+    var movedGamepadIndex = null;
+    let gamepads = navigator.getGamepads();
+    $.each(gamepads, function(gamepadIndex, gamepad){
+        if(gamepad != null){
+            if(controlHandler._gamepads[gamepadIndex] == null)
+            $.each(gamepad.buttons, function(i, input){
+                if(Math.abs(input.value) > 0.8){
+                    movedGamepadIndex = gamepadIndex;
+                } 
+            });
+        }
+    });
+
+
+    if(movedGamepadIndex != null){
+        controlHandler._gamepads[movedGamepadIndex] = profile_gamepadIndex;
+        if(controlHandler.profile.gamepads.length - 1  < profile_gamepadIndex){
+            setInterval(function(){assignGamepadStep(controlHandler, profile_gamepadIndex+1)}, 50);
+        }else{
+            clearIntervals();
+            $("#popupAssignGamepads").css('display', "none");
+        }
+    }
+}
+
+function clearIntervals(){
+    for(var i = 0; i < activeIntervals.length ; i++){
+        clearInterval(activeIntervals[i]);
+    }
+    activeIntervals = [];
+
 }
