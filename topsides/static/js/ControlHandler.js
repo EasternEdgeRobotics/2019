@@ -21,7 +21,6 @@ function gamepadConnected(gamepad, controlhandler){
                 if(doLink && !alreadyRegistered){
                     alreadyRegistered = true;
                     controlhandler._gamepads[gamepad.index] = profile_gamepad_index;
-                    console.log("GAMEPAD AT INDEX " + gamepad.index + " CONNECTED AND LINKED TO PROFILE GAMEPAD " + profile_gamepad_index);
                 }
             }
         });
@@ -36,7 +35,7 @@ function gamepadDisconnected(gamepad, controlhandler){
 
 
 class ControlHandler{
-    constructor(){
+    constructor(options){
         //{profile_index:null,gamepad_index:null}
         
         //[profileIndex...]
@@ -44,15 +43,31 @@ class ControlHandler{
         this._profile = null;
         this._previous = null;
 
+        this._notificationHandler = null;
+
+        this._CONTROLOPTIONS = options;
+
+        this._toggledControls = {};
+        this._previousToggledButtons = [{},{},{},{}];
+        $(document).ready(function(){
+            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p id='assignGamepadsText'></p></div>");
+        });
+
         var self = this;
         window.addEventListener("gamepadconnected", function(e){gamepadConnected(e.gamepad, self);});
         window.addEventListener("gamepaddisconnected", function(e){gamepadDisconnected(e.gamepad, self);});
         
     }
 
+
     //getter for _gamepads
     get gamepads(){
         return this._gamepads;
+    }
+
+
+    registerNotificationHandler(handler){
+        this._notificationHandler = handler;
     }
 
 
@@ -67,13 +82,16 @@ class ControlHandler{
      * 
      * 
      */
-    parseControls(){
+    _parseControls(){
         var gamepads = navigator.getGamepads();
         var parsedControls = {}; //empty preset
 
         //gets instances to use in nested functions
         var _profile = this._profile;
         var _gamepads = this._gamepads;
+        var _previousToggledButtons = this._previousToggledButtons;
+        var _toggledControls = this._toggledControls;
+        var _controloptions = this._CONTROLOPTIONS;
 
 
         if(_profile != null){//if there is a function
@@ -89,7 +107,27 @@ class ControlHandler{
 
                         $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){ //loop through each button controls of the profile
                             if(mapped_control != ""){//if the button is mapped to something aka not empty string
-                                parsedControls[mapped_control] = gamepad.buttons[button_index].value; //set the control option mapped to the value of the gamepad
+                                var value = gamepad.buttons[button_index].value;
+                                if(_controloptions.toggleButtons.includes(mapped_control)){
+                                    if(_previousToggledButtons[gamepad_index][mapped_control] != undefined){
+                                        if(value == 1){
+                                            if(_previousToggledButtons[gamepad_index][mapped_control] != value){
+                                                console.log("toggled");
+                                                _toggledControls[mapped_control] = Math.abs(_toggledControls[mapped_control] - 1);
+                                            }
+                                        }
+                                        _previousToggledButtons[gamepad_index][mapped_control] = value;
+                                    }else{
+                                        _previousToggledButtons[gamepad_index][mapped_control] = 0;
+                                        _toggledControls[mapped_control] = 0;
+                                    }
+                                    parsedControls[mapped_control] = _toggledControls[mapped_control];
+                                }
+                                
+                                else{
+                                    parsedControls[mapped_control] = value; //set the control option mapped to the value of the gamepad
+                                }
+
                             }
                         });
                     }
@@ -97,6 +135,8 @@ class ControlHandler{
             });
         }
 
+        this._toggledControls = _toggledControls;
+        this._previousToggledButtons = _previousToggledButtons;
         return parsedControls;
     }
 
@@ -112,13 +152,12 @@ class ControlHandler{
      * 
      */
     parseControlsIfChanged(){
-        let parsed = this.parseControls();
+        let parsed = this._parseControls();
 
         if(parsed == null){
             return null;
         }
         if(JSON.stringify(parsed) != this._previous){
-            console.log("fdsfds");
             this._previous = JSON.stringify(parsed);
             return parsed;
         }
@@ -197,7 +236,6 @@ class ControlHandler{
                             if(_gamepads[gamepad_index] == null){//if the gamepad isn't already mapped
                                 _gamepads[gamepad_index] = profile_gamepad_index;
                                 //Set map the gamepad to the profile gamepad
-                                console.log("GAMEPAD AT INDEX " + gamepad_index + " DETECTED AND ASSIGNED TO PROFILE INDEX " + profile_gamepad_index);
                                 done = true;
                             }
                             
@@ -214,34 +252,88 @@ class ControlHandler{
         return this._profile;
     }
 
+
+
+
+    /**setGamepads
+     * 
+     * @description assigns each gamepad a profile index step by step. AKA pilot can choose which physical
+     *              gamepad is mapped to which mapped gamepad from the profile builder.
+     * 
+     *              Each profile gamepad is done sequentially but still asyncronously. Basically It begins an interval of the 
+     *              funciton assignGamepadStep each time a gamepad is assigned
+     * 
+     * 
+     */
     setGamepads(){
         console.log("GAMEPAD MAPPING BEGIN");
+        //sets the user friendly popup visiable
+        document.getElementById("popupAssignGamepads").style['display'] = "block";
         var profile = this._profile;
         var _gamepads = [null, null, null, null];
-        if(profile != null && this.isValidProfile(profile)){
-            $.each(profile.gamepads, function(profile_gamepadIndex, profile_gamepad){
-                console.log("MAPPING GAMEPAD #" + profile_gamepadIndex);
-                var movedGamepadIndex = null;
-                while(movedGamepadIndex == null){
-                    let gamepads = navigator.getGamepads();
-                    $.each(gamepads, function(gamepadIndex, gamepad){
-                        if(gamepad != null){
-                            if(_gamepads[gamepadIndex] == null)
-                            $.each(gamepad.buttons, function(i, input){
-                                if(Math.abs(input.value) > 0.8){
-                                    movedGamepadIndex = gamepadIndex;
-                                } 
-                            });
-                        }
-                    });
-                }
-                if(movedGamepadIndex != null)
-                    console.log("MAPPED TO GAMEPAD AT INDEX: " + movedGamepadIndex);
-                    _gamepads[movedGamepadIndex] = profile_gamepadIndex;
-            });
+
+        var controlHandlerInstance = this;
+        if(profile != null && this.isValidProfile(profile)){ //if profile is set and is valid (proper gamepads are connected)
             this._gamepads = _gamepads;
+            
+            //starting first instance of assignGamepadStep
+            activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandlerInstance, 0)}, 50));
+            
         }else{
-            notificationHandler.sendNotification("Invalid Profile to Map", "warning");
+            if(this._notificationHandler != null)
+            this._notificationHandler.sendNotification("Invalid Profile to Map", "warning");
         }
     }
+
+    finishedAssignGamepads(){
+        if(this._notificationHandler != null)
+            this._notificationHandler.sendNotification("Gamepads successfully assigned for profile: " + this._profile.name, "good");
+    }
+
+
+}
+
+var activeIntervals = [];
+
+function assignGamepadStep(controlHandler, profile_gamepadIndex){
+    //set the user friendly popup to indicate which gamepad is being set
+    $("#assignGamepadsText").html("Press Button on a valid Gamepad to Assign it as <b>" + controlHandler.profile.gamepads[profile_gamepadIndex].friendly_name + "</b>.");
+
+    profile_gamepadIndex = profile_gamepadIndex;
+    profile_gamepad = controlHandler.profile.gamepads[profile_gamepadIndex];
+    var movedGamepadIndex = null;
+    let gamepads = navigator.getGamepads();
+
+    $.each(gamepads, function(gamepadIndex, gamepad){
+        if(gamepad != null){
+            if(controlHandler._gamepads[gamepadIndex] == null)
+            $.each(gamepad.buttons, function(i, input){
+                if(Math.abs(input.value) > 0.8){
+                    movedGamepadIndex = gamepadIndex;
+                } 
+            });
+        }
+    });
+
+    //If gamepad button was hit aka selected
+    if(movedGamepadIndex != null){
+        controlHandler._gamepads[movedGamepadIndex] = profile_gamepadIndex;
+        if(controlHandler.profile.gamepads.length - 1  < profile_gamepadIndex){//if there are more gamepads to be assigned, start new interval with next gamepad
+            activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandler, profile_gamepadIndex+1)}, 50));
+        }else{
+            //if finished
+            clearIntervals();
+            $("#popupAssignGamepads").css('display', "none");
+            controlHandler.finishedAssignGamepads();
+        }
+    }
+}
+
+function clearIntervals(){
+    //stop all threading for assigning gamepads
+    for(var i = 0; i < activeIntervals.length ; i++){
+        clearInterval(activeIntervals[i]);
+    }
+    activeIntervals = [];
+
 }

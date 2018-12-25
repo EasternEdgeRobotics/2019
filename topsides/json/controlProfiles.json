@@ -1,123 +1,5 @@
 [
     {
-        "name": "Test Profile",
-        "id": 0,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "yaw",
-                    "heave",
-                    "",
-                    "",
-                    "",
-                    ""
-                ]
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "",
-                    "surge",
-                    "",
-                    "",
-                    "",
-                    ""
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Test",
-        "id": 1,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "heave",
-                    "",
-                    ""
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Thruster Configuration",
-        "id": 2,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "heave",
-                    "roll",
-                    "pitch"
-                ]
-            }
-        ]
-    },
-    {
         "name": "Troake",
         "id": 3,
         "gamepads": [
@@ -128,10 +10,10 @@
                     "",
                     "",
                     "",
-                    "",
-                    "",
-                    "",
-                    "",
+                    "heave_down",
+                    "heave_up",
+                    "roll_ccw",
+                    "roll_cw",
                     "",
                     "",
                     "",
@@ -178,7 +60,8 @@
                     "heave",
                     "roll",
                     "pitch"
-                ]
+                ],
+                "friendly_name": "Main Controller"
             }
         ]
     },
