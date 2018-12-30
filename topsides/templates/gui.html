@@ -37,9 +37,6 @@
         notificationHandler.sendNotification("Profile set to " + controlHandler.profile.name, "info");
       });
 
-
-
-
       // Handle sliders
       var sliderInputs = $(".slider");
       sliderInputs.on('input', function() {
@@ -150,8 +147,9 @@
       <br />
       <div class="card">
         <legend>Profile Select</legend>
+        <br />
         <select class="profile-select"></select>
-        <button onclick="controlHandler.setGamepads();">Map Gamepads</button>
+        <button class="button" onclick="controlHandler.setGamepads();">Map Gamepads</button>
       </div>
     </div>
   </div>

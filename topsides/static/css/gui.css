@@ -17,6 +17,11 @@ body {
     opacity: 1;
 }
 
+input[type=range][orient=vertical]
+{
+    -webkit-appearance: slider-vertical;
+}
+
 .slider::-moz-range-thumb {
     width: 40px;
     height: 20px;
@@ -88,6 +93,7 @@ input[type=text] {
 }
 
 .card {
+  text-align: center;
   border-style: solid;
   border-width: 20px;
   border-color: #fff;
