@@ -1,7 +1,7 @@
-import json
 from flask import Blueprint, Flask, render_template, jsonify, request
-from TopsidesGlobals import GLOBALS
+import json
 import math
+from TopsidesGlobals import GLOBALS
 
 control_api = Blueprint("control_api", __name__)
 
