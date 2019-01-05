@@ -6,7 +6,7 @@ if ps ax | grep -v grep | grep "chrome" > /dev/null
 then
     echo "Google Chrome is already running."
 else
-    google-chrome localhost &
+    setsid google-chrome localhost &
 fi
 
 # Start / restart raspberry pi communications
