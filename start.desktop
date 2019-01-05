@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
-Name=Startup
-Exec=./startup
+Name=Start
+Exec=./start
 Terminal=true
 Type=Application
 Categories=Application
-Name[en_CA]=Startup
+Name[en_CA]=Start
