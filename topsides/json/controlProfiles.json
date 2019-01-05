@@ -1,7 +1,41 @@
 [
     {
-        "name": "Test Profile",
-        "id": 0,
+        "name": "Troake",
+        "id": 3,
+        "gamepads": [
+            {
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "heave_down",
+                    "heave_up",
+                    "roll_ccw",
+                    "roll_cw",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "heave"
+                ]
+            }
+        ]
+    },
+    {
+        "name": "One Joy",
+        "id": 4,
         "gamepads": [
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
@@ -20,9 +54,41 @@
                     ""
                 ],
                 "axes": [
+                    "sway",
+                    "surge",
                     "yaw",
+                    "heave",
+                    "roll",
+                    "pitch"
+                ],
+                "friendly_name": "Main Controller"
+            }
+        ]
+    },
+    {
+        "name": "Mark's Bullshit",
+        "id": 5,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
                     "",
                     "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
                     "",
                     "",
                     ""
@@ -45,9 +111,9 @@
                     ""
                 ],
                 "axes": [
-                    "",
-                    "surge",
-                    "",
+                    "roll",
+                    "pitch",
+                    "heave",
                     "",
                     "",
                     ""

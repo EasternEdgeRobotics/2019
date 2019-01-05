@@ -20,6 +20,9 @@ function runPythonGET(scriptName, data, returnFunction){
         data: data,
         success: function(data){
             returnFunction(data);
+        },
+        error: function(data){
+            returnFunction(data);
         }
     });
 }
@@ -48,10 +51,17 @@ function runPythonPOST(scriptName, data, returnFunction){
         data: data,
         success: function(data){
             returnFunction(data);
+        },
+        error: function(data){
+            returnFunction(data);
         }
     });
 }
 
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 //TODO --------------------------------------------------------------------------------------
 
@@ -94,9 +104,8 @@ function HandleSliderValues(){
 
 
  */
-$(document).ready(function(){
 
-    /**
+ /**
      *  @name  Modal
      *  @author Troake 
      * 
@@ -111,6 +120,11 @@ $(document).ready(function(){
      *          - set the atrribute [modal-id] of that element to the id of the div in step 1.
      *  
      */
+$(document).ready(function(){
+    modalPrep();
+});
+
+function modalPrep(){
     $(".modal-content").prepend("<span class='modal-close'>&times</span>"); //adds X to close modal
     $(".modal-trigger").click(function(){ //click event for modal triggers
         var modalID = $(this).attr("modal-id");
@@ -124,8 +138,7 @@ $(document).ready(function(){
     $(".modal *").click(function(e){ //event to cancel previous event if child inside modal (aka content) is clicked.
         e.stopPropagation();
     });
-
-});
+}
 
 
 /**
@@ -141,18 +154,55 @@ $(document).ready(function(){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+$(document).ready(function(){
+    $(".snackbar").html("<div class='snack'></div>");
+});
 
 
 /**openSnackbar
  * 
  *  opens a snackbar of an id with a message for an amount of time (ms)
  */
-function openSnackbar(id, message, time=3000){
+function openSnackbar(id, message, time=3000, requireExit = false){
+    $('.snackbar').toggleClass('visible', false);
     $.each($('.snackbar'), function (i, obj) {
         if($(obj).attr('id') == id){
             $(obj).toggleClass('visible', true);
-            $(obj).html(message);
-            setTimeout(function(){$(obj).toggleClass('visible', false)}, time);
+            $(obj).find(".snack").html("<p>" + message + "</p>");
+            if(!requireExit){
+                setTimeout(function(){$(obj).toggleClass('visible', false)}, time);
+            }else{
+                $(obj).find(".snack").append("<span onclick='closeSnackbar(" + '"' + id + '"' + ")'>&times</span>");
+            }
         }
     });
 }
+
+function closeSnackbar(id){
+    $.each($('.snackbar'), function (i, obj) {
+        if($(obj).attr('id') == id){
+            $(obj).toggleClass('visible', false);
+        }
+    });
+}
+
+
+/**
+ *  @name Snackbar
+ *  @author Keif/Troake
+ * 
+ *  @description - Bar at the bottom of any page to appear when wanted for an amount of time
+ * 
+ * HOW TO USE:
+ *      1. Create a div with the [.snackbar] class and any ID of your choice
+ * 
+ * NOTE:
+ *      - For the system notifications, set the id of the snackbar to notification.
+ *          This will automatically link it to the incoming notifications
+ */
+$(document).ready(function() {
+        var note = new NotificationHandler();
+        note.setSnackbar('notification');
+        note.start();
+    }
+);

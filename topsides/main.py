@@ -1,219 +1,70 @@
-"""Control Software for MATE 2019."""
-from flask import Flask, render_template, jsonify, request
+"""Control Software Server for MATE 2019."""
+from flask import Flask, render_template
+from flask_cors import CORS
 import json
 import random
 from profileAPI import profile_api
-from controlAPI import control_api
-from notificationAPI import notification_api
+from controlAPI import controlAPI
+from notificationAPI import notificationAPI
+from joystickAPI import joystickAPI
+from devAPI import devAPI
+from guiAPI import gui_api
+from adminAPI import adminAPI
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
 
 app = Flask(__name__)
+CORS(app)
 
-#registering APIs
+# Registering APIs
 app.register_blueprint(profile_api)
-app.register_blueprint(control_api)
-app.register_blueprint(notification_api)
+app.register_blueprint(controlAPI(topsidesComms))
+app.register_blueprint(notificationAPI(topsidesComms))
+app.register_blueprint(joystickAPI(topsidesComms))
+app.register_blueprint(devAPI(topsidesComms))
+app.register_blueprint(adminAPI(topsidesComms))
+app.register_blueprint(gui_api)
 
+# Setup threading for communications
 t = threading.Thread(target=topsidesComms.startComms)
+
+
+@app.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
 
 
 @app.route("/")
 def returnGui():
     """
     Base url and table of contents.
-
     :return: rendered index.html web page
     """
     return render_template("index.html")
 
+
 @app.route("/controlTest")
 def controlTestPage():
+    """
+    Base url and table of contents.
+    :return: rendered controlTest.html web page
+    """
     return render_template("controlTest.html")
 
 
-
-
-def setThrusterValues(tDirect, tPos):
-    """Set the thruster values."""
-    F = 0.5
-    B = -0.5
-    C = 0.0
-
-    setThruster = [C, C, C, C, C, C]
-
-    if(tDirect == "Surge" and tPos == 1):
-        setThruster = [B, F, B, F, C, C]
-    elif(tDirect == "Surge" and tPos == -1):
-        setThruster = [F, B, F, B, C, C]
-    elif(tDirect == "Sway" and tPos == 1):
-        setThruster = [B, B, B, B, C, C]
-    elif(tDirect == "Sway" and tPos == -1):
-        setThruster = [F, F, F, F, C, C]
-    elif(tDirect == "Heave" and tPos == 1):
-        setThruster = [C, C, C, C, B, F]
-    elif(tDirect == "Heave" and tPos == -1):
-        setThruster = [C, C, C, C, F, B]
-    elif(tDirect == "Pitch" and tPos == 1):
-        setThruster = [C, C, C, C, F, F]
-    elif(tDirect == "Pitch" and tPos == -1):
-        setThruster = [C, C, C, C, B, B]
-    elif(tDirect == "Yaw" and tPos == 1):
-        setThruster = [F, B, B, F, C, C]
-    elif(tDirect == "Yaw" and tPos == -1):
-        setThruster = [B, B, F, B, C, C]
-    elif(tDirect == "All" and tPos == 0):
-        setThruster = [C, C, C, C, C, C]
-    else:
-        # This should never run. Error should be sent to the dev page when it has an error log
-        setThruster = [C, C, C, C, C, C]
-    return setThruster
-
-
-@app.route("/joystickValue", methods=["POST"])
-def getJoytickValuesFromJavascript():
-    """
-    Simple joystick input reciever.
-
-    Input: Json Body Format: {slider: string, direction: int}
-
-<<<<<<< HEAD
-    ## store the thruster values in a list
-    setThruster = setThrusterValues(data);
-    ## call the fControl rov file and pass it [port,  value]
-=======
-    POST method
-    """
-    data = request.json
-    # store the thruster values in a list
-    setThruster = setThrusterValues(data['slider'], int(data['direction']))
-    print(setThruster)
-    # call the fControl rov file and pass it [port, value]
-##>>>>>>> master
-    for x in range(len(setThruster)):
-        # This will most likely produce a file path error
-        topsidesComms.send.put("fControl.py " + str(x) + " " + str(setThruster[x]))
-
-    return jsonify("lol")  # returns lol in json as filler (server crashes if nothing is returned)
-
-
-
-
-
-
-"""
-/testGetPressure
-GET
-returns a random value simulating a pressure sensor
-"""
 @app.route("/testGetPressure")
 def testGetPressure():
+    """
+    A test pressure sensor.
+    GET
+    :return: a random value simulating a pressure sensor
+    """
     value = random.randint(99, 105)
     return json.dumps(value)
-
-
-class pid:
-    def __init__(self):
-        self.kP = 0.0
-        self.kI = 0.0
-        self.kD = 0.0
-        self.target = 0.0
-        self.error = 0.0
-        self.derivative = 0.0
-        self.last_error = 0.0
-        self.integral = 0.0
-        self.threshold = 0.0
-        self.tVal = 0.0
-
-depth = pid();
-
-def depth_PID_init():
-    depth.kP = 0.0
-    depth.kI = 0.0
-    depth.kD = 0.0
-
-
-@app.route("/runDepthControl", methods=["POST"])
-def runDepthControl():
-    depth.target = request.json
-    currDepthVal = random.randint(99, 105)
-
-
-    depth.error = depth.target - currDepthVal;
-    integralError = 10;
-
-    if(abs(depth.error) < integralError):
-        depth.integral += 1
-    else:
-        depth.integral = 0
-
-    depth.integral = 0 if depth.error == 0 else depth.integral
-
-    depth.derivative = depth.error - depth.last_error
-    depth.last_error = depth.error;
-
-    depth.tVal = (depth.kP*depth.error) + (depth.kI * depth.integral) + (depth.kD * depth.derivative)
-
-    setThruster = [depth.tVal,-depth.tVal]
-
-    topsidesComms.send.put("fControl.py " + str(4) + " " + str(setThruster[0]))
-    topsidesComms.send.put("fControl.py " + str(5) + " " + str(setThruster[1]))
-
-
-
-
-@app.route("/gui")
-def returnGuiPage():
-    """
-    Return page for the control gui.
-
-    :return: rendered gui.html web page
-    """
-    return render_template("gui.html")
-
-
-@app.route('/guislider', methods=['POST'])
-def getSliderValues():
-    """
-    Gets the values from the 6 degrees of power gui sliders.
-
-    Input: {slider: string, value: int}
-
-    POST method
-    """
-    # ['value'] = value of slider (0-10 currently)
-    # ['slider'] = which slider (Yaw, Pitch, etc.)
-    data = request.json
-    print(data['slider'])
-    print(data['value'])
-    return jsonify("")
-
-
-@app.route("/dev")
-def returnDevPage():
-    """
-    Return page for the development input.
-
-    :return: rendered dev.html web page
-    """
-    return render_template("dev.html")
-
-
-@app.route('/devinput', methods=['POST'])
-def getDevInput():
-    """
-    Gets the values from the dev input.
-
-    Input: string
-
-    POST method
-    """
-    # devData is the variable the stores the data submitted from the webpage.
-    # it is printed out to console for testing purposes.
-    devData = request.json
-    print(devData)
-    return jsonify("")
 
 
 """
@@ -224,4 +75,4 @@ This is a standard python function that is True when this file is called from th
 if __name__ == "__main__":
     t.start()
     if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'])
+        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)

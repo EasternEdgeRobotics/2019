@@ -5,6 +5,12 @@ from flask import Blueprint, Flask, render_template, jsonify, request
 profile_api = Blueprint('profile_api', __name__)
 
 
+@profile_api.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
 
 @profile_api.route("/editprofile")
 def editProfilePage():
@@ -43,7 +49,7 @@ POST method
 
 @profile_api.route("/deleteProfile", methods=["POST"])
 def deleteProfile():
-    
+
     profileID = request.args.get('profileID')
     profileID = request.json["profileId"]
     if(profileID is None):
@@ -61,6 +67,7 @@ POST
 """
 @profile_api.route("/saveProfile", methods=["POST"])
 def saveProfileRequest():
+    print(request.json)
     saveProfile(request.json)
     return json.dumps("Profile Saved!")
 
@@ -87,20 +94,20 @@ def loadProfiles():
         return ("Problem loading json: " + str(e))
 
 
-def deleteProfile(id):
-    """
+"""
     Deletes a control profile from memory.
 
     :params id: id of profile to delete from memory
-    """
+"""
+def deleteProfile(id):
     print(id)
     with open("json/controlProfiles.json", "r+") as file:
         data = json.load(file)
-        print(data)
         for i in range(0, len(data)):
             element = data[i]
             if(int(element["id"]) == int(id)):
                 del data[i]
+                break
 
         file.seek(0)
         json.dump(data, file, indent=4)
@@ -130,9 +137,6 @@ def saveProfile(profile):
         print(data)
 
 
-        file.seek(0)        
+        file.seek(0)
         json.dump(data, file, indent=4)
         file.truncate()
-        
-
-    
