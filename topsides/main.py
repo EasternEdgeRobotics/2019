@@ -90,7 +90,7 @@ def getJoytickValuesFromJavascript():
     setThruster = setThrusterValues(data['slider'], int(data['direction']))
     print(setThruster)
     # call the fControl rov file and pass it [port, value]
->>>>>>> master
+##>>>>>>> master
     for x in range(len(setThruster)):
         # This will most likely produce a file path error
         topsidesComms.send.put("fControl.py " + str(x) + " " + str(setThruster[x]))
@@ -111,6 +111,56 @@ returns a random value simulating a pressure sensor
 def testGetPressure():
     value = random.randint(99, 105)
     return json.dumps(value)
+
+
+class pid:
+    def __init__(self):
+        self.kP = 0.0
+        self.kI = 0.0
+        self.kD = 0.0
+        self.target = 0.0
+        self.error = 0.0
+        self.derivative = 0.0
+        self.last_error = 0.0
+        self.integral = 0.0
+        self.threshold = 0.0
+        self.tVal = 0.0
+
+depth = pid();
+
+def depth_PID_init():
+    depth.kP = 0.0
+    depth.kI = 0.0
+    depth.kD = 0.0
+
+
+@app.route("/runDepthControl", methods=["POST"])
+def runDepthControl():
+    depth.target = request.json
+    currDepthVal = random.randint(99, 105)
+
+
+    depth.error = depth.target - currDepthVal;
+    integralError = 10;
+
+    if(abs(depth.error) < integralError):
+        depth.integral += 1
+    else:
+        depth.integral = 0
+
+    depth.integral = 0 if depth.error == 0 else depth.integral
+
+    depth.derivative = depth.error - depth.last_error
+    depth.last_error = depth.error;
+
+    depth.tVal = (depth.kP*depth.error) + (depth.kI * depth.integral) + (depth.kD * depth.derivative)
+
+    setThruster = [depth.tVal,-depth.tVal]
+
+    topsidesComms.send.put("fControl.py " + str(4) + " " + str(setThruster[0]))
+    topsidesComms.send.put("fControl.py " + str(5) + " " + str(setThruster[1]))
+
+
 
 
 @app.route("/gui")
