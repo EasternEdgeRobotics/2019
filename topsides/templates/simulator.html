@@ -8,8 +8,69 @@
         <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/three.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/GLTFLoader.js')}}" type="text/javascript"></script>
+        <style>
+            body{margin: 0;}
+        </style>
+        <script>
+            $(document).ready(function(){
+                var scene = new THREE.Scene();
+                var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+                var light = new THREE.PointLight( 0xff0000, 1, 100 );
+                light.position.set( 50, 50, 50 );
+                scene.add( light );
+
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+
+                /*var geometry = new THREE.BoxGeometry( 1, 2, 1 );
+                var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                var cube = new THREE.Mesh( geometry, material );
+                scene.add( cube );
+                camera.position.z = 5;*/
+
+                var loader = new THREE.GLTFLoader();
+
+                loader.load(
+                    "static/models/Calypso.gltf",
+                    function(gltf){
+                        var scene = gltf.scene;
+
+                        var mesh = scene.children[ 3 ];
+
+                        var fooExtension = mesh.userData.gltfExtensions.EXT_foo;
+
+                        gltf.parser.getDependency( 'bufferView', fooExtension.bufferView )
+                            .then( function ( fooBuffer ) {  } );
+                    },
+                    function(xhr){
+                        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+                    },
+                    function(error){
+                        console.log(error);
+                    }
+                );
+                
+
+
+                document.body.appendChild( renderer.domElement );
+                
+                /*
+                var animate = function () {
+                    requestAnimationFrame( animate );
+
+                    cube.rotation.x += 0.01;
+                    cube.rotation.y += 0.01;
+
+                    renderer.render( scene, camera );
+                };
+
+                animate();*/
+            });
+        </script>
     </head>
     <body>
-        
+
     </body>
 </html>

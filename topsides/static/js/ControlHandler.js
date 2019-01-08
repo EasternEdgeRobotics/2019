@@ -267,21 +267,22 @@ class ControlHandler{
      */
     setGamepads(){
         console.log("GAMEPAD MAPPING BEGIN");
-        //sets the user friendly popup visiable
-        document.getElementById("popupAssignGamepads").style['display'] = "block";
-        var profile = this._profile;
-        var _gamepads = [null, null, null, null];
 
-        var controlHandlerInstance = this;
-        if(profile != null && this.isValidProfile(profile)){ //if profile is set and is valid (proper gamepads are connected)
-            this._gamepads = _gamepads;
+        if(this.profile != null && this.isValidProfile(this.profile)){ //if profile is set and is valid (proper gamepads are connected)
+            this._gamepads = [null, null, null, null];
+
+            var profile = this._profile;
+            var controlHandlerInstance = this;
+            
+            //sets the user friendly popup visiable
+            document.getElementById("popupAssignGamepads").style['display'] = "block";
             
             //starting first instance of assignGamepadStep
             activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandlerInstance, 0)}, 50));
             
         }else{
             if(this._notificationHandler != null)
-            this._notificationHandler.sendNotification("Invalid Profile to Map", "warning");
+            this._notificationHandler.sendNotification("Required gamepads aren't connected for this profile!", "warning");
         }
     }
 
@@ -306,19 +307,23 @@ function assignGamepadStep(controlHandler, profile_gamepadIndex){
 
     $.each(gamepads, function(gamepadIndex, gamepad){
         if(gamepad != null){
-            if(controlHandler._gamepads[gamepadIndex] == null)
-            $.each(gamepad.buttons, function(i, input){
-                if(Math.abs(input.value) > 0.8){
-                    movedGamepadIndex = gamepadIndex;
-                } 
-            });
+            if(controlHandler._gamepads[gamepadIndex] == null && gamepad.id == profile_gamepad.name){
+                $.each(gamepad.buttons, function(i, input){
+                    if(Math.abs(input.value) > 0.8){
+                        movedGamepadIndex = gamepadIndex;
+                    } 
+                });
+            }
         }
     });
 
     //If gamepad button was hit aka selected
     if(movedGamepadIndex != null){
         controlHandler._gamepads[movedGamepadIndex] = profile_gamepadIndex;
-        if(controlHandler.profile.gamepads.length - 1  < profile_gamepadIndex){//if there are more gamepads to be assigned, start new interval with next gamepad
+        console.log("MAPPED GAMEPAD AT INDEX " + movedGamepadIndex);
+        console.log(controlHandler._gamepads);
+        if(profile_gamepadIndex < controlHandler.profile.gamepads.length - 1){//if there are more gamepads to be assigned, start new interval with next gamepad
+
             activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandler, profile_gamepadIndex+1)}, 50));
         }else{
             //if finished

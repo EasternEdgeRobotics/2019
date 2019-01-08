@@ -10,6 +10,7 @@ from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 from adminAPI import adminAPI
+from simulatorAPI import simulator_api
 import topsidesComms
 import threading
 from TopsidesGlobals import GLOBALS
@@ -25,6 +26,7 @@ app.register_blueprint(joystickAPI(topsidesComms))
 app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
+app.register_blueprint(simulator_api)
 
 # Setup threading for communications
 t = threading.Thread(target=topsidesComms.startComms)

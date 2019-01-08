@@ -3,7 +3,7 @@ import time
 import json
 
 
-simulator_api = Blueprint("notification_api", __name__)
+simulator_api = Blueprint("simulator_api", __name__)
 topsidesComms = None
 
 isEnabled = False
@@ -11,10 +11,9 @@ isEnabled = False
 BotStatus = {"pressure": 0, "thrusters": [0,0,0,0,0,0], "orientation": {"x": 0, "y": 0, "z": 0}}
 
 
-def notificationAPI(comms):
-    global topsidesComms
-    topsidesComms = comms
-    return simulator_api
+@simulator_api.route("/simulator")
+def simulatorPage():
+    return render_template("simulator.html")
 
 
 @simulator_api.route("/getSimulatorValues")
@@ -32,7 +31,7 @@ def updateValues():
     global BotStatus
     data = request.json
     BotStatus.pressure = data.get("pressure", BotStatus.pressure)
-    BotStatus.thrusters = data.get("thrusters", BotStatus.)
+    BotStatus.thrusters = data.get("thrusters", BotStatus.thrusters)
     
 
 
