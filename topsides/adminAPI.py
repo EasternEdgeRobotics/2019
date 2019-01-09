@@ -1,10 +1,10 @@
-import json
 from flask import Blueprint, Flask, render_template, jsonify, request
-from TopsidesGlobals import GLOBALS, RASPI_GLOBALS
-import TopsidesGlobals
+import json
 import random
 import string
 import datetime
+from TopsidesGlobals import GLOBALS, RASPI_GLOBALS
+import TopsidesGlobals
 
 admin_api = Blueprint("admin_api", __name__)
 
@@ -17,7 +17,6 @@ def adminAPI(comms):
     global topsidesComms
     topsidesComms = comms
     return admin_api
-
 
 
 @admin_api.route("/adminlogin")

@@ -33,7 +33,7 @@ def notificationTest():
     return Response(generator(), mimetype='text/event-stream')
         
 """
-adds a test notificaiton to the test notification array
+adds a test notification to the test notification array
 """
 @notification_api.route("/postNotification", methods=["POST"])
 def postTestNotification():
