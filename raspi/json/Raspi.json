@@ -2,5 +2,5 @@
     "ipHost": "localhost",
     "portHost": 5000,
     "ipSend": "localhost",
-    "portSend": 5001
+    "portSend": 6001
 }

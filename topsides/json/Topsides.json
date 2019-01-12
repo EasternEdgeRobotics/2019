@@ -1,7 +1,7 @@
 {
     "admin_password": "whynick",
-    "ipHost": "192.168.88.2",
-    "portHost": 5001,
+    "ipHost": "localhost",
+    "portHost": 6001,
     "ipSend1": "localhost",
     "ipSend2": "localhost",
     "portSend": 5000,

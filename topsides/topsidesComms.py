@@ -25,6 +25,7 @@ def startComms(start_flag):
     # try opening a socket for communication
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(1)
     except socket.error:
         # TODO: Change to ouput on gui
         print("Failed To Create Socket")
@@ -46,7 +47,11 @@ def startComms(start_flag):
             break
         # TODO: Change to saving to log file on error
         # receive response from raspi and log if error
-        outputData, addr = s.recvfrom(1024)
+        try:
+            outputData, addr = s.recvfrom(1024)
+        except socket.timeout as e:
+            print("response timeout")
+            continue
         outputData = outputData.decode("utf-8")
         print(outputData)
         received.put(outputData)
