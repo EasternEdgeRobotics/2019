@@ -69,13 +69,23 @@ def sendControlValues():
             O - - > +sway
         -surge
 
+        """
+
+        heave = data.get("heave", data.get("heave_up", -data.get("heave_down", 0)))
+        pitch = data.get("pitch", data.get("pitch_up", -data.get("pitch_down", 0)))
+        roll = data.get("roll", data.get("roll_cw", -data.get("roll_ccw", 0)))
+        surge = data.get("surge", data.get("surge_forewards", -data.get("surge_bakcwards", 0)))
+        yaw = data.get("yaw", data.get("yaw_cw", -data.get("yaw_ccw", 0)))
+        swar = data.get("sway", data.get("sway_right", -data.get("sway_left", 0)))
 
         """
-        trusterData = {
-            "fore-port-vert": -data.get("heave", 0) - data.get("pitch", 0) + data.get("roll",0),
-            "fore-star-vert": -data.get("heave", 0) - data.get("pitch", 0) - data.get("roll",0),
-            "aft-port-vert": -data.get("heave", 0) + data.get("pitch", 0) + data.get("roll",0),
-            "aft-star-vert": -data.get("heave", 0) + data.get("pitch", 0) - data.get("roll",0),
+        Handling Movement Axes Controls
+        """
+        thrusterData = {
+            "fore-port-vert": -heave - data.get("pitch", 0) + data.get("roll",0),
+            "fore-star-vert": -heave - data.get("pitch", 0) - data.get("roll",0),
+            "aft-port-vert": -heave + data.get("pitch", 0) + data.get("roll",0),
+            "aft-star-vert": -heave + data.get("pitch", 0) - data.get("roll",0),
 
             "fore-port-horz": -data.get("surge", 0) + data.get("yaw", 0) + data.get("sway", 0),
             "fore-star-horz": -data.get("surge", 0) - data.get("yaw", 0) - data.get("sway", 0),
@@ -83,9 +93,12 @@ def sendControlValues():
             "aft-star-horz": -data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
         }
 
-        for control in trusterData:
-            val = trusterData[control]
-            topsidesComms.send.put("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+        for control in thrusterData:
+            val = thrusterData[control]
+            topsidesComms.putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
         return "good"
+
+
+
     except(Exception):
         return "error"
