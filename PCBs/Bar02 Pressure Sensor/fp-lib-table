@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name BAR30-SENSOR)(type KiCad)(uri "$(KIPRJMOD)/BAR30-SENSOR.pretty")(options "")(descr ""))
-)

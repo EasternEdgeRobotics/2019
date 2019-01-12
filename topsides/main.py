@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from flask_cors import CORS
 import json
 import random
+import threading
 from profileAPI import profile_api
 from controlAPI import controlAPI
 from notificationAPI import notificationAPI
@@ -11,9 +12,8 @@ from devAPI import devAPI
 from guiAPI import gui_api
 from adminAPI import adminAPI
 from simulatorAPI import simulatorAPI
-import topsidesComms
-import threading
 from TopsidesGlobals import GLOBALS
+import topsidesComms
 
 app = Flask(__name__)
 CORS(app)

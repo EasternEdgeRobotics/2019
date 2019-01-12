@@ -1,3 +1,0 @@
-(sym_lib_table
-  (lib (name BAR30-SENSOR-eagle-import)(type Legacy)(uri ${KIPRJMOD}/BAR30-SENSOR-eagle-import.lib)(options "")(descr ""))
-)

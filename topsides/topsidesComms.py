@@ -18,7 +18,7 @@ def startComms():
 
     This function starts the comms and runs the comms loop.
     While the loop is running it will check the send queue for
-    messages to send to the ROV. It can send messages back using recieved
+    messages to send to the ROV. It can send messages back using received
     """
     # TODO: Change to raspi ip
     ipSend = GLOBALS['ipSend']

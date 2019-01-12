@@ -1,6 +1,6 @@
 """Loads and deletes control profiles."""
-import json
 from flask import Blueprint, Flask, render_template, jsonify, request
+import json
 
 profile_api = Blueprint('profile_api', __name__)
 
