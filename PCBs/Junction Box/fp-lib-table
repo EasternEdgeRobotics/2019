@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name "Junction Box")(type KiCad)(uri "$(KIPRJMOD)/Junction Box.pretty")(options "")(descr ""))
-)
