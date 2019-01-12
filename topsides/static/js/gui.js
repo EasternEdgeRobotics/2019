@@ -36,7 +36,7 @@ function getPresetValue(inputAttribute, inputValue) {
 }
 
 /**
-*  Starts the coutdown timer.
+*  Starts the countdown timer.
 *
 *  @param {int} duration
 *   time to run

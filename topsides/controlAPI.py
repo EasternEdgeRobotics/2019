@@ -1,7 +1,7 @@
-import json
 from flask import Blueprint, Flask, render_template, jsonify, request
-from TopsidesGlobals import GLOBALS
+import json
 import math
+from TopsidesGlobals import GLOBALS
 
 control_api = Blueprint("control_api", __name__)
 
@@ -11,6 +11,14 @@ def controlAPI(comms):
     global topsidesComms
     topsidesComms = comms
     return control_api
+
+
+@control_api.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
 
 """
 getControlOptions
@@ -49,7 +57,7 @@ Thruster Vectoring done here
 def sendControlValues():
     try:
         data = request.json
-
+        print("1")
         #TODO: THRUSTER VECTORING, current stuff is placeholder
         #.get(<index>, <default value if key doesn't exist>)
 
@@ -60,25 +68,24 @@ def sendControlValues():
             |
             O - - > +sway
         -surge
-         
+
 
         """
         trusterData = {
-            "fore-port-vert": data.get("heave", 0) + data.get("pitch", 0) + data.get("roll"),
-            "fore-star-vert": data.get("heave", 0) + data.get("pitch", 0) - data.get("roll"),
-            "aft-port-vert": data.get("heave", 0) - data.get("pitch", 0) + data.get("roll"),
-            "aft-star-vert": data.get("heave", 0) - data.get("pitch", 0) - data.get("roll"),
+            "fore-port-vert": -data.get("heave", 0) - data.get("pitch", 0) + data.get("roll",0),
+            "fore-star-vert": -data.get("heave", 0) - data.get("pitch", 0) - data.get("roll",0),
+            "aft-port-vert": -data.get("heave", 0) + data.get("pitch", 0) + data.get("roll",0),
+            "aft-star-vert": -data.get("heave", 0) + data.get("pitch", 0) - data.get("roll",0),
 
-            "fore-port-horz": -data.get("surge", 0) - data.get("yaw", 0) - data.get("sway", 0),
-            "fore-star-horz": -data.get("surge", 0) + data.get("yaw", 0) + data.get("sway", 0),
-            "aft-port-horz": data.get("surge", 0) + data.get("yaw", 0) - data.get("sway", 0),
-            "aft-star-horz": data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
+            "fore-port-horz": -data.get("surge", 0) + data.get("yaw", 0) + data.get("sway", 0),
+            "fore-star-horz": -data.get("surge", 0) - data.get("yaw", 0) - data.get("sway", 0),
+            "aft-port-horz": +data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
+            "aft-star-horz": -data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
         }
 
         for control in trusterData:
             val = thrusterPorts[control]
             topsidesComms.send.put([GLOBALS['ipSend1'], "fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val)])
-
         return "good"
     except(Exception):
         return "error"

@@ -1,61 +1,104 @@
-@font-face{
-    font-family: Roboto;
-    font-weight: normal;
-    src: url("font/Roboto/Roboto-Regular.ttf");
+/*------------------------------------*\
+  #FONTS
+\*------------------------------------*/
+
+/* Thin */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 100;
+	src: local('Roboto Thin'), local('Roboto-Thin'), url("font/Roboto/Roboto-Thin.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 100;
+	src: local('Roboto Thin Italic'), local('Roboto-ThinItalic'), url("font/Roboto/Roboto-ThinItalic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    font-style: italic;
-    font-weight: normal;
-    src: url("font/Roboto/Roboto-Italic.ttf");
+/* Light */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 300;
+	src: local('Roboto Light'), local('Roboto-Light'), url("font/Roboto/Roboto-Light.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 300;
+	src: local('Roboto Light Italic'), local('Roboto-LightItalic'), url("font/Roboto/Roboto-LightItalic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    src: url("font/Roboto/Roboto-Bold.ttf");
-    font-weight: bold;
+/* Regular */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 400;
+	src: local('Roboto Regular'), local('Roboto-Regular'), url("font/Roboto/Roboto-Regular.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 400;
+	src: local('Roboto Italic'), local('Roboto-Italic'), url("font/Roboto/Roboto-Italic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    font-style: italic;
-    src: url("font/Roboto/Roboto-BoldItalic.ttf");
-    font-weight: bold;
+/* Medium */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 500;
+	src: local('Roboto Medium'), local('Roboto-Medium'), url("font/Roboto/Roboto-Medium.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 500;
+	src: local('Roboto Medium Italic'), local('Roboto-MediumItalic'), url("font/Roboto/Roboto-MediumItalic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    src: url("font/Roboto/Roboto-Black.ttf");
-    font-weight: bolder;
+/* Bold */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 700;
+	src: local('Roboto Bold'), local('Roboto-Bold'), url("font/Roboto/Roboto-Bold.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 700;
+	src: local('Roboto Bold Italic'), local('Roboto-BoldItalic'), url("font/Roboto/Roboto-BoldItalic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    font-style: italic;
-    src: url("font/Roboto/Roboto-BlackItalic.ttf");
-    font-weight: bolder;
+/* Black */
+@font-face {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 900;
+	src: local('Roboto Black'), local('Roboto-Black'), url("font/Roboto/Roboto-Black.ttf") format('truetype');
+}
+@font-face {
+	font-family: "Roboto";
+	font-style: italic;
+	font-weight: 900;
+	src: local('Roboto Black Italic'), local('Roboto-BlackItalic'), url("font/Roboto/Roboto-BlackItalic.ttf") format('truetype');
 }
 
-@font-face{
-    font-family: Roboto;
-    src: url("font/Roboto/Roboto-Thin.ttf");
-    font-weight: lighter;
-}
+/*------------------------------------*\
+  #GENERAL
+\*------------------------------------*/
 
-@font-face{
-    font-family: Roboto;
-    font-style: italic;
-    src: url("font/Roboto/Roboto-ThinItalic.ttf");
-    font-weight: lighter;
-}
-
-
-p, h1, h2, h3, h4, h5, h6{
+body {
     font-family: "Roboto";
 }
 
-.btn{
+p, h1, h2, h3, h4, h5, h6 {
+    font-family: "Roboto";
+}
+
+.btn {
     padding: 8px 12px;
     font-family: "Roboto", Arial, sans-serif;
     font-weight: bold;
@@ -64,17 +107,17 @@ p, h1, h2, h3, h4, h5, h6{
     box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
 }
 
-.btn-primary{
+.btn-primary {
     color: white;
     background-color: rgb(86, 151, 255);
 }
 
-.btn-danger{
+.btn-danger {
     color: white;
     background-color: rgb(255, 66, 66);
 }
 
-.black-overlay{
+.black-overlay {
     position: absolute;
     top: 0px;
     right: 0px;
@@ -83,9 +126,11 @@ p, h1, h2, h3, h4, h5, h6{
     background-color: rgba(0,0,0,0.3);
 }
 
+/*------------------------------------*\
+  #MODAL
+\*------------------------------------*/
 
-/*-------------------------MODAL----------------------------------------*/
-.modal{
+.modal {
     position: fixed;
     top: 0px;
     left: 0px;
@@ -96,7 +141,7 @@ p, h1, h2, h3, h4, h5, h6{
     z-index: 100;
 }
 
-.modal .modal-content{
+.modal .modal-content {
     width: 900px;
     min-height: 100px;
     margin: 30px auto;
@@ -107,7 +152,7 @@ p, h1, h2, h3, h4, h5, h6{
     background-color: white;
 }
 
-.modal-close{
+.modal-close {
     float: left;
     color: rgb(200,200,200);
     font-size: 28px;
@@ -115,35 +160,35 @@ p, h1, h2, h3, h4, h5, h6{
     transition: 0.3s;
 }
 
-.modal-close:hover{
+.modal-close:hover {
     color: rgb(150,150,150);
     cursor: pointer;
     transform: scale(1.1);
 }
 
-.modal.visible{
+.modal.visible {
     width: 100%;
     height: 100%;
 }
 
-.modal.visible .modal-content{
+.modal.visible .modal-content {
     transform: none;
     opacity: 1;
 }
 
+/*------------------------------------*\
+  #SNACKBAR
+\*------------------------------------*/
 
-
-/*-----------------------------------------SNACKBAR-------------------------------------------------------*/
-
-.snackbar{
-    position: absolute;
+.snackbar {
+    position: fixed;
     bottom: 20px;
     left: 20px;
     height: 0px;
     min-height: 0px;
 }
 
-.snackbar .snack{
+.snackbar .snack {
     position: relative;
     display: table;
     transition-property: transform, opacity;
@@ -157,14 +202,14 @@ p, h1, h2, h3, h4, h5, h6{
     width: 400px;
 }
 
-.snackbar .snack p{
+.snackbar .snack p {
     display: table-cell;
     vertical-align: middle;
     color: black;
     font-weight: bold;
 }
 
-.snackbar .snack span{
+.snackbar .snack span {
     position: absolute;
     left: 10px;
     top: 10px;
@@ -172,62 +217,264 @@ p, h1, h2, h3, h4, h5, h6{
     cursor: pointer;
 }
 
-.snackbar .snack span:hover{
+.snackbar .snack span:hover {
     transform: scale(1.1);
 }
 
-.snackbar.good .snack{
+.snackbar.good .snack {
     background-color: rgba(124, 255, 140, 1);
 }
 
-.snackbar.warning .snack{
+.snackbar.warning .snack {
     background-color: rgba(255, 206, 122, 1);
 }
 
-.snackbar.danger .snack{
+.snackbar.danger .snack {
     background-color: rgba(255, 81, 81, 1);
 }
 
-    .snackbar.danger .snack p{
-        color: white;
-    }
+.snackbar.danger .snack p {
+    color: white;
+}
 
-    .snackbar.danger .snack span{
-        color: white;
-    }
+.snackbar.danger .snack span {
+    color: white;
+}
 
-.snackbar.info .snack{
+.snackbar.info .snack {
     border: 5px solid black;
     border-radius: 15px;
     border-color: rgb(95, 44, 124);
     background-color: white;
 }
 
-.snackbar.visible{
+.snackbar.visible {
     display: block;
     min-height: 100px;
 }
 
-.snackbar:not(.visible){
+.snackbar:not(.visible) {
     transition-delay: 0.5s;
     transition-duration: 0s;
     overflow: hidden;
     transition-property: min-height, height, overflow;
 }
 
-.snackbar.visible .snack{
+.snackbar.visible .snack {
     transform: none;
 
     opacity: 1;
 }
 
+/*------------------------------------*\
+  #OTHER
+\*------------------------------------*/
 
-
-
-/*------------------------------------------------------------------------------------------------*/
-
-.input-text{
+.input-text {
     padding: 10px;
     border-radius: 10px;
     font-size: 20px;
+}
+
+#popupAssignGamepads {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+}
+
+#assignGamepadsText {
+    display: block;
+    margin: auto auto;
+    position: relative;
+    z-index: 1;
+    width: 400px;
+    margin-top: 300px;
+    background-color: white;
+    padding: 30px;
+    font-size: 24px;
+}
+
+/*------------------------------------*\
+  #LOGO
+\*------------------------------------*/
+
+.eer-logo-img {
+    background-image: url("../res/img/eer-logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 200px;
+    height: 200px;
+}
+
+/*------------------------------------*\
+  #INDEX TESTING
+\*------------------------------------*/
+
+.status-value {
+    border-radius: 50%;
+}
+
+.status-value-inner {
+    width: 70%;
+    height: 72.67%;
+    display: inline-block;
+    vertical-align: middle;
+    background-color: #515151;
+    border: 2px solid #4c4c4c;
+    color: white;
+    text-align: center;
+}
+
+.status-value-outer {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #3b83cc;
+    padding: 0 !important;
+}
+
+.status-value-container {
+    overflow: hidden;
+}
+
+.aaa {
+    position: absolute;
+    height: 28%;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.aaa div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 357%;
+    border-radius: 0 0 50% 50%;
+    background-color: #515151;
+}
+
+.no-decoration {
+    text-decoration: none;
+}
+
+.index-links {
+    font-family: Arial, Helvetica, sans-serif;
+    display: inline-block;
+    transition: 0.3s;
+    margin: 20px;
+}
+
+.index-links:hover {
+    transform: scale(1.05);
+}
+
+/*------------------------------------*\
+  #GUI
+\*------------------------------------*/
+
+/* Sliders */
+.slider {
+    opacity: 0.7;
+    height: 300px;
+    width: 100px;
+}
+
+.slider:hover {
+    outline: none;
+    opacity: 1;
+}
+
+input[type=range][orient=vertical]
+{
+    -webkit-appearance: slider-vertical;
+}
+
+.slider::-moz-range-thumb {
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    background: #0000FF;
+    border-color: transparent;
+    cursor: pointer;
+}
+
+/* Text */
+legend {
+  font-weight: bold;
+  text-align: center;
+  font-family: "Roboto";
+}
+
+label {
+  display: inline-block;
+  min-width: 80px;
+  font-family: "Roboto";
+}
+
+/* Inputs */
+input[type=text] {
+    width: 200px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-family: "Roboto";
+}
+
+textarea {
+    padding: 20px 20px;
+    box-sizing: border-box;
+    border: 1px solid #000;
+    background-color: #fff;
+    resize: none;
+    font-family: "Roboto";
+}
+
+/* Buttons */
+.button {
+    opacity: 0.7;
+    background-color: #0000FF;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-family: "Roboto";
+}
+
+.button:hover {
+    opacity: 1;
+}
+
+/* Layout */
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.column {
+    padding: 20px 20px;
+}
+
+.card {
+  text-align: center;
+  border-style: solid;
+  border-width: 20px;
+  border-color: #fff;
+  background-color: #fff;
+}
+
+/* Background Image */
+.gui-back {
+    background-image: url("../res/img/background.jpg");
+    background-size: cover;
 }

@@ -1,70 +1,19 @@
 [
     {
-        "name": "Test Profile",
-        "id": 0,
+        "name": "Troake",
+        "id": 3,
         "gamepads": [
             {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
                 "buttons": [
                     "",
                     "",
                     "",
                     "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "yaw",
-                    "heave",
-                    "",
-                    "",
-                    "",
-                    ""
-                ]
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "",
-                    "surge",
-                    "",
-                    "",
-                    "",
-                    ""
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Test",
-        "id": 1,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
+                    "heave_down",
+                    "heave_up",
+                    "roll_ccw",
+                    "roll_cw",
                     "",
                     "",
                     "",
@@ -79,16 +28,14 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "heave",
-                    "",
-                    ""
+                    "heave"
                 ]
             }
         ]
     },
     {
-        "name": "Thruster Configuration",
-        "id": 2,
+        "name": "One Joy",
+        "id": 4,
         "gamepads": [
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
@@ -113,22 +60,18 @@
                     "heave",
                     "roll",
                     "pitch"
-                ]
+                ],
+                "friendly_name": "Main Controller"
             }
         ]
     },
     {
-        "name": "Troake",
-        "id": 3,
+        "name": "Mark's Bullshit",
+        "id": 5,
         "gamepads": [
             {
-                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
                     "",
                     "",
                     "",
@@ -146,7 +89,34 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "pitch"
+                    "",
+                    "",
+                    ""
+                ]
+            },
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "roll",
+                    "pitch",
+                    "heave",
+                    "",
+                    "",
+                    ""
                 ]
             }
         ]

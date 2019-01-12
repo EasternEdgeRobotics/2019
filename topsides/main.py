@@ -1,7 +1,9 @@
 """Control Software Server for MATE 2019."""
 from flask import Flask, render_template
+from flask_cors import CORS
 import json
 import random
+import threading
 from profileAPI import profile_api
 from controlAPI import controlAPI
 from notificationAPI import notificationAPI
@@ -9,11 +11,11 @@ from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 from adminAPI import adminAPI
-import topsidesComms
-import threading
 from TopsidesGlobals import GLOBALS
+import topsidesComms
 
 app = Flask(__name__)
+CORS(app)
 
 # Registering APIs
 app.register_blueprint(profile_api)
@@ -27,6 +29,14 @@ app.register_blueprint(gui_api)
 # Setup threading for communications
 start_flag = threading.Event()
 t = threading.Thread(target=topsidesComms.startComms, args=[start_flag])
+
+
+@app.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
 
 
 @app.route("/")
