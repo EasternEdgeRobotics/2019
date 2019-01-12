@@ -5,9 +5,13 @@ import queue
 import time
 from TopsidesGlobals import GLOBALS
 
+
+
 send = queue.Queue()
 received = queue.Queue()
 
+#queue to hold send commands to be read by simulator
+simulator = queue.Queue()
 
 def startComms(start_flag):
     """
@@ -43,6 +47,8 @@ def startComms(start_flag):
         # send data to the raspi
         ipSend, inputData = send.get()
         s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+        
+        
         if inputData == "exit":
             break
         # TODO: Change to saving to log file on error
@@ -55,3 +61,8 @@ def startComms(start_flag):
         outputData = outputData.decode("utf-8")
         print(outputData)
         received.put(outputData)
+
+
+def putMessage(msg):
+    send.put(msg)
+    simulator.put(msg, timeout=0.005)

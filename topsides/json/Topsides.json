@@ -15,5 +15,6 @@
         "fore-star-horz": 3,
         "aft-port-horz": 6,
         "aft-star-horz": 7
-    }
+    },
+    "simulatorEnabled": true
 }
