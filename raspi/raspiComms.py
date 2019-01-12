@@ -12,6 +12,7 @@ portHost = GLOBALS['portHost']
 #try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(3)
 except socket.error:
     # TODO: Change to message sent back to gui
     print("Failed To Create Socket")
@@ -21,7 +22,10 @@ except socket.error:
 s.bind((ipHost, portHost))
 while True:
     # receive the data from topsides
-    data, addr = s.recvfrom(1024)
+    try:
+        data, addr = s.recvfrom(1024)
+    except socket.timeout as e:
+        continue
     data = data.decode("utf-8")
     if data == "exit":
         break
