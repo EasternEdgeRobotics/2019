@@ -18,15 +18,10 @@
     var controlOptions = new ControlOptions();
     var controlHandler = new ControlHandler(controlOptions);
     var notificationHandler = new NotificationHandler();
-    setTimeout(function(){
+    profileHandler.onProfilesLoaded = function(){
       controlHandler.profile = profileHandler.profiles[0];
-    }, 5);
+      console.log("yeep");
 
-    $(document).ready(function() {
-      //Set up Notification Handler
-      notificationHandler.setSnackbar("notification");
-      notificationHandler.start();
-      controlHandler.registerNotificationHandler(notificationHandler);
       //Set up profile changer
       profileHandler.profiles.forEach(function(profile){
         $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
@@ -35,6 +30,14 @@
         controlHandler.profile = profileHandler.getProfileById($(this).val());
         notificationHandler.sendNotification("Profile set to " + controlHandler.profile.name, "info");
       });
+    }
+
+    $(document).ready(function() {
+      //Set up Notification Handler
+      notificationHandler.setSnackbar("notification");
+      notificationHandler.start();
+      controlHandler.registerNotificationHandler(notificationHandler);
+      
 
       // Handle sliders
       var sliderInputs = $(".slider");

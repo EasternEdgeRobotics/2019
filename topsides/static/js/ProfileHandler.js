@@ -5,6 +5,7 @@ class ProfileHandler{
         var profileHandler = this;
         runPythonGET("getProfiles", null, function(data){
             profileHandler._profiles = data;
+            profileHandler._onProfileLoad(data);
         });
     }
 
@@ -77,4 +78,17 @@ class ProfileHandler{
 
         });
     }
+
+    /** profilesLoaded
+     * 
+     *  @description
+     *      setter for a function that will run when the handler finishes loading profiles from the server
+     *      if the profiles are already loaded, the funtion will run
+     */
+    set onProfilesLoaded(func){
+        this._onProfileLoad = func;
+        if(this._profiles != null)
+            this._onProfileLoad();
+    }
+
 }
