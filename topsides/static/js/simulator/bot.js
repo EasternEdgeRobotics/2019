@@ -10,6 +10,10 @@ const MAX_THRUST = 34.65; //N
 
 const TIME_BETWEEN_BOT_TICK = 50; //ms
 
+const WATER_MASS_DENSITY = 997 //kg/m^3
+const DRAG_COEFFICIENT_CUBE = 1.05;
+
+
 var VelX = 0; // m/s
 var VelY = 0; // m/s
 var VelZ = 0; // m/s
@@ -57,6 +61,35 @@ var thrusters = {
         direction: new THREE.Vector3(0,1,0).normalize(),
         thrust: 0
     },
+    "fore-star-horz": {
+        x: 0,
+        y: 1,
+        z: 1,
+        direction: new THREE.Vector3(0,1,0).normalize(),
+        thrust: 0
+    },
+    "fore-port-horz": {
+        x: 1,
+        y: 1,
+        z: 1,
+        direction: new THREE.Vector3(0,1,0).normalize(),
+        thrust: 0
+    },
+    "aft-star-horz": {
+        x: 0,
+        y: 1,
+        z: 0,
+        direction: new THREE.Vector3(0,1,0).normalize(),
+        thrust: 0
+    },
+    "aft-port-horz": {
+        x: 1,
+        y: 1,
+        z: 0,
+        direction: new THREE.Vector3(0,1,0).normalize(),
+        thrust: 0
+    },
+    
 
 };
 
@@ -71,11 +104,26 @@ function botTick(){
     var AccY = 0;
     $.each(thrusters, function(name, values){
         if(name.includes("vert")){
-            AccY += values.thrust/BOT_WEIGHT;
+            AccY += values.thrust*MAX_THRUST/BOT_WEIGHT;
         }
     });
     
-    VelX += AccY;
+    //1/2 * p * u^2 * C * A
+    let drag = 1/2 * WATER_MASS_DENSITY * 1/VelY * 1.05 * BOT_LENGTH*BOT_WIDTH / BOT_WEIGHT;
+    console.log("thrust: " + AccY);
+    console.log("drag: " + drag);
+    if(VelY == 0 || Math.abs(VelY) < Math.abs(drag)){
+        drag = 0;
+        VelY = 0;
+    }
+    else{
+        drag *= -VelY/Math.abs(VelY);
+    }
+    
+    AccY += drag;
 
-    botCube.y += VelX * TIME_BETWEEN_BOT_TICK;
+    VelY += AccY;
+    console.log("VelY " + VelY);
+
+    botCube.position.y += VelY * (TIME_BETWEEN_BOT_TICK/1000)*(TIME_BETWEEN_BOT_TICK/1000);
 }

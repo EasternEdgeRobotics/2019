@@ -278,7 +278,7 @@ class ControlHandler{
             document.getElementById("popupAssignGamepads").style['display'] = "block";
             
             //starting first instance of assignGamepadStep
-            activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandlerInstance, 0)}, 50));
+            setTimeout(function(){assignGamepadStep(controlHandlerInstance, 0)}, 50);
             
         }else{
             if(this._notificationHandler != null)
@@ -295,6 +295,7 @@ class ControlHandler{
 }
 
 var activeIntervals = [];
+var currentIntervalID = null;
 
 function assignGamepadStep(controlHandler, profile_gamepadIndex){
     //set the user friendly popup to indicate which gamepad is being set
@@ -323,17 +324,19 @@ function assignGamepadStep(controlHandler, profile_gamepadIndex){
         console.log("MAPPED GAMEPAD AT INDEX " + movedGamepadIndex);
         console.log(controlHandler._gamepads);
         if(profile_gamepadIndex < controlHandler.profile.gamepads.length - 1){//if there are more gamepads to be assigned, start new interval with next gamepad
-
-            activeIntervals.push(setInterval(function(){assignGamepadStep(controlHandler, profile_gamepadIndex+1)}, 50));
+            clearInterval();
+            setTimeout(function(){assignGamepadStep(controlHandler, profile_gamepadIndex+1)}, 50);
         }else{
             //if finished
-            clearIntervals();
             $("#popupAssignGamepads").css('display', "none");
             controlHandler.finishedAssignGamepads();
         }
+    }else{
+        setTimeout(function(){assignGamepadStep(controlHandler, profile_gamepadIndex)}, 50);
     }
 }
 
+/*
 function clearIntervals(){
     //stop all threading for assigning gamepads
     for(var i = 0; i < activeIntervals.length ; i++){
@@ -341,4 +344,4 @@ function clearIntervals(){
     }
     activeIntervals = [];
 
-}
+}*/

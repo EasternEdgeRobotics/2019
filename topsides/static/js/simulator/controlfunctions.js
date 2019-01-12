@@ -12,9 +12,14 @@
 */
 
 
+var RaspiScripts = {
+    "fControl": fControl
+};
+
+
 function fControl(params){
     tChan = params[0];
     tSpeed = params[1];
     PORTS = ["aft-star-vert", "fore-port-vert", "fore-star-vert", "fore-star-horz", "fore-port-horz", "aft-port-vert", "aft-port-horz", "aft-star-horz"];
-    thrusters[PORTS[tChan]] = tSpeed;
+    thrusters[PORTS[tChan]].thrust = tSpeed;
 }

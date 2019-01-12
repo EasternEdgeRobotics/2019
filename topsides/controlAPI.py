@@ -71,26 +71,26 @@ def sendControlValues():
 
         """
 
-        heave = data.get("heave", data.get("heave_up", -data.get("heave_down", 0)))
-        pitch = data.get("pitch", data.get("pitch_up", -data.get("pitch_down", 0)))
-        roll = data.get("roll", data.get("roll_cw", -data.get("roll_ccw", 0)))
-        surge = data.get("surge", data.get("surge_forewards", -data.get("surge_bakcwards", 0)))
-        yaw = data.get("yaw", data.get("yaw_cw", -data.get("yaw_ccw", 0)))
-        swar = data.get("sway", data.get("sway_right", -data.get("sway_left", 0)))
+        heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0))
+        pitch = data.get("pitch", data.get("pitch_up", 0) - data.get("pitch_down", 0))
+        roll = data.get("roll", data.get("roll_cw", 0) - data.get("roll_ccw", 0))
+        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0))
+        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0))
+        sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0))
 
         """
         Handling Movement Axes Controls
         """
         thrusterData = {
-            "fore-port-vert": -heave - data.get("pitch", 0) + data.get("roll",0),
-            "fore-star-vert": -heave - data.get("pitch", 0) - data.get("roll",0),
-            "aft-port-vert": -heave + data.get("pitch", 0) + data.get("roll",0),
-            "aft-star-vert": -heave + data.get("pitch", 0) - data.get("roll",0),
+            "fore-port-vert": -heave - pitch + roll,
+            "fore-star-vert": -heave - pitch - roll,
+            "aft-port-vert": -heave + pitch + roll,
+            "aft-star-vert": -heave + pitch - roll,
 
-            "fore-port-horz": -data.get("surge", 0) + data.get("yaw", 0) + data.get("sway", 0),
-            "fore-star-horz": -data.get("surge", 0) - data.get("yaw", 0) - data.get("sway", 0),
-            "aft-port-horz": +data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
-            "aft-star-horz": -data.get("surge", 0) - data.get("yaw", 0) + data.get("sway", 0),
+            "fore-port-horz": -surge + yaw + sway,
+            "fore-star-horz": -surge - yaw - sway,
+            "aft-port-horz": +surge - yaw + sway,
+            "aft-star-horz": -surge - yaw + sway,
         }
 
         for control in thrusterData:

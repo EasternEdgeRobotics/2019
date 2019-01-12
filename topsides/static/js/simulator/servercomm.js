@@ -8,10 +8,11 @@ eventSource.onmessage = function(e){ //when stream recieves message
 
 setInterval(function(){
     runPythonGET("simulator/getCommand", null, function(msg){
-        console.log(msg);
         msg.forEach(function(fullString){
             let params = fullString.split(" ");
-            parmas[0](params.shift());
+            let func = params[0].slice(0, -3);
+            params.shift();
+            RaspiScripts[func](params);
         });
     });
 }, 50);

@@ -28,10 +28,12 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "heave"
-                ]
+                    "pitch"
+                ],
+                "friendly_name": "Main Controller"
             }
-        ]
+        ],
+        "undefined": "Main Controller"
     },
     {
         "name": "One Joy",
