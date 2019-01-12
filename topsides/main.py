@@ -7,7 +7,6 @@ import threading
 from profileAPI import profile_api
 from controlAPI import controlAPI
 from notificationAPI import notificationAPI
-from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 from adminAPI import adminAPI
