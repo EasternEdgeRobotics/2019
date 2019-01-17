@@ -1,0 +1,14 @@
+{
+    "menus":[
+        {
+            "name": "Information",
+            "file_name": "dashboard/information.html",
+            "icon_url": "static/res/icons/baseline-info-24px.svg" 
+        },
+        {
+            "name": "Profile Management",
+            "file_name": "controlProfileEdit.html",
+            "icon_url": "static/res/icons/baseline-assignment_ind-24px.svg"
+        }
+    ]
+}

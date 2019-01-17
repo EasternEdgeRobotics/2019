@@ -5,7 +5,9 @@ class ProfileHandler{
         var profileHandler = this;
         runPythonGET("getProfiles", null, function(data){
             profileHandler._profiles = data;
-            profileHandler._onProfileLoad(data);
+            if(profileHandler._onProfileLoad != null){
+                profileHandler._onProfileLoad(data);
+            }
         });
     }
 
