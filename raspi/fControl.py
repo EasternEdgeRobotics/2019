@@ -13,11 +13,6 @@ tSpeed = float(sys.argv[2])
 PORTS = [0, 1, 2, 3, 7, 15, 16, 17, 8, 11]
 # Inits the maestro controller from the library.
 servo = maestro.Controller()
-
-# Change ranges for servos
-#servo.setRange(8, 1600, 10000)
-#servo.setRange(11, 1600, 10000)
-
 # Initialize the control module with maestro channel and thruster port
 dt = control.Thruster(servo, int(PORTS[tChan]))
 # Run the thruster
