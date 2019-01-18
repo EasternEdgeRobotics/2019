@@ -25,10 +25,14 @@ class Thruster:
         self.maestro.setAccel(ch, 0)
         self.maestro.setSpeed(ch, RESPONSE)
         # thruster min/max and center Values
-        self.min_s = MIN_SPEED
-        self.max_s = MAX_SPEED
-        self.center_s = CENTER_SPEED
-
+        if ((ch == 8) or (ch == 11)):
+            self.min_s = 1600
+            self.max_s = 10000
+            self.center_s = 5800
+        else:
+            self.min_s = MIN_SPEED
+            self.max_s = MAX_SPEED
+            self.center_s = CENTER_SPEED
     def ThrusterScale(self, thruster):
         """Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits."""
         if (thruster >= 0):
