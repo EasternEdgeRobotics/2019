@@ -77,6 +77,8 @@ def sendControlValues():
         surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0))
         yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0))
         sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0))
+        rotateCam1 = data.get("rotateCam1")
+        rotateCam2 = data.get("rotateCam2")
 
         """
         Handling Movement Axes Controls
@@ -91,6 +93,9 @@ def sendControlValues():
             "fore-star-horz": -surge - yaw - sway,
             "aft-port-horz": +surge - yaw + sway,
             "aft-star-horz": -surge - yaw + sway,
+
+            "fore-camera": rotateCam1,
+            "aft-camera": rotateCam2,
         }
         for control in trusterData:
             val = thrusterPorts[control]

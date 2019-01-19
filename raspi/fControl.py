@@ -1,4 +1,4 @@
-"""This is a simple program to run thrusters/servo motors using the python maestro module."""
+"""Program to run the thruster and servo motors using the python maestro module."""
 import sys
 sys.path.append('libraries')
 import maestro

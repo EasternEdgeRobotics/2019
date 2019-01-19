@@ -92,7 +92,7 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "",
+                    "rotateCam1",
                     "",
                     ""
                 ]
@@ -117,7 +117,7 @@
                     "roll",
                     "pitch",
                     "heave",
-                    "",
+                    "rotateCam2",
                     "",
                     ""
                 ]
