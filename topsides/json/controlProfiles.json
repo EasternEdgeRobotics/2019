@@ -65,7 +65,8 @@
                 ],
                 "friendly_name": "Main Controller"
             }
-        ]
+        ],
+        "undefined": "Main Controller"
     },
     {
         "name": "Mark's Bullshit",

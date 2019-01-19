@@ -92,7 +92,6 @@ def sendControlValues():
             "aft-port-horz": +surge - yaw + sway,
             "aft-star-horz": -surge - yaw + sway,
         }
-        print(thrusterData)
         for control in trusterData:
             val = thrusterPorts[control]
             topsidesComms.send.put([GLOBALS['ipSend1'], "fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val)])
