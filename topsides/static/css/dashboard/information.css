@@ -1,0 +1,21 @@
+.grid{
+    margin: 0 auto;
+}
+
+.grid-item{
+    border: 2px solid red;
+    border-radius: 15px;
+    min-height: 200px;
+    float: left;
+    padding: 20px;
+    margin: 20px 0;
+    max-width: 450px;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+}
+
+.item-content{
+    height: 250px;
+}

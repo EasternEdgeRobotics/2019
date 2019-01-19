@@ -4,7 +4,7 @@ body, html{
 
 #pageBody{
     background-color: #f2f2f2;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .sidebar{
@@ -28,15 +28,29 @@ body, html{
 }
 
 .btn-nav{
+    position: relative;
     height: 100px;
     margin: 0;
     width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-radius: 15px;
     cursor: pointer;
     transition: 0.3s;
     margin: 20px 0px;
+}
+
+.btn-nav .background{
+    box-shadow: 0 3px 20px rgba(0,0,0,0.3);
+    width: 100%;
+    position: absolute;
+    border-radius: 15px;
+    height: 100%;
+    background: rgba(31,128,207,1);
+    background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.btn-nav.active .background{
+    opacity: 1;
 }
 
 .btn-nav:hover{
@@ -53,19 +67,15 @@ body, html{
 .btn-nav path, .btn-nav .text{
     fill: #3f3f3f;
     color: #3f3f3f;
+    transition: 0.5s;
 }
 
 .btn-nav.active path, .btn-nav.active p{
     fill: #ffffff;
     color: #ffffff;
+    transition: 0.5s;
 }
 
-.btn-nav.active{
-    box-shadow: 0 3px 20px rgba(0,0,0,0.3);
-
-    background: rgba(31,128,207,1);
-    background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
-}
 
 .nav-svg path{
     width: 100%;
