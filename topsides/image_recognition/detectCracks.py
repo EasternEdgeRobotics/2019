@@ -45,7 +45,7 @@ while(1):
         length = round(length)
         length = length * 0.1
         font = cv.FONT_HERSHEY_SIMPLEX
-        cv.putText(frame, str(length), (20, 400), font, 3, (255,255,255), 2, cv.LINE_AA)
+        cv.putText(frame, str(length) + ' cm', (20, 400), font, 3, (255,255,255), 2, cv.LINE_AA)
     
     # show the final video output(s)
     res = cv.bitwise_and(frame, frame, mask= mask)
