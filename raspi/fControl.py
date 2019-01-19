@@ -17,6 +17,6 @@ PORTS = [2, 1, 15, 17, 0, 16]
 servo = maestro.Controller()
 # Initialize the control module with maestro channel and thruster port
 for i in range(0, 7):
-	dt = control.Thruster(servo, int(PORTS[tChan]))
+	dt = control.Thruster(servo, int(PORTS[tChan[i]]))
 	# Run the thruster
-	dt.Fly(tSpeed)
+	dt.Fly(tSpeed[i])
