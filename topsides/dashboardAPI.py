@@ -2,6 +2,7 @@ from flask import Blueprint, Flask, render_template, jsonify, request
 import json
 import math
 from TopsidesGlobals import GLOBALS
+from profileAPI import getProfileByID
 
 dashboard_api = Blueprint("dashboard_api", __name__)
 
@@ -29,3 +30,8 @@ def getMenuJSON():
             return jsonify(json.load(file))
     except Exception as e:
         return "Error loading JSON", 500
+
+
+@dashboard_api.route("/dashboard/editProfile")
+def editProfileMenu():
+    return render_template("dashboard/dashboard-profiles-edit.html", profile=getProfileByID(request.args.get("id")))

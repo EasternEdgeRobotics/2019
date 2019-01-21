@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Profiles</title>
+        <link href="static/css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
+        
+        <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
+        <!--<script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>-->
+        <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
+        <script>
+            var PROFILEHANDLE;
+            
+            $dash.animation.onPageOpen = function(){
+                $(".grid").masonry({
+                    itemSelector: ".grid-item",
+                    //columnWidth: ".col-sm-3",
+                    percentPosition: true
+                });
+                PROFILEHANDLE = new ProfileHandler();
+                PROFILEHANDLE.onProfilesLoaded = function(profiles){
+                    profiles.forEach(function(profile){
+                        $("#profileInsert").append("<div class='grid-item profile-container'><p class='date-modified'>n/a</p><h3 class='name'>"+profile.name+"</h3><p class='gamepad-count'>"+profile.gamepads.length+"</p><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div>");
+                    });
+                }
+            };
+
+            
+            function editProfile_click(id){
+                $dash.navigate();
+            }
+            
+
+            /**addGamepadInfo
+             * 
+             *  generates and appends html for the edit panel of a gamepad
+            */
+            
+
+            /** newProfile_click
+             * 
+             *      resets the profile edit menu and sets the profileToEdit to a fresh, new profile
+             * 
+            */
+            function newProfile_click(id){
+                clearProfileEdit();
+                profileToEdit = {"name":"", "id": PROFILEHANDLE.getNextId(), "gamepads":[]};
+            }
+            
+            
+
+            
+
+                        //sends POST to server to delete a profile
+            function deleteProfile(id){
+                runPythonPOST("deleteProfile", JSON.stringify({profileId:id}), function(){
+                    location.reload();
+                });
+            }
+        </script>
+    </head>
+    <body>
+
+        <div class="grid" id="profileInsert">
+            <div class="grid-sizer"></div>
+
+        </div>
+
+        <div id="panelSelectProfile">
+            <div class="profile-select-container">
+                {% for profile in profiles %}
+                    <div class="profile-panel">
+                        <p>{{profile["name"]}}</p>
+                        <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="editProfile_click({{profile['id']}})">EDIT</button>
+                        <button class="btn btn-danger" onclick="deleteProfile({{profile['id']}})">DELETE</button>
+                    </div>
+                {% endfor %}
+                <div class="profile-panel">
+                    <p>New Profile</p>
+                    <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="newProfile_click();">NEW</button>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>

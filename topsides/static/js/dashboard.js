@@ -20,7 +20,8 @@ var $dash = {
     },
     page: {
         file_name: null
-    }
+    },
+    navigate: loadPage
 }
 
 $(document).ready(function(){
@@ -43,7 +44,6 @@ function navButtonClick(btn){
     if($dash.page.file_name != page){
         $(".btn-nav").toggleClass("active", false);
         btn.toggleClass("active", true);
-        clearPage();
         loadPage(page);
     }
 }
@@ -77,4 +77,53 @@ function runDashboardAnimation(animation, afterFunction){
             setTimeout(function(){if(afterFunction instanceof Function)afterFunction()}, $dash.animation.delay+$dash.animation.time);
         }
     }
+}
+
+class dashboard{
+    constructor(){
+        this._animationdelay = 100;
+        this._animationtime = 3000;
+        this._onpageopen = function(){};
+        this._onpageclose = function(){};
+        this._filename = "";
+    }
+
+    //Animation Delay
+    
+    set animationDelay(delay){
+        this._animationdelay = delay;
+    }
+
+    get animationDelay(){
+        return this._animationdelay;
+    }
+
+    //Animation Time
+
+    set animationTime(t){
+        this._animationtime = t;
+    }
+
+    get animationTime(){
+        return this.animationTime;
+    }
+
+    //On Page Open
+
+    set pageLoad(f){
+        if(f instanceof Function)
+            this._onpageopen = f;
+    }
+
+    get pageLoad(){
+        this._onpageopen();
+    }
+
+    //On Page Close
+
+    set pageClose(f){
+        if(f instanceof Function)
+            this._onpageclose = f;
+    }
+
 }

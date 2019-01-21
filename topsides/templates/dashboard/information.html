@@ -1,20 +1,14 @@
 <body>
     <script src="static/js/lib/masonry.pkgd.min.js"></script>
     <script src="static/js/lib/Chart.min.js"></script>
+    <script src="static/js/dashboard/information/graph.js"></script>
     <link href="static/css/dashboard/information.css" rel="stylesheet" type='text/css' />
     <script>
-        /*  graphs
-            +
-            |- id       (canvas id)
-            |- data     (array of nums)
-            |- chart    (Chartjs instance)
-        */
+        
         var graphs = [];
-        var GRAPH_MAX_DATA = 50;
 
         $dash.animation.onPageOpen = function(){
             initGraphs();
-
             $(".grid").masonry({
                 itemSelector: ".grid-item",
                 //columnWidth: ".col-sm-3",
@@ -23,61 +17,30 @@
         };
 
         function initGraphs(){
-            graphs.push({id: "piGraph1", data: [],
-                chart: new Chart(document.getElementById("piGraph1").getContext("2d"),
-                {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets:[{
-                            label: "Tick",
-                            data: [],
-                        }]
-                    },
-                    options:{
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero:true
-                                }
-                            }]
-                        }
-                    }
-                    
-                })
-            });
-            console.log(graphs[0].chart);
+            //graphs.push(new Graph("pi1Ping", "piGraph2"));
+            //graphs.push(new Graph("pi1Ping", "piGraph3"));
+            graphs.push(new Graph("pi1Ping", "piGraph1"));
 
-            let i = 0;
             setInterval(function(){
-                addGraphData("piGraph1", 10 + Math.sin(i));
-                i++;
+                graphs.forEach(function(g){
+                    var n = Math.random() * 3 + 20;
+                    g.addData(n);
+                    $(".data-indicator[value-type='ping']").html(Math.floor(n));
+                });
             }, 50);
         }
 
-        
-
-        function addGraphData(id, dataNum){
-            let date = new Date();
-            graphs.forEach(function(graph){
-                if(graph.id == id){
-                    if(graph.chart.data.datasets[0].data.length >= GRAPH_MAX_DATA){
-                        graph.chart.data.datasets[0].data.shift();
-                        graph.chart.data.labels.shift();
-                    }
-                    graph.chart.data.datasets[0].data.push(dataNum);
-                    graph.chart.data.labels.push("");
-                }
-                graph.chart.update();
-            });
-        }
     </script>
 
     <div class="grid">
         <div class="grid-sizer"></div>
         <div class="grid-item col-lg-4 col-md-6">
             <div class="item-content">
-                <canvas id="piGraph1" width="100" height="100" data-type='ping' data-ip="192.168.88.4"></canvas>
+                <canvas id="piGraph1" data-type='ping' data-ip="192.168.88.4"></canvas>
+                <h1>Raspberry Pi 1</h1>
+                <p>192.168.88.4</p>
+                <h1 value-type='ping' class="data-indicator">20</h1>
+                <h1 value-type="temp" class="data-indicator">32</h1>
             </div>
         </div>
     </div>

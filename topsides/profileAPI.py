@@ -140,3 +140,11 @@ def saveProfile(profile):
         file.seek(0)
         json.dump(data, file, indent=4)
         file.truncate()
+
+
+def getProfileByID(id):
+    profiles = loadProfiles()
+    for profile in profiles:
+        if(profile['id'] == id):
+            return profile
+    return None
