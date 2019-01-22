@@ -19,8 +19,6 @@
     var notificationHandler = new NotificationHandler();
     profileHandler.onProfilesLoaded = function(){
       controlHandler.profile = profileHandler.profiles[0];
-      console.log("yeep");
-
       //Set up profile changer
       profileHandler.profiles.forEach(function(profile){
         $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
@@ -86,7 +84,6 @@
             controls[control] *= 0;
           }
         });
-        console.log(controls);
         runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
 
 

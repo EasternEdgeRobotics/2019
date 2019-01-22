@@ -80,3 +80,36 @@ body, html{
 .nav-svg path{
     width: 100%;
 }
+
+
+/*
+
+EXTENRAL PAGE HEADER
+
+*/
+
+.dashboard-header{
+    width: 100%;
+    position: absolute;
+    height: 75px;
+    z-index: 10000;
+}
+
+.dashboard-header .head-content{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: -75px;
+    transition: 0.3s;
+    background-color: white;
+    padding: 10px 40px;
+    box-shadow: 0px 3px 15px rgba(0,0,0,0.3);
+}
+
+.dashboard-header:hover .head-content{
+    top: 0px;
+}
+
+.dashboard-header .dashboard-logo{
+    height: 100%;
+}
