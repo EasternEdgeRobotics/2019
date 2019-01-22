@@ -2,7 +2,7 @@
 <html>
     <body>
         <title>Edit Profiles</title>
-        <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
+        <link href="static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
         
         
         <script>
@@ -11,17 +11,21 @@
             $dash.pageLoad(function(){
                 PROFILEHANDLE = new ProfileHandler();
                 PROFILEHANDLE.onProfilesLoaded = function(profiles){
+                    $("#profileCount").html(profiles.length);
+                    $("#fileSize").html(Math.round(PROFILEHANDLE.fileSize/1000*100)/100);
                     profiles.forEach(function(profile){
-                        console.log("fdsfds");
-                        $("#profileInsert").append("<div class='grid-item profile-container'><p class='date-modified'>n/a</p><h3 class='name'>"+profile.name+"</h3><p class='gamepad-count'>"+profile.gamepads.length+"</p><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div>");
+                        $("#profileInsert").append("<div class='grid-item col-lg-3 col-md-6'><div class='item-content'><p class='date-modified'>n/a</p><h2 class='name'>"+profile.name+"</h2><h4 class='gamepad-count'>"+profile.gamepads.length+"</h4><div class='btn-container'><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div></div></div>");
                     });
                 }
-
-                $(".grid").masonry({
+                
+                setTimeout(function(){
+                    $(".grid").masonry({
                     itemSelector: ".grid-item",
-                    //columnWidth: ".col-sm-3",
+                   // columnWidth: ".grid-sizer",
                     percentPosition: true
                 });
+                }, 100);
+                
             });
 
             
@@ -42,8 +46,7 @@
              * 
             */
             function newProfile_click(id){
-                clearProfileEdit();
-                profileToEdit = {"name":"", "id": PROFILEHANDLE.getNextId(), "gamepads":[]};
+                $dash.navigate("dashboard/editProfile");
             }
             
             
@@ -60,21 +63,16 @@
 
         <div class="grid" id="profileInsert">
             <div class="grid-sizer"></div>
-
-        </div>
-
-        <div id="panelSelectProfile">
-            <div class="profile-select-container">
-                {% for profile in profiles %}
-                    <div class="profile-panel">
-                        <p>{{profile["name"]}}</p>
-                        <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="editProfile_click({{profile['id']}})">EDIT</button>
-                        <button class="btn btn-danger" onclick="deleteProfile({{profile['id']}})">DELETE</button>
-                    </div>
-                {% endfor %}
-                <div class="profile-panel">
-                    <p>New Profile</p>
-                    <button class="btn btn-primary modal-trigger" modal-id="modalEditProfile" onclick="newProfile_click();">NEW</button>
+            <div class="grid-item col-lg-3 col-md-6">
+                <div class="item-content left">
+                    <h1 id='profileCount'></h1>
+                    <h1 id="fileSize"></h1>
+                </div>
+            </div>
+            <div class="grid-item col-lg-3 col-md-6">
+                <div class="item-content center">
+                    <h3>Create New Profile</h3>
+                    <button class="btn btn-primary" onclick="newProfile_click();">Create New</button>
                 </div>
             </div>
         </div>

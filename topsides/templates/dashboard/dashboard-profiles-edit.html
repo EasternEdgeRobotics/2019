@@ -2,11 +2,12 @@
 <html>
     <body>
         <title>Edit Profiles</title>
-        <link href="static/css/main.css" rel="stylesheet" type="text/css"/>
+        <link href="static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
         <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
+        
         <script>
             var profileToEdit;
-            var PROFILE_ID = {{profile.id}};
+            var PROFILE_ID = "{{profile.id}}";
             var CONTROLOPTIONS = new ControlOptions();
             var gamepads = navigator.getGamepads();
 
@@ -20,7 +21,7 @@
 
             new ProfileHandler().onProfilesLoaded = function(profiles){
                 profiles.forEach(function(profile){
-                    if(profile.id == PROFILE_ID){
+                    if(profile.id == parseInt(PROFILE_ID)){
                         profileToEdit = profile;
                         return;
                     }
@@ -32,78 +33,41 @@
              * 
              *  generates and appends html for the edit panel of a gamepad
             */
-            function addGamepadInfo(i, gamepad){
-                //initial starting string for gamepad selector on top of modal
-                let gamepadSelectorString = "<div class='selector " + (i ==0? "active": "") +"' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
-                //initial starting string for gamepad panel edit menu
-                let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><input class='input-text' type='text' id='iPg" + i + "name' placeholder='Gamepad Name' value='" + gamepad["friendly_name"] + "'/><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
-                
-                
-                gamepadEditPanelString+= "<input type='hidden' class='hdnIdentity' id='gamepadID' value='" + gamepad['name'] + "'/> "
-                gamepadEditPanelString+= "<input type='hidden' class='iPg' id='gamepadID' value='" + i + "'/> "
-                
+            function addGamepadInfo(i, gamepad){               
+                var ext = $("<div class='col-lg-6 panel panel-gamepad' gamepad-index='"+i+"'></div>").appendTo("#gamepadInsert");
+                var panel = $("<div class='item-content'></div>").appendTo(ext);
+                $(panel).append("<p class='gamepad-id'>" + gamepad['name'] + "</p><div class='row'><div class='col-md-6'><input type='text' class='gamepad-name' placeholder='Enter Gamepad Name' value=''/></div><div class='col-md-6 text-right'><button class='btn btn-danger' style='margin: 0;' onclick='removeGamepad("+i+"'>Delete Gamepad</button></div></div>");
 
-
-                //for each axes on joystick, add a selector box and label inside the gamepad edit menu (append to string)
-                gamepadEditPanelString += "<div class='control-type-group'>";
-                $.each(gamepad["axes"], function(i2, axes){
-                    gamepadEditPanelString += "<div class='control-group'><p id='iPg" + i + "a" + i2 + "'>Axes " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "axes" + '"' + "]["+i2+"] = this.value;' class='joystick-axis-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getAxesOptionsString() + "</select></div>";
-
+                var row2 = $("<div class='row'></div>").appendTo(panel);
+                var axesContainer = $("<div class='col-md-4'></div>").appendTo(row2);
+                var buttonContainer = $("<div class='col-md-8'></div>").appendTo(row2);
+                $.each(gamepad.axes, function(i2, axes){
+                    axesContainer.append("<div class='control-group axes' axes-index='"+i2+"'><p>Axes: "+i2+"</p><select class='select-axes' gamepad-index='"+i+"' axes-index='"+i2+"'>"+CONTROLOPTIONS.getAxesOptionsString()+"</select></div>");
                 });
-                gamepadEditPanelString += "</div>"; //end of section in string
 
-                //for each button on joystick, add a selector box and label inside the gamepad edit menu (append to string)
-                gamepadEditPanelString += "<div class='control-type-group'>";
-                $.each(gamepad["buttons"], function(i2, button){
-                    gamepadEditPanelString += "<div class='control-group buttons'><p id='iPg" + i + "b" + i2 + "'>Button " + i2 + "</p><select onchange='profileToEdit[" + '"' + 'gamepads' + '"' + "]["+i+"][" + '"' + "buttons" + '"' + "]["+i2+"] = this.value;' class='button-input' input-id='" + i2 + "'>" + CONTROLOPTIONS.getButtonOptionsString() + "</select></div>"
-                });
-                gamepadEditPanelString += "</div>";//end of section in string
-
-                gamepadEditPanelString += "<button class='btn btn-danger' onclick='removeGamepad(" + i + ");'>Remove Gamepad</button>"
-                
-                gamepadEditPanelString += "</div>"//end of entire panel
-                
-
-                //append the html (in the strings) of the selector and edit panel to the selector container and panel container respectively 
-                $("#joystick-selector-container").append(gamepadSelectorString);
-                $("#current-joystick-container").append(gamepadEditPanelString);
-                
-                //Set the current values of axes selector boxes to respected value in profile 
-                $.each($('#gamepadEdit' + i).find(".joystick-axis-input"), function(i2, obj){
-                    $(obj).val(gamepad["axes"][i2]);
+                $.each(gamepad.buttons, function(i2, button){
+                    buttonContainer.append("<div class='control-group button' button-index='"+i2+"'><p>Button: "+i2+"</p><select class='select-button' gamepad-index='"+i+"' button-index='"+i2+"'>"+CONTROLOPTIONS.getButtonOptionsString()+"</select></div>");
                 });
                 
-                //Set the current values of button selector boxes to respected value in profile
-                $.each($('#gamepadEdit' + i).find(".button-input"), function(i2, obj){
-                    $(obj).val(gamepad["buttons"][i2]);
-                });
             }
             
 
-            /**openGamepadMenu_Click
-             * 
-             *  generates and opens the add gamepad modal to add a gamepad to profile
-             * 
-            */
-            /*function openGamepadMenu_click(){
-                gamepads = navigator.getGamepads();
-
-                $("#addGamepadContainer").html(""); //resets modal
-
-                let noGamepads = true;
-
-                //for each gamepad connected add html button to allow user to add that gamepad
-                $.each(gamepads, function(i, obj){
-                    if(obj != undefined){
-                        noGamepads = false;
-                        $("#addGamepadContainer").append("<div class='gamepad-selector' onclick='addGamepad(" + i + "); $(" + '"' + "#modalAddGamepad" + '"' + ").toggleClass(" + '"' + "visible" + '"' + ");'><p>" + obj["id"] + "</p></div>");
-                    }
-                });
-                
-                //if there are no gamepads connected, add the no gamepad connected text
-                if(noGamepads){
-                    $("#addGamepadContainer").append("<p>No gamepads connected.</p><p>If there is one connected try moving an axis and retry adding it. If it still doesn't show up, the gamepad may be broken or not suppoerted.</p>")
+            function openGamepadMenu_click(){
+                if(!$("#popupAddGamepad").hasClass('hidden')){
+                    $("#popupAddGamepad").toggleClass("hidden", true);
+                    return;
                 }
+
+                $("#popupAddGamepad").html("");
+                var gamepads = navigator.getGamepads();
+                
+                $.each(gamepads, function(i, gamepad){
+                    if(gamepad != null)
+                    $("#popupAddGamepad").append("<div onclick='addGamepad(" + i + ");'>" + gamepad.id + "</div>");
+                });
+
+
+                $("#popupAddGamepad").toggleClass("hidden", false);
             }
             
 
@@ -131,6 +95,8 @@
                 });
                 
                 profileToEdit["gamepads"].push(newGamepad);
+
+                $("#popupAddGamepad").toggleClass("hidden", true);
                 addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
 
@@ -140,34 +106,33 @@
                 $("#gamepadSelector" + profileIndex).remove();
             }
             
-            //Switches the active gamepad mapping panel in the profile edit modal
-            /*function openGamepadPanel_click(open){
-                $(".gamepad-edit").toggleClass("visible", false);
-                $("#gamepadEdit"+open).toggleClass("visible", true);
-                $(".selector").toggleClass("active", false);
-                $("#gamepadSelector" + open).toggleClass("active", true);
-            }*/
-            
 
             //Saves profile
             function saveProfile_click(){
-                $(".input-text").each(function(){
-                    var attrToChange = "" + $(this).attr("input-id");
-                    var valToSet = $(this).val();
-                    if(attrToChange != null && attrToChange != undefined && attrToChange != "")
-                        profileToEdit[attrToChange] = valToSet;
-                });
+                
+                profileToEdit.name = $("#profileName").val();
 
-                $('.gamepad-edit').each(function(){
-                    var gamepad_profile_id = $(this).find(".iPg").val();
-                    console.log(gamepad_profile_id);
-                    var gamepad_name = $(this).find("#iPg"+gamepad_profile_id + "name").val();
-                    console.log(gamepad_name);
-                    profileToEdit["gamepads"][gamepad_profile_id].friendly_name = gamepad_name;
+                $.each($(".panel-gamepad"), function(i, panel){
+                    var gamepad_index = $(panel).attr("gamepad-index");
+                    
+                    profileToEdit["gamepads"][gamepad_index]["friendly_name"] = $(panel).find(".gamepad-name").val();
+
+
+                    $.each($(panel).find(".select-button"), function(i2, bs){
+                        profileToEdit["gamepads"][gamepad_index]['buttons'][$(bs).attr("button-index")] = $(bs).val();
+                    });
+
+                    $.each($(panel).find(".select-axes"), function(i2, as){
+                        profileToEdit['gamepads'][gamepad_index]['axes'][$(as).attr("axes-index")] = $(as).val();
+                    });
                 });
 
                 PROFILEHANDLE.saveProfile(profileToEdit);
-                location.reload();
+                cancelEdit_click();//aka go back to profile select
+            }
+
+            function cancelEdit_click(){
+                $dash.loadPage("dashboard/dashboard-profiles.html");
             }
 
             /** updateMenuIndicators
@@ -181,42 +146,31 @@
                 $.each(gamepads, function(i, gamepad){
                     if(gamepad == null)
                         return;
-                    
-                    var parent = null;
-
-                    $.each($(".hdnIdentity"), function(i2, obj){
-                        if($(this).val() == gamepad.id)
-                            parent = $(this).parent();
-                    });
-
-                    if(parent == null)
-                        return;
-
-                    var iPg = $(parent).find(".iPg").val();
 
                     $.each(gamepad.axes, function(i2, axes){
-                        if(Math.abs(axes) > 0.8){
-                            //every input name has an id along the lines of iPg{gamepad_id}a{axes_id} for identifying axes
-                            $("#iPg"+iPg+"a"+i2).toggleClass("triggered", true);
-                        }else{
-                            $("#iPg"+iPg+"a"+i2).toggleClass("triggered", false);
-                        }
+                        $.each($(".panel-gamepad"), function(i, panel){
+                            if($(panel).find(".gamepad-id").html() == gamepad.id){
+                                if(Math.abs(axes) > 0.8){
+                                    $(panel).find(".control-group.axes[axes-index='" + i2 + "'] p").toggleClass("triggered", true);
+                                }else{
+                                    $(panel).find(".control-group.axes[axes-index='" + i2 + "'] p").toggleClass("triggered", false);
+                                }
+                            }
+                        });
+                        
                     });
 
                     $.each(gamepad.buttons, function(i2, button){
-                        if(button.value == 1)
-                            //every input name has an id along the lines of iPg{gamepad_id}a{button_id} for identifying buttons
-                            $("#iPg"+iPg+"b"+i2).toggleClass("triggered", true);
-                        else
-                            $("#iPg"+iPg+"b"+i2).toggleClass("triggered", false);
+                        $.each($(".panel-gamepad"), function(i, panel){
+                            if($(panel).find(".gamepad-id").html() == gamepad.id){
+                                if(Math.abs(button.value) > 0.8){
+                                    $(panel).find(".control-group.button[button-index='" + i2 + "'] p").toggleClass("triggered", true);
+                                }else{
+                                    $(panel).find(".control-group.button[button-index='" + i2 + "'] p").toggleClass("triggered", false);
+                                }
+                            }
+                        });
                     });
-                });
-            }
-
-            //sends POST to server to delete a profile
-            function deleteProfile(id){
-                runPythonPOST("deleteProfile", JSON.stringify({profileId:id}), function(){
-                    location.reload();
                 });
             }
             
@@ -226,45 +180,61 @@
 
         <div class="row">
             <div class="col-md-6 panel">
-                <input type="text" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
+                <div class="item-content">
+                    <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
+                </div>
             </div>
-            <div class="col-md-3">
-                <h1>{{profile["gamepads"]|length}}</h1>
-                <button class="btn btn-primary">Add Gamepad</button>
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary">Save</button>
-                <button class="btn btn-info">Cancel</button>
-            </div>
-        </div>
-        <div class="row">
-            {% for gamepad in profile["gamepads"] %}    
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="text" placeholder="Enter Gamepad Name" value="{{gamepad['friendly_name']}}"/>
-                    </div>
-                    <div class="col-md-6">
-                        <p>{{gamepad["name"]}}</p>
-                        <button class="btn btn-danger" onclick="removeGamepad({{loop.index0}})">Delete Gamepad</button>
+            <div class="col-md-3 panel">
+                <div class="item-content relative overflow">
+                    <h1 id='gamepadCount'>{{profile["gamepads"]|length}}</h1>
+                    <button class="btn btn-primary" onclick="openGamepadMenu_click()">Add Gamepad</button>
+                    <div id="popupAddGamepad" class="hidden">
+
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        {%for axes in gamepad.axes%}
-                            <p>Axes {{loop.index}}:</p>
-                            <select class="select-axes" temp-value='{{axes}}'>
-
-                            </select>
-                        {%endfor%}
+            </div>
+            <div class="col-md-3 panel">
+                <div class="item-content">
+                    <button class="btn btn-primary" onclick="saveProfile_click()">Save</button>
+                    <button class="btn btn-info" onclick="cancelEdit_click()">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="gamepadInsert">
+            {% for gamepad in profile["gamepads"] %}
+            {% set gamepadLoop = loop%}    
+            <div class="col-lg-6 panel panel-gamepad" gamepad-index='{{loop.index0}}'>
+                <div class="item-content">
+                    <p class="gamepad-id">{{gamepad["name"]}}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="gamepad-name" placeholder="Enter Gamepad Name" value="{{gamepad['friendly_name']}}"/>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button class="btn btn-danger" style="margin: 0;" onclick="removeGamepad({{loop.index0}})">Delete Gamepad</button>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        {%for button in gamepad.buttons%}
-                            <p>Button {{loop.index}}:</p>
-                            <select class="select-button" temp-value='{{button}}'>
-                            
-                            </select>
-                        {%endfor%}
+                    <div class="row">
+                        <div class="col-md-4">
+                            {%for axes in gamepad.axes%}
+                                <div class="control-group axes" axes-index='{{loop.index0}}'>
+                                    <p>Axes {{loop.index}}:</p>
+                                    <select class="select-axes" gamepad-index='{{gamepadLoop.index0}}' axes-index='{{loop.index0}}' temp-value='{{axes}}'>
+
+                                    </select>
+                                </div>
+                            {%endfor%}
+                        </div>
+                        <div class="col-md-8">
+                            {%for button in gamepad.buttons%}
+                                <div class="control-group button" button-index='{{loop.index0}}'>
+                                    <p>Button {{loop.index}}:</p>
+                                    <select class="select-button" gamepad-index='{{gamepadLoop.index0}}' button-index='{{loop.index0}}' temp-value='{{button}}'>
+                                    
+                                    </select>
+                                </div>
+                            {%endfor%}
+                        </div>
                     </div>
                 </div>
             </div>

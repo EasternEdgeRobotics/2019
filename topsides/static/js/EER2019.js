@@ -12,7 +12,7 @@
 */
 function runPythonGET(scriptName, data, returnFunction){
     //TODO: Add code to ensure data is JSON
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: "http://localhost:80/" + scriptName,
         contentType: "application/json; charset=utf-8",
@@ -43,7 +43,7 @@ function runPythonGET(scriptName, data, returnFunction){
 */
 function runPythonPOST(scriptName, data, returnFunction){
     //TODO: Add code to ensure data is JSON
-    $.ajax({
+    return $.ajax({
         type: "POST",
         url: "http://localhost:80/" + scriptName,
         contentType: "application/json; charset=utf-8",
