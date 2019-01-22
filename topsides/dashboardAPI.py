@@ -36,3 +36,7 @@ def getMenuJSON():
 def editProfileMenu():
     profile = profileAPI.getProfileByID(request.args.get("id"))
     return render_template("dashboard/dashboard-profiles-edit.html", profile=profile)
+
+@dashboard_api.route("/dashboard/ext")
+def loadExternalPgae():
+    return render_template("dashboard/dashboard-external.html") + render_template(request.args.get("name"))

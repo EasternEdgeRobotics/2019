@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script>
+            function returnToDashboard(){
+                window.location.href = "/";
+            }
+        </script>
+
+        <style>
+            body{
+                margin: 0;
+            }
+            .dashboard-header{
+                width: 100%;
+                position: absolute;
+                height: 75px;
+                
+            }
+
+            .dashboard-header .head-content{
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                top: -75px;
+                transition: 0.3s;
+                background-color: black;
+            }
+
+            .dashboard-header:hover .head-content{
+                top: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dashboard-header">
+            <div class='head-content'>
+                <img src='static/res/img/eer-logo.png' class="dashboard-logo"/>
+                <button class="btn btn-primary" onclick="returnToDashboard();">Return To Dashboard</button>
+                <div class="dashboard-drop-down"></div>
+            </div>
+        </div>
+    </body>
+</html>
