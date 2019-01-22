@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <body>
         <title>Edit Profiles</title>
         <link href="static/css/main.css" rel="stylesheet" type="text/css"/>
         <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
-        
-        <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
-        <!--<script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>-->
-        <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
         <script>
-            var profileToEdit = {{profile}};
-            var PROFILEHANDLE;
+            var profileToEdit;
+            var PROFILE_ID = {{profile.id}};
             var CONTROLOPTIONS = new ControlOptions();
             var gamepads = navigator.getGamepads();
 
+            CONTROLOPTIONS.onOptionsLoaded = function(){
+                $(".select-axes").html(CONTROLOPTIONS.getAxesOptionsString());
+                $(".select-button").html(CONTROLOPTIONS.getButtonOptionsString());
+                $.each($("select"), function(i, obj){
+                    $(obj).val($(obj).attr("temp-value"));
+                });
+            }
 
+            new ProfileHandler().onProfilesLoaded = function(profiles){
+                profiles.forEach(function(profile){
+                    if(profile.id == PROFILE_ID){
+                        profileToEdit = profile;
+                        return;
+                    }
+                });
+            }
             
 
             /**addGamepadInfo
@@ -215,21 +223,52 @@
             //setup the indicator logic on loop
             setInterval(function(){updateMenuIndicators();}, 10);
         </script>
-    </head>
-    <body>
+
         <div class="row">
             <div class="col-md-6 panel">
                 <input type="text" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
             </div>
             <div class="col-md-3">
                 <h1>{{profile["gamepads"]|length}}</h1>
-                <p>{{profile["gamepads"]}}</p>
                 <button class="btn btn-primary">Add Gamepad</button>
             </div>
             <div class="col-md-3">
                 <button class="btn btn-primary">Save</button>
                 <button class="btn btn-info">Cancel</button>
             </div>
+        </div>
+        <div class="row">
+            {% for gamepad in profile["gamepads"] %}    
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" placeholder="Enter Gamepad Name" value="{{gamepad['friendly_name']}}"/>
+                    </div>
+                    <div class="col-md-6">
+                        <p>{{gamepad["name"]}}</p>
+                        <button class="btn btn-danger" onclick="removeGamepad({{loop.index0}})">Delete Gamepad</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {%for axes in gamepad.axes%}
+                            <p>Axes {{loop.index}}:</p>
+                            <select class="select-axes" temp-value='{{axes}}'>
+
+                            </select>
+                        {%endfor%}
+                    </div>
+                    <div class="col-md-8">
+                        {%for button in gamepad.buttons%}
+                            <p>Button {{loop.index}}:</p>
+                            <select class="select-button" temp-value='{{button}}'>
+                            
+                            </select>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
         </div>
 
 
