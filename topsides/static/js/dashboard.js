@@ -107,6 +107,8 @@ class dashboard{
 
 
     navigate(url){
+        if(this._onpageclose instanceof Function)
+            this._onpageclose();
         this._clearPage();
         runPythonGET(url, null, function(pageData){
             $dash.filename = url;
@@ -118,12 +120,16 @@ class dashboard{
 
 
     loadPage(pageURL){
+        if(this._onpageclose instanceof Function)
+            this._onpageclose();
         this._clearPage();
+        $("#loadingSpinner").toggleClass("hide", false);
 
         runPythonGET("dashboard/page?name=" + pageURL, null, function(pageData){
             $dash.filename = pageURL;
             setQueryParameter("page", pageURL);
             $($dash._bodyContainer).html(pageData.responseText);
+            $("#loadingSpinner").toggleClass("hide", true);
             //run on page open event
             $dash._runDashboardAnimation($dash._onpageopen, null);
         });

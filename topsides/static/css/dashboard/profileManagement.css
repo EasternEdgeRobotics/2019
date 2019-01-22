@@ -14,9 +14,11 @@
     top: 0;
     left: 0;
 
+}
+
+.grid-item.init{
     transition-property: left, top;
     transition-duration: 0.5s;
-
 }
 
 .item-content{
@@ -30,8 +32,9 @@
    /* text-align: center;*/
 }
 
-    .item-content.center{
+    .center{
         text-align: center;
+        justify-content: center;
     }
 
     .item-content .date-modified{
@@ -122,6 +125,11 @@ EDIT PAGE
     transition: 0.5s;
 }
 
+.vertical-center{
+    display: flex;
+    align-items: center;
+}
+
 .gamepad-id{
     position: absolute;
     top: 5px;
@@ -153,3 +161,7 @@ EDIT PAGE
     .panel-gamepad select{
         width: 70px;
     }
+
+.center .btn{
+    margin: 5px;
+}

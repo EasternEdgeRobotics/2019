@@ -119,3 +119,13 @@ EXTENRAL PAGE HEADER
     filter: brightness(0.6);
     opacity: 1;
 }
+
+.hide{
+    display: none !important;
+}
+
+#loadingSpinner{
+    position: fixed;
+    top: calc(50% - 1rem);
+    left: calc(50% - 1rem);
+}

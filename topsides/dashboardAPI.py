@@ -3,6 +3,7 @@ import json
 import math
 from TopsidesGlobals import GLOBALS
 import profileAPI
+import time
 
 dashboard_api = Blueprint("dashboard_api", __name__)
 

@@ -24,12 +24,17 @@
             }
 
             new ProfileHandler().onProfilesLoaded = function(profiles){
+                var isNewProfile = true;
                 profiles.forEach(function(profile){
                     if(profile.id == parseInt(PROFILE_ID)){
                         profileToEdit = profile;
+                        isNewProfile = false;
                         return;
                     }
                 });
+                if(isNewProfile){
+                    profileToEdit = {"name":"", "id": PROFILEHANDLE.getNextId(), "gamepads":[]};
+                }
             }
             
 
@@ -104,7 +109,8 @@
                 if(profileToEdit["gamepads"].length >= 4){
                     $("#btnAddGamepad").attr('disabled', '');
                 }
-
+                
+                $("#gamepadCount").html(profileToEdit.gamepads.length);
                 $("#popupAddGamepad").toggleClass("hidden", true);
                 addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
@@ -114,11 +120,12 @@
             }
 
             function removeGamepad(profileIndex){
-                profileToEdit["gamepads"].splice(profileIndex);
+                profileToEdit["gamepads"].splice(profileIndex,1);
                 if(profileToEdit.gamepads.length < 4){
                     $("#btnAddGamepad").removeAttr('disabled');
                 }
                 $(".panel-gamepad[gamepad-index='"+profileIndex+"']").remove();
+                $("#gamepadCount").html(profileToEdit.gamepads.length);
             }
             
 
@@ -126,6 +133,8 @@
             function saveProfile_click(){
                 
                 profileToEdit.name = $("#profileName").val();
+                var d = new Date();
+                profileToEdit.modified = d.getFullYear() + "-" + d.getMonth()+1 + "-" + d.getDate();
 
                 profileToEdit.gamepads = [];
                 
@@ -134,7 +143,7 @@
                     profileToEdit.gamepads.push(freshGamepad());
                     
                     profileToEdit.gamepads[gamepad_index].friendly_name = $(panel).find(".gamepad-name").val();
-                    profileToEdit.gamepads[gamepad_index].name = $(panel).find(".gamepad-id").val();
+                    profileToEdit.gamepads[gamepad_index].name = $(panel).find(".gamepad-id").html();
 
                     $.each($(panel).find(".select-button"), function(i2, bs){
                         profileToEdit.gamepads[gamepad_index].buttons[$(bs).attr("button-index")] = $(bs).val();
@@ -198,7 +207,7 @@
 
         <div class="row">
             <div class="col-md-6 panel init">
-                <div class="item-content">
+                <div class="item-content vertical-center">
                     <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
                 </div>
             </div>
@@ -212,9 +221,9 @@
                 </div>
             </div>
             <div class="col-md-3 panel init">
-                <div class="item-content center">
-                    <button class="btn btn-primary" onclick="saveProfile_click()">Save</button>
-                    <button class="btn btn-secondary" onclick="cancelEdit_click()">Cancel</button>
+                <div class="item-content center vertical-center">
+                    <button class="btn btn-primary no-margin" onclick="saveProfile_click()">Save</button>
+                    <button class="btn btn-secondary no-margin" onclick="cancelEdit_click()">Cancel</button>
                 </div>
             </div>
         </div>

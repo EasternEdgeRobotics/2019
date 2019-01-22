@@ -14,9 +14,11 @@
     top: 0;
     left: 0;
 
+}
+
+.grid-item.init{
     transition-property: left, top;
     transition-duration: 0.5s;
-
 }
 
 .item-content{

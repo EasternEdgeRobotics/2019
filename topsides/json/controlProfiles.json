@@ -6,96 +6,18 @@
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "heave",
-                    "roll",
-                    "pitch"
-                ],
-                "friendly_name": "Main Controller"
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "heave",
-                    "roll",
-                    "pitch"
-                ],
-                "friendly_name": "Main Controller"
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "heave",
-                    "roll",
-                    "pitch"
-                ],
-                "friendly_name": "Main Controller"
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 ],
                 "axes": [
                     "sway",
@@ -107,7 +29,8 @@
                 ],
                 "friendly_name": "Main Controller"
             }
-        ]
+        ],
+        "modified": "2019-01-22"
     },
     {
         "name": "Mark's Bullshit",
@@ -164,5 +87,41 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Troake",
+        "id": 6,
+        "gamepads": [
+            {
+                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "heave_up",
+                    "heave_down",
+                    "roll_ccw",
+                    "roll_cw",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "pitch"
+                ],
+                "friendly_name": "Main"
+            }
+        ],
+        "modified": "2019-01-22"
     }
 ]
