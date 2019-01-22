@@ -84,7 +84,8 @@
             */
             function addGamepad(index){
                 gamepad = gamepads[index];
-                newGamepad = {"name": gamepad["id"], "buttons": [], "axes":[]}
+                newGamepad = freshGamepad();
+                newGamepad.name = gamepad.id;
                 
                 $.each(gamepad["axes"], function(i, obj){
                     newGamepad['axes'][i] = '';
@@ -100,10 +101,13 @@
                 addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
 
+            function freshGamepad(){
+                return {"name": "", "buttons": [], "axes":[]};
+            }
+
             function removeGamepad(profileIndex){
                 profileToEdit["gamepads"].splice(profileIndex);
-                $("#gamepadEdit" + profileIndex).remove();
-                $("#gamepadSelector" + profileIndex).remove();
+                $(".panel-gamepad[gamepad-index='"+profileIndex+"']").remove();
             }
             
 
@@ -112,18 +116,21 @@
                 
                 profileToEdit.name = $("#profileName").val();
 
-                $.each($(".panel-gamepad"), function(i, panel){
-                    var gamepad_index = $(panel).attr("gamepad-index");
-                    
-                    profileToEdit["gamepads"][gamepad_index]["friendly_name"] = $(panel).find(".gamepad-name").val();
+                profileToEdit.gamepads = [];
+                
+                $.each($(".panel-gamepad"), function(gamepad_index, panel){
 
+                    profileToEdit.gamepads.push(freshGamepad());
+                    
+                    profileToEdit.gamepads[gamepad_index].friendly_name = $(panel).find(".gamepad-name").val();
+                    profileToEdit.gamepads[gamepad_index].name = $(panel).find(".gamepad-id").val();
 
                     $.each($(panel).find(".select-button"), function(i2, bs){
-                        profileToEdit["gamepads"][gamepad_index]['buttons'][$(bs).attr("button-index")] = $(bs).val();
+                        profileToEdit.gamepads[gamepad_index].buttons[$(bs).attr("button-index")] = $(bs).val();
                     });
 
                     $.each($(panel).find(".select-axes"), function(i2, as){
-                        profileToEdit['gamepads'][gamepad_index]['axes'][$(as).attr("axes-index")] = $(as).val();
+                        profileToEdit.gamepads[gamepad_index].axes[$(as).attr("axes-index")] = $(as).val();
                     });
                 });
 

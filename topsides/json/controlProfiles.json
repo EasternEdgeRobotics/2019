@@ -4,7 +4,7 @@
         "id": 3,
         "gamepads": [
             {
-                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
+                "name": "",
                 "buttons": [
                     null,
                     null,
@@ -27,39 +27,10 @@
                 "axes": [
                     "sway",
                     "surge",
-                    "yaw",
+                    "roll",
                     "pitch"
                 ],
                 "friendly_name": "Main Controller"
-            },
-            {
-                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
-                "buttons": [
-                    null,
-                    null,
-                    "surge_backwards",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "axes": [
-                    "surge",
-                    null,
-                    null,
-                    null
-                ],
-                "friendly_name": "fds"
             }
         ],
         "undefined": "Main Controller"
