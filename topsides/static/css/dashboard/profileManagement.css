@@ -14,6 +14,9 @@
     top: 0;
     left: 0;
 
+    transition-property: left, top;
+    transition-duration: 0.5s;
+
 }
 
 .item-content{
@@ -116,6 +119,7 @@ EDIT PAGE
 
 .panel{
     margin: 10px 0;
+    transition: 0.5s;
 }
 
 .gamepad-id{
@@ -123,6 +127,12 @@ EDIT PAGE
     top: 5px;
     right: 10px;
     font-size: 12px;
+}
+
+.panel.init{
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }
 
 .panel-gamepad .item-content{

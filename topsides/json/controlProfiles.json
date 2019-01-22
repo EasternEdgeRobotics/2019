@@ -1,44 +1,86 @@
 [
     {
-        "name": "Troake",
-        "id": 3,
+        "name": "One Joy",
+        "id": 4,
         "gamepads": [
             {
-                "name": "",
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    "heave_down",
-                    "heave_up",
-                    "roll_ccw",
-                    "roll_cw",
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
                 ],
                 "axes": [
                     "sway",
                     "surge",
+                    "yaw",
+                    "heave",
                     "roll",
                     "pitch"
                 ],
                 "friendly_name": "Main Controller"
-            }
-        ],
-        "undefined": "Main Controller"
-    },
-    {
-        "name": "One Joy",
-        "id": 4,
-        "gamepads": [
+            },
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "heave",
+                    "roll",
+                    "pitch"
+                ],
+                "friendly_name": "Main Controller"
+            },
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "heave",
+                    "roll",
+                    "pitch"
+                ],
+                "friendly_name": "Main Controller"
+            },
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
