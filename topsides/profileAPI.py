@@ -145,6 +145,6 @@ def saveProfile(profile):
 def getProfileByID(id):
     profiles = loadProfiles()
     for profile in profiles:
-        if(profile['id'] == id):
+        if(str(profile['id']) == str(id)):
             return profile
     return None

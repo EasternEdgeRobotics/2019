@@ -14,23 +14,25 @@
         <script>
             var PROFILEHANDLE;
             
-            $dash.animation.onPageOpen = function(){
+            $dash.pageLoad(function(){
+                PROFILEHANDLE = new ProfileHandler();
+                PROFILEHANDLE.onProfilesLoaded = function(profiles){
+                    profiles.forEach(function(profile){
+                        console.log("fdsfds");
+                        $("#profileInsert").append("<div class='grid-item profile-container'><p class='date-modified'>n/a</p><h3 class='name'>"+profile.name+"</h3><p class='gamepad-count'>"+profile.gamepads.length+"</p><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div>");
+                    });
+                }
+
                 $(".grid").masonry({
                     itemSelector: ".grid-item",
                     //columnWidth: ".col-sm-3",
                     percentPosition: true
                 });
-                PROFILEHANDLE = new ProfileHandler();
-                PROFILEHANDLE.onProfilesLoaded = function(profiles){
-                    profiles.forEach(function(profile){
-                        $("#profileInsert").append("<div class='grid-item profile-container'><p class='date-modified'>n/a</p><h3 class='name'>"+profile.name+"</h3><p class='gamepad-count'>"+profile.gamepads.length+"</p><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div>");
-                    });
-                }
-            };
+            });
 
             
             function editProfile_click(id){
-                $dash.navigate();
+                $dash.navigate("dashboard/editProfile?id="+id);
             }
             
 

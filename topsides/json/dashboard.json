@@ -7,7 +7,7 @@
         },
         {
             "name": "Profile Management",
-            "file_name": "controlProfileEdit.html",
+            "file_name": "dashboard/dashboard-profiles.html",
             "icon_url": "static/res/icons/baseline-assignment_ind-24px.svg"
         }
     ]

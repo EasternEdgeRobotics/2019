@@ -7,14 +7,14 @@
         
         var graphs = [];
 
-        $dash.animation.onPageOpen = function(){
+        $dash.pageLoad(function(){
             initGraphs();
             $(".grid").masonry({
                 itemSelector: ".grid-item",
                 //columnWidth: ".col-sm-3",
                 percentPosition: true
             });
-        };
+        });
 
         function initGraphs(){
             //graphs.push(new Graph("pi1Ping", "piGraph2"));

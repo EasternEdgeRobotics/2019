@@ -222,7 +222,8 @@
                 <input type="text" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
             </div>
             <div class="col-md-3">
-                <h1>{{len(profile["gamepads"])}}</h1>
+                <h1>{{profile["gamepads"]|length}}</h1>
+                <p>{{profile["gamepads"]}}</p>
                 <button class="btn btn-primary">Add Gamepad</button>
             </div>
             <div class="col-md-3">
