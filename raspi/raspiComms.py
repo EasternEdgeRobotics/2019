@@ -33,7 +33,7 @@ while True:
                 exec(open("fControl.py").read())
             except Exception as e:
                 response = str(e)
-                print(response)           
+                #print(response)           
             del sys.argv[1:]
         continue
     if data == "exit":

@@ -3,17 +3,16 @@ import socket
 import sys
 import queue
 import time
+import threading
 from TopsidesGlobals import GLOBALS
 
-
-
-send = queue.Queue()
 received = queue.Queue()
+s = None
 
 #queue to hold send commands to be read by simulator
 simulator = queue.Queue()
 
-def startComms(start_flag):
+def startComms():
     """
     Comms start.
 
@@ -22,6 +21,8 @@ def startComms(start_flag):
     messages to send to the ROV. It can send messages back using received
     """
     # get ports and local ip address from global file
+    global s
+    ipSend = GLOBALS['ipSend']
     portSend = GLOBALS['portSend']
     ipHost = GLOBALS['ipHost']
     portHost = GLOBALS['portHost']
@@ -29,7 +30,7 @@ def startComms(start_flag):
     # try opening a socket for communication
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(1)
+        #s.settimeout(1)
     except socket.error:
         # TODO: Change to ouput on gui
         print("Failed To Create Socket")
@@ -40,23 +41,22 @@ def startComms(start_flag):
     # bind the ip and port of topsides to the socket and loop coms
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((ipHost, portHost))
-    # notify the server that the comms have been started
-    start_flag.set()
+    # Setup threading for communications
+    t = threading.Thread(target=receiveData)
+    t.start()
+
+def sendData(inputData):
+    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+        
+        
+def receiveData():
     while True:
-        # TODO: change from getting data from user to getting data from queue
-        # send data to the raspi
-        ipSend, inputData = send.get()
-        s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
-        
-        
-        if inputData == "exit":
-            break
-        # TODO: Change to saving to log file on error
-        # receive response from raspi and log if error
         try:
+            print('started')
             outputData, addr = s.recvfrom(1024)
+            print('get data')
         except socket.timeout as e:
-            print("response timeout")
+            print('response timeout')
             continue
         outputData = outputData.decode("utf-8")
         print(outputData)
@@ -64,5 +64,5 @@ def startComms(start_flag):
 
 
 def putMessage(msg):
-    send.put(msg)
+    sendData(msg)
     simulator.put(msg, timeout=0.005)

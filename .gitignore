@@ -10,3 +10,5 @@ raspi/print.py
 topsides/json/controlProfiles.json
 # Visual Studio Code
 .vscode/
+raspi/json/Raspi.json
+topsides/json/Topsides.json

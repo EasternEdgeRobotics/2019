@@ -186,5 +186,78 @@
             }
         ],
         "undefined": "undefined"
+    },
+    {
+        "name": "Keith",
+        "id": 7,
+        "gamepads": [
+            {
+                "name": "Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "",
+                    "",
+                    "",
+                    "heave",
+                    "rotateCam1",
+                    "",
+                    "",
+                    ""
+                ],
+                "friendly_name": "undefined"
+            }
+        ],
+        "undefined": "undefined"
+    },
+    {
+        "name": "XBox",
+        "id": 8,
+        "gamepads": [
+            {
+                "name": "Xbox 360 Controller (XInput STANDARD GAMEPAD)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "heave_up",
+                    "heave_down",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "roll_cw",
+                    "roll_ccw",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "pitch"
+                ],
+                "friendly_name": "undefined"
+            }
+        ],
+        "undefined": "undefined"
     }
 ]

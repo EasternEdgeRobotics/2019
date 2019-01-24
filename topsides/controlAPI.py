@@ -98,8 +98,9 @@ def sendControlValues():
             "aft-camera": rotateCam2,
         }
         for control in trusterData:
+            print("in loop")
             val = thrusterPorts[control]
-            topsidesComms.send.put([GLOBALS['ipSend1'], "fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val)])
+            topsidesComms.sendData("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
         return "good"
 
 

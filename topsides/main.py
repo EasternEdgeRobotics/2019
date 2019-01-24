@@ -12,8 +12,12 @@ from guiAPI import gui_api
 from adminAPI import adminAPI
 from simulatorAPI import simulatorAPI
 from TopsidesGlobals import GLOBALS
+import gevent.pywsgi
+import gevent.monkey
+import werkzeug.serving
 import topsidesComms
 
+gevent.monkey.patch_all()
 app = Flask(__name__)
 CORS(app)
 
@@ -25,10 +29,6 @@ app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
-
-# Setup threading for communications
-start_flag = threading.Event()
-t = threading.Thread(target=topsidesComms.startComms, args=[start_flag])
 
 
 @app.after_request
@@ -71,13 +71,17 @@ def testGetPressure():
     value = random.randint(99, 105)
     return json.dumps(value)
 
+@werkzeug.serving.run_with_reloader
+def run_server():
+    """Run the gevent production server with reloading enabled."""
+    ws = gevent.pywsgi.WSGIServer(listener=('0.0.0.0', GLOBALS['flaskPort']), application=app)
+    ws.serve_forever()
+
 """
 Server start.
 This is a standard python function that is True when this file is called from the command line (python3 main.py)
 (This statement is false for calls to the server)
 """
 if __name__ == "__main__":
-    t.start()
-    while not start_flag.wait(5):
-        print("topsidesComms not responding")
-    app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)
+    topsidesComms,startComms()
+    run_server()
