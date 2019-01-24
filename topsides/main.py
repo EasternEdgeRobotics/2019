@@ -10,6 +10,7 @@ from notificationAPI import notificationAPI
 from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
+import dashboardAPI
 from adminAPI import adminAPI
 from simulatorAPI import simulatorAPI
 from TopsidesGlobals import GLOBALS
@@ -31,6 +32,7 @@ app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
+app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
 
 # Setup threading for communications
 t = threading.Thread(target=topsidesComms.startComms)
@@ -51,7 +53,7 @@ def returnGui():
 
     :return: rendered index.html web page
     """
-    return render_template("index.html")
+    return dashboardAPI.dashboard()
 
 
 @app.route("/controlTest")
