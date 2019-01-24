@@ -85,5 +85,4 @@ This is a standard python function that is True when this file is called from th
 (This statement is false for calls to the server)
 """
 if __name__ == "__main__":
-    topsidesComms,startComms()
     run_server()

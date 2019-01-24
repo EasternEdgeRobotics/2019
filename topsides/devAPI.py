@@ -33,5 +33,5 @@ def getDevInput():
     # devData is the variable the stores the data submitted from the webpage.
     # it is printed out to console for testing purposes.
     devData = request.json
-    topsidesComms.send.put([GLOBALS['ipSend1'], devData])
+    topsidesComms.putMessage(devData)
     return jsonify("")

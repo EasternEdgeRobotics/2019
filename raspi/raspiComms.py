@@ -51,11 +51,10 @@ while True:
     sys.argv.append(data[lastSpace:])
 
     # try opening and executing the file
-    response = "Done"
     try:
         exec(open(file).read())
     except Exception as e:
         response = str(e)
+        s.sendto(response.encode('utf-8'), (ipSend, portSend))
+        print("sent response: " + response + " to " + str(ipSend) + " " + str(portSend))
     del sys.argv[1:]
-    s.sendto(response.encode('utf-8'), (ipSend, portSend))
-    print("sent response: " + response + " to " + str(ipSend) + " " + str(portSend))
