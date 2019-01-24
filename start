@@ -11,7 +11,7 @@ fi
 
 # Start / restart raspberry pi communications
 sshpass -p raspberry ssh pi@192.168.88.5 /bin/sh -c '"pkill -f raspiComms.py"'
-xterm -e sshpass -p raspberry ssh pi@192.168.88.5 /bin/sh -c '"cd /home/pi/raspi/ && python3 raspiComms.py"' &
+xterm -geometry 93x31+0+0 -e sshpass -p raspberry ssh pi@192.168.88.5 /bin/sh -c '"cd /home/pi/raspi/ && python3 raspiComms.py"' &
 
 # Start / restart topsides server
 sudo pkill -f main.py

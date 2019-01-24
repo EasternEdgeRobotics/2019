@@ -94,7 +94,8 @@
                     "rotateCam1",
                     "",
                     ""
-                ]
+                ],
+                "friendly_name": "undefined"
             },
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
@@ -119,9 +120,11 @@
                     "rotateCam2",
                     "",
                     ""
-                ]
+                ],
+                "friendly_name": "undefined"
             }
-        ]
+        ],
+        "undefined": "undefined"
     },
     {
         "name": "Test",
