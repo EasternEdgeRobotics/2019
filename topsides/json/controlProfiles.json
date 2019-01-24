@@ -1,59 +1,23 @@
 [
     {
-        "name": "Troake",
-        "id": 3,
-        "gamepads": [
-            {
-                "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "heave_down",
-                    "heave_up",
-                    "roll_ccw",
-                    "roll_cw",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "pitch"
-                ],
-                "friendly_name": "Main Controller"
-            }
-        ],
-        "undefined": "Main Controller"
-    },
-    {
         "name": "One Joy",
         "id": 4,
         "gamepads": [
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
                 ],
                 "axes": [
                     "sway",
@@ -66,7 +30,7 @@
                 "friendly_name": "Main Controller"
             }
         ],
-        "undefined": "Main Controller"
+        "modified": "2019-01-22"
     },
     {
         "name": "Mark's Bullshit",
@@ -125,36 +89,9 @@
         ]
     },
     {
-        "name": "Test",
+        "name": "Troake",
         "id": 6,
         "gamepads": [
-            {
-                "name": "Performance Designed Products PDP Wired Controller for Xbox One - Crimson Red (Vendor: 0e6f Product: 02a2)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "surge",
-                    "sway",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "friendly_name": "undefined"
-            },
             {
                 "name": "\u00a9Microsoft Corporation Controller (STANDARD GAMEPAD Vendor: 045e Product: 028e)",
                 "buttons": [
@@ -162,10 +99,10 @@
                     "",
                     "",
                     "",
-                    "",
-                    "",
-                    "",
-                    "",
+                    "heave_up",
+                    "heave_down",
+                    "roll_ccw",
+                    "roll_cw",
                     "",
                     "",
                     "",
@@ -177,12 +114,12 @@
                     ""
                 ],
                 "axes": [
-                    "rotateCam1",
-                    "rotateCam2",
-                    "",
-                    ""
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "pitch"
                 ],
-                "friendly_name": "undefined"
+                "friendly_name": "Main"
             }
         ],
         "undefined": "undefined"
