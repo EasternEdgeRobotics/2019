@@ -1,5 +1,65 @@
 [
     {
+        "name": "Primary",
+        "id": 5,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "yaw",
+                    "rotateCam1",
+                    null,
+                    null
+                ],
+                "friendly_name": "joystickhorizontal"
+            },
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "axes": [
+                    "roll",
+                    "pitch",
+                    "heave",
+                    "rotateCam2",
+                    null,
+                    null
+                ],
+                "friendly_name": "joystickvertical"
+            }
+        ],
+        "undefined": "undefined",
+        "modified": "2019-01-24"
+    },
+    {
         "name": "One Joy",
         "id": 4,
         "gamepads": [
@@ -31,65 +91,6 @@
             }
         ],
         "modified": "2019-01-22"
-    },
-    {
-        "name": "Mark's Bullshit",
-        "id": 5,
-        "gamepads": [
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "sway",
-                    "surge",
-                    "yaw",
-                    "rotateCam1",
-                    "",
-                    ""
-                ],
-                "friendly_name": "undefined"
-            },
-            {
-                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
-                "buttons": [
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    ""
-                ],
-                "axes": [
-                    "roll",
-                    "pitch",
-                    "heave",
-                    "rotateCam2",
-                    "",
-                    ""
-                ],
-                "friendly_name": "undefined"
-            }
-        ],
-        "undefined": "undefined"
     },
     {
         "name": "Troake",
