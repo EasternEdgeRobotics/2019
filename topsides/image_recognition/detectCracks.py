@@ -16,21 +16,64 @@ while(1):
     # convert bgr colour to hsv for better colour detection
     hsv = cv.cvtColor(blur, cv.COLOR_BGR2HSV)
     # create blue boundaries
-    lower_blue = np.array([110,30,30])
-    upper_blue = np.array([130,255,255])
+    lower_blue = np.array([100,100,30])
+    upper_blue = np.array([150,255,255])
     # create mask based on blue detection
     mask = cv.inRange(hsv, lower_blue, upper_blue)
+    res = cv.bitwise_and(frame, frame, mask= mask)
+
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    corners = cv.goodFeaturesToTrack(mask, 4, 0.01, 10)
+    if corners is not None:
+        corners = np.int0(corners)
+        cord = []
+        for i in corners:
+            x,y = i.ravel()
+            cord.append([x, y])
+            cv.circle(frame, (x, y), 3, 255, -1)
+
+    print(cord)
+    def sort(elem):
+        return elem[1]
+    cord.sort(key=sort)
+    print('sort: ', cord)
+    def swap(l, i, j):
+        temp = l[i]
+        l[i] = l[j]
+        l[j] = temp
+    if cord[0][0] > cord[1][0]:
+        swap(cord, 0, 1)
+    if cord[2][0] > cord[3][0]:
+        swap(cord, 2, 3)
+    print('swap: ', cord)
+    len1 = cmath.sqrt(((cord[3][1] - cord[2][1])**2) + ((cord[3][0] - cord[2][0])**2))
+    len2 = cmath.sqrt(((cord[1][1] - cord[0][1])**2) + ((cord[1][0] - cord[0][0])**2))
+    length = (len1 + len2) / 2
+    wid1 = cmath.sqrt(((cord[3][1] - cord[1][1])**2) + ((cord[3][0] - cord[1][0])**2))
+    wid2 = cmath.sqrt(((cord[2][1] - cord[0][1])**2) + ((cord[2][0] - cord[0][0])**2))
+    width = (wid1 + wid2) / 2
+    if length > width:
+        ratio = length/width
+    else:
+        ratio = width/length
+    length = ratio * 1.9
+    length = length / 0.1
+    length = round(length)
+    length = length * 0.1
+    font = cv.FONT_HERSHEY_SIMPLEX
+    cv.putText(frame, str(length) + ' cm', (20, 400), font, 3, (255,255,255), 2, cv.LINE_AA)
     # find the contours in the blue
-    _, contours, _ = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
+    """_, contours, _ = cv.findContours(mask, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
     # draw the detected contours on top of the main frame
     for contour in contours:
         area = cv.contourArea(contour)
         rect = cv.minAreaRect(contour)
         box = cv.boxPoints(rect)
         box = np.int0(box)
-        if area > 5000:
-            # cv.drawContours(frame, contour, -1, (0,255,0), 3)
-            cv.drawContours(frame,[box],0,(0,255,0),2)    
+
+        # if area > 4000:
+            #cv.drawContours(frame, contour, -1, (0,255,0), 3)
+            #cv.drawContours(frame,[box],0,(0,255,0),2)    
     
     # based on the measurements of the detected contours, find aspect ratio
     x,y,w,h = cv.boundingRect(mask)
@@ -46,9 +89,8 @@ while(1):
         length = length * 0.1
         font = cv.FONT_HERSHEY_SIMPLEX
         cv.putText(frame, str(length) + ' cm', (20, 400), font, 3, (255,255,255), 2, cv.LINE_AA)
-    
+    """
     # show the final video output(s)
-    res = cv.bitwise_and(frame, frame, mask= mask)
     cv.imshow('frame', frame)
     cv.imshow('mask', mask)
     cv.imshow('res', res)
