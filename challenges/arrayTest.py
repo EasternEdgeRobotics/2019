@@ -11,6 +11,8 @@ arrays = [[1,5,8,2,0,3,4]
 key = [8, 8, 1, None, None, 8]
 for i in range(0, len(arrays)):
     if FindLargest.FindLargest(arrays[i]) != key[i]:
+        print(FindLargest.FindLargest(arrays[i]))
+        print(key[i])
         print("Not Correct")
     else:
         print("Correct")

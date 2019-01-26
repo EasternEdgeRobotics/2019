@@ -12,6 +12,9 @@ Base url for opening the GUI. This route will return the index.html
 def returnGui():
     return render_template("index.html")
 
+@app.route("/conquest")
+def conquest():
+    return render_template("conquest.html")
 
 """
 Return page for control profile edit
