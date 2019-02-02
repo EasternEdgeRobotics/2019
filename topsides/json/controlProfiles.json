@@ -127,5 +127,42 @@
             }
         ],
         "modified": "2019-01-22"
+    },
+    {
+        "name": "Keith",
+        "id": 7,
+        "gamepads": [
+            {
+                "name": "Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    "",
+                    "",
+                    "",
+                    "yaw",
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "friendly_name": ""
+            }
+        ],
+        "modified": "2019-11-2"
     }
 ]

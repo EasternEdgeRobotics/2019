@@ -38,6 +38,7 @@ def sendData():
 
 #this function receives data from topsides
 def receiveData():
+    global t
     while True:
         # receive the data from topsides
         try:
@@ -72,12 +73,18 @@ def receiveData():
         # Setup threading for receiving data
         flag = threading.Event()
         t.append(threading.Thread(target=executeData, args=(file, flag,)))
+        print(t)
         t[len(t) - 1].start()
         flag.wait()
         del sys.argv[1:]
+        t = [i for i in t if i.isAlive()]
 
 def executeData(file, flag):
-    exec(open(file).read(), {"send":send, "flag":flag})
+    try:
+        exec(open(file).read(), {"send":send, "flag":flag})
+    except Exception as e:
+        send.put(str(e))
+        flag.set()
 
 # Setup threading for receiving data
 t.append(threading.Thread(target=sendData))
