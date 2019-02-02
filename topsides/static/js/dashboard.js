@@ -10,7 +10,7 @@ $(document).ready(function(){
         $.each(data.menus, function(index, menu){
             $.get(menu.icon_url, function(data){
                 var svg = $(data).find("svg").attr("class", "nav-svg col-5 icon");
-                var button = $("<div data-page='" + menu.file_name + "' class='btn-nav row'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>" + menu.name + "</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
+                var button = $("<div data-page='" + menu.file_name + "' class='btn-nav row'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>" + menu.name + "</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
                 if(index == 0 && getQueryParameter("page") == null){
                     navButtonClick(button);
                 }else if(decodeURIComponent(getQueryParameter("page")) == menu.file_name){

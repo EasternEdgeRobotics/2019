@@ -62,7 +62,15 @@ body, html{
     margin: 0;
 }
 
+.btn-nav svg{
+    height: 100%;
+}
 
+@media screen and (min-width: 768px) and (max-width: 992px){
+    .btn-nav .text{
+        display: none;
+    }
+}
 
 .btn-nav path, .btn-nav .text{
     fill: #3f3f3f;
