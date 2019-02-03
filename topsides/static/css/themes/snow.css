@@ -47,7 +47,10 @@ body[theme='@theme'] .eer-logo{}
 
 body[theme='@theme'] .graph{}
 
-body[theme='@theme'] .graph-primary{}
+body[theme='@theme'] .graph-primary{
+    /*background-image: linear-gradient(to right, rgb(244,0,82), rgb(233,30, 99));*/
+    background-image: linear-gradient(to right, rgb(89, 180, 233), rgb(94,187, 255));
+}
 
 body[theme='@theme'] .graph-secondary{}
 

@@ -32,7 +32,6 @@ canvas{
     width: 100% !important;
     height: 200px !important;
     border-radius: 15px 15px 0px 0px;
-    background-image: linear-gradient(to right, rgb(244,0,82), rgb(233,30, 99));
 }
 
 .data-indicator{
