@@ -139,6 +139,9 @@ body[theme='@theme'] .panel{
 
 
 
+    body[theme='@theme'] .dashboard-header .head-content{
+        background-color: white;
+    }
 
 
 /*
@@ -206,13 +209,19 @@ body[theme='@theme'] .badge-dark{}
 
 body[theme='@theme'] .btn{}
 
-body[theme='@theme'] .btn-primary{}
+body[theme='@theme'] .btn-primary{
+    background: rgba(31,128,207,1);
+    background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
+}
 
 body[theme='@theme'] .btn-secondary{}
 
 body[theme='@theme'] .btn-success{}
 
-body[theme='@theme'] .btn-danger{}
+body[theme='@theme'] .btn-danger{
+    background: rgba(244,69,56,1);
+    background: linear-gradient( to right, rgb(244,69,56), rgb(250,121,120));
+}
 
 body[theme='@theme'] .btn-warning{}
 

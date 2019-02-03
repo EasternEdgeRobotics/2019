@@ -110,6 +110,9 @@ body[theme='@theme'] .panel{}
     body[theme='@theme'] .panel h6{}
 
 
+    /*  External Page Header  */
+    body[theme='@theme'] .dashboard-header .head-content{}
+
 
 /*
   ____              _       _                   

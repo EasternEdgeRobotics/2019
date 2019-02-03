@@ -5,7 +5,6 @@
 
         $dash.pageLoad(function(){
             runPythonGET("themes/getnames", null, function(data){
-                console.log(data);
                 data.forEach(function(name){
                     $("#themeSelect").append("<option value='" + name + "'>" + cleanName(name) + "</option>");
                 });
