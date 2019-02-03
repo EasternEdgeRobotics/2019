@@ -138,21 +138,3 @@
     display: inline-block;
     vertical-align: top;
 }
-
-
-select{
-    padding: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: rgb(255, 255, 255);
-    border: none;
-    border-bottom: 1px solid black;
-    transition: 0.5s;
-}
-
-select option{
-
-    text-align: center;
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 5px;
-    /*background-color: rgb(120, 200, 255);*/
-}

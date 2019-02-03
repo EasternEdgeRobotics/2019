@@ -14,6 +14,11 @@
             "name": "Control",
             "file_name": "dashboard/control.html",
             "icon_url": "static/res/icons/baseline-games-24px.svg"
+        },
+        {
+            "name": "Themes",
+            "file_name": "dashboard/themes.html",
+            "icon_url": "static/res/icons/baseline-insert_photo-24px.svg"
         }
     ],
 

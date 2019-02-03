@@ -206,13 +206,13 @@
         </script>
 
         <div class="row">
-            <div class="col-md-6 panel init">
-                <div class="item-content vertical-center">
+            <div class="col-md-6 init">
+                <div class="item-content panel vertical-center">
                     <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
                 </div>
             </div>
-            <div class="col-md-3 panel init">
-                <div class="item-content relative overflow">
+            <div class="col-md-3 init">
+                <div class="item-content panel relative overflow">
                     <h1 id='gamepadCount'>{{profile["gamepads"]|length}}</h1>
                     <button id='btnAddGamepad' class="btn btn-primary" onclick="openGamepadMenu_click()" {%if profile['gamepads']|length >= 4%} disabled {%endif%}>Add Gamepad</button>
                     <div id="popupAddGamepad" class="hidden">
@@ -220,8 +220,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 panel init">
-                <div class="item-content center vertical-center">
+            <div class="col-md-3 init">
+                <div class="item-content panel center vertical-center">
                     <button class="btn btn-primary no-margin" onclick="saveProfile_click()">Save</button>
                     <button class="btn btn-secondary no-margin" onclick="cancelEdit_click()">Cancel</button>
                 </div>
@@ -230,8 +230,8 @@
         <div class="row" id="gamepadInsert">
             {% for gamepad in profile["gamepads"] %}
             {% set gamepadLoop = loop%}    
-            <div class="col-lg-6 panel init panel-gamepad" gamepad-index='{{loop.index0}}'>
-                <div class="item-content">
+            <div class="col-lg-6 init" gamepad-index='{{loop.index0}}'>
+                <div class="item-content panel panel-gamepad">
                     <p class="gamepad-id">{{gamepad["name"]}}</p>
                     <div class="row">
                         <div class="col-md-6">

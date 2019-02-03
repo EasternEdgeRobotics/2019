@@ -1,8 +1,8 @@
 {
     "admin_password": "whynick",
-    "ipHost": "192.168.88.2",
+    "ipHost": "localhost",
     "portHost": 5001,
-    "ipSend": "192.168.88.5",
+    "ipSend": "localhost",
     "portSend": 5000,
     "flaskPort": 80,
     "thrusterPorts": {
@@ -15,5 +15,6 @@
         "aft-port-horz": 6,
         "aft-star-horz": 7
     },
-    "simulatorEnabled": true
+    "simulatorEnabled": true,
+    "defaultTheme": "snow"
 }

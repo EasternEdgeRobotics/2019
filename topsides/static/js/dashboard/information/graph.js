@@ -1,10 +1,11 @@
 var GRAPH_MAX_DATA = 200;
 
 class Graph{
-    constructor(id, canvasID){
+    constructor(id, canvasID, color = "#ffffff"){
         var numOfLines = 1;
         let ctx = document.getElementById(canvasID).getContext("2d");
-    
+        
+        this.color = color;
         this._id = id;
         this._data = [];
         this._chart = new Chart(ctx,
@@ -20,11 +21,11 @@ class Graph{
                         ticks: {
                             beginAtZero:true,
                             max: 50,
-                            fontColor: 'white'
+                            fontColor: color
                         },
                         gridLines: {
                             //display: false,
-                            color: "white",
+                            color: color,
                         },
                         scaleLabel:{
                             display: false
@@ -57,7 +58,7 @@ class Graph{
                 label: "",
                 data: [],
                 pointRadius: 0,
-                borderColor: "white",
+                borderColor: this.color,
                 borderWidth: 5,
                 fill: false
             });
