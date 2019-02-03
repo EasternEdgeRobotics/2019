@@ -2,61 +2,55 @@
 import socket
 import sys
 import queue
+import time
+import threading
 from TopsidesGlobals import GLOBALS
 
-
-
-send = queue.Queue()
 received = queue.Queue()
+# try opening a socket for communication
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+except socket.error:
+    print("Failed To Create Socket")
+    sys.exit()
+except Exception as e:
+    print("failed")
+# bind the ip and port of topsides to the socket and loop coms
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind((GLOBALS['ipHost'], GLOBALS['portHost']))
 
 #queue to hold send commands to be read by simulator
 simulator = queue.Queue()
 
-def startComms():
-    """
-    Comms start.
-
-    This function starts the comms and runs the comms loop.
-    While the loop is running it will check the send queue for
-    messages to send to the ROV. It can send messages back using received
-    """
-    # TODO: Change to raspi ip
-    ipSend = GLOBALS['ipSend']
-    portSend = GLOBALS['portSend']
-    ipHost = GLOBALS['ipHost']
-    portHost = GLOBALS['portHost']
-
-    # try opening a socket for communication
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    except socket.error:
-        # TODO: Change to ouput on gui
-        print("Failed To Create Socket")
-        sys.exit()
-    except Exception as e:
-        print("failed")
-
-    # bind the ip and port of topsides to the socket and loop coms
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((ipHost, portHost))
-    received.put("bound")
+#this function sends data to the ROV
+def sendData(inputData):
+    global s
+    s.sendto(inputData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+        
+#this function is constantly trying to receive data from the ROV
+def receiveData():
+    global s
     while True:
-        # TODO: change from getting data from user to getting data from queue
-        # send data to the raspi
-        inputData = send.get()
-        s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
-        
-        
-        if inputData == "exit":
-            break
-        # TODO: Change to saving to log file on error
-        # receive response from raspi and log if error
         outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
-        print(outputData, file=sys.stderr)
+        if (outputData == "exit"):
+            break
+        print(outputData)
         received.put(outputData)
 
-
 def putMessage(msg):
-    send.put(msg)
+    sendData(msg)
     simulator.put(msg, timeout=0.005)
+
+# Setup threading for receiving data
+t = threading.Thread(target=receiveData)
+t.start()
+
+if __name__ == "__main__":
+    command = input()
+    while command != "exit":
+        sendData(command)
+        command = input()
+    sendData(command)
+    while t.is_alive():
+        continue

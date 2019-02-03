@@ -1,5 +1,6 @@
 """Development testing."""
 from flask import Blueprint, render_template, jsonify, request
+from TopsidesGlobals import GLOBALS
 
 dev_api = Blueprint("dev_api", __name__)
 
@@ -32,5 +33,5 @@ def getDevInput():
     # devData is the variable the stores the data submitted from the webpage.
     # it is printed out to console for testing purposes.
     devData = request.json
-    topsidesComms.send.put(devData)
+    topsidesComms.putMessage(devData)
     return jsonify("")

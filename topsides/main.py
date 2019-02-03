@@ -7,7 +7,6 @@ import threading
 from profileAPI import profile_api
 from controlAPI import controlAPI
 from notificationAPI import notificationAPI
-from joystickAPI import joystickAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 import dashboardAPI
@@ -27,15 +26,11 @@ CORS(app)
 app.register_blueprint(profile_api)
 app.register_blueprint(controlAPI(topsidesComms))
 app.register_blueprint(notificationAPI(topsidesComms))
-app.register_blueprint(joystickAPI(topsidesComms))
 app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
-
-# Setup threading for communications
-t = threading.Thread(target=topsidesComms.startComms)
 
 
 @app.after_request
@@ -81,10 +76,8 @@ def testGetPressure():
 @werkzeug.serving.run_with_reloader
 def run_server():
     """Run the gevent production server with reloading enabled."""
-    t.start()
     ws = gevent.pywsgi.WSGIServer(listener=('0.0.0.0', GLOBALS['flaskPort']), application=app)
     ws.serve_forever()
-
 
 """
 Server start.
@@ -92,5 +85,4 @@ This is a standard python function that is True when this file is called from th
 (This statement is false for calls to the server)
 """
 if __name__ == "__main__":
-    if topsidesComms.received.get() == "bound":
-        run_server()
+    run_server()

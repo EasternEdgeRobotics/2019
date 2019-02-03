@@ -9,6 +9,7 @@ import control
 tChan = int(sys.argv[1])
 # Speed from and including -1.0 to 1.0
 tSpeed = float(sys.argv[2])
+flag.set()
 # 8 ports are available for thrusters and 2 for servos
 PORTS = [0, 1, 2, 3, 7, 15, 16, 17, 8, 11]
 # Inits the maestro controller from the library.
