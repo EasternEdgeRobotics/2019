@@ -3,7 +3,6 @@ from flask import Flask, render_template
 from flask_cors import CORS
 import json
 import random
-import threading
 from profileAPI import profile_api
 from controlAPI import controlAPI
 from notificationAPI import notificationAPI
@@ -73,15 +72,19 @@ def testGetPressure():
     value = random.randint(99, 105)
     return json.dumps(value)
 
+
 @werkzeug.serving.run_with_reloader
 def run_server():
     """Run the gevent production server with reloading enabled."""
     ws = gevent.pywsgi.WSGIServer(listener=('0.0.0.0', GLOBALS['flaskPort']), application=app)
     ws.serve_forever()
 
+
 """
 Server start.
-This is a standard python function that is True when this file is called from the command line (python3 main.py)
+
+This is a standard python function that is True when this
+file is called from the command line (python3 main.py)
 (This statement is false for calls to the server)
 """
 if __name__ == "__main__":

@@ -1,15 +1,16 @@
 """Development testing."""
 from flask import Blueprint, render_template, jsonify, request
-from TopsidesGlobals import GLOBALS
 
 dev_api = Blueprint("dev_api", __name__)
 
 topsidesComms = None
 
+
 def devAPI(comms):
     global topsidesComms
     topsidesComms = comms
     return dev_api
+
 
 @dev_api.route("/dev")
 def returnDevPage():
