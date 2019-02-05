@@ -1,11 +1,10 @@
 <body>
     <link href="static/css/dashboard/information.css" rel="stylesheet" type='text/css' />
     <script>
-        
         var graphs = [];
         var intervals = [];
 
-        $dash.pageLoad(function(){
+        $dash.pageLoad(function () {
             initGraphs();
             $(".grid").masonry({
                 itemSelector: ".grid-item",
@@ -13,31 +12,30 @@
                 percentPosition: true
             });
 
-            setTimeout(function(){
+            setTimeout(function () {
                 $(".grid-item.init").toggleClass("init", false);
             }, 1000);
         });
 
-        $dash.pageClose(function(){
-            intervals.forEach(function(inte){
+        $dash.pageClose(function () {
+            intervals.forEach(function (inte) {
                 clearInterval(inte);
             });
         });
 
-        function initGraphs(){
+        function initGraphs() {
             //graphs.push(new Graph("pi1Ping", "piGraph2"));
             //graphs.push(new Graph("pi1Ping", "piGraph3"));
             graphs.push(new Graph("pi1Ping", "piGraph1"));
 
-            intervals.push(setInterval(function(){
-                graphs.forEach(function(g){
+            intervals.push(setInterval(function () {
+                graphs.forEach(function (g) {
                     var n = Math.random() * 3 + 20;
                     g.addData(n);
                     $(".data-indicator[value-type='ping']").html(Math.floor(n));
                 });
             }, 50));
         }
-
     </script>
 
     <div class="grid">

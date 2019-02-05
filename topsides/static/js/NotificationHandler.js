@@ -43,7 +43,7 @@ class NotificationHandler{
 
     /** start
      * 
-     * @description - Begins the HTTP Streaming to recieve notifications from the server
+     * @description - Begins the HTTP Streaming to receive notifications from the server
      *              - Snackbars must be added before running start
      * 
      */
@@ -52,7 +52,7 @@ class NotificationHandler{
         
         //Creating EventSource to read stream from server
         var eventSource = new EventSource("notificationTest");
-        eventSource.onmessage = function(e){ //when stream recieves message
+        eventSource.onmessage = function(e){ //when stream receives message
             let data = JSON.parse(e.data); //parse data to JSON
             $("#"+id).attr("class", "snackbar");
             $("#"+id).toggleClass(data.type, true);
@@ -64,7 +64,4 @@ class NotificationHandler{
             }
         };
     }
-
-
-
 }

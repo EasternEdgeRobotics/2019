@@ -1,18 +1,18 @@
-from flask import Blueprint, Flask, render_template, jsonify, request
+"""Dashboard API."""
+from flask import Blueprint, render_template, jsonify, request
 import json
-import math
-from TopsidesGlobals import GLOBALS
 import profileAPI
-import time
 
 dashboard_api = Blueprint("dashboard_api", __name__)
 
 topsidesComms = None
 
+
 def dashboardAPI(comms):
     global topsidesComms
     topsidesComms = comms
     return dashboard_api
+
 
 @dashboard_api.route("/dashboard")
 def dashboard():

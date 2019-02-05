@@ -260,8 +260,8 @@ class ControlHandler{
      * @description assigns each gamepad a profile index step by step. AKA pilot can choose which physical
      *              gamepad is mapped to which mapped gamepad from the profile builder.
      * 
-     *              Each profile gamepad is done sequentially but still asyncronously. Basically It begins an interval of the 
-     *              funciton assignGamepadStep each time a gamepad is assigned
+     *              Each profile gamepad is done sequentially but still asynchronously. Basically It begins an interval of the 
+     *              function assignGamepadStep each time a gamepad is assigned
      * 
      * 
      */

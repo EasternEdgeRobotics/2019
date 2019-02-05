@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <title>Edit Profiles</title>
-        <link href="static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
-        <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
-        
-        <script>
-            var profileToEdit;
+
+<body>
+    <title>Edit Profiles</title>
+    <link href="static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css" />
+
+    <script>
+        var profileToEdit;
             var PROFILE_ID = "{{profile.id}}";
             var CONTROLOPTIONS = new ControlOptions();
             var gamepads = navigator.getGamepads();
@@ -205,68 +206,72 @@
             setInterval(function(){updateMenuIndicators();}, 10);
         </script>
 
-        <div class="row">
-            <div class="col-md-6 panel init">
-                <div class="item-content vertical-center">
-                    <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
-                </div>
+    <div class="row">
+        <div class="col-md-6 panel init">
+            <div class="item-content vertical-center">
+                <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}" />
             </div>
-            <div class="col-md-3 panel init">
-                <div class="item-content relative overflow">
-                    <h1 id='gamepadCount'>{{profile["gamepads"]|length}}</h1>
-                    <button id='btnAddGamepad' class="btn btn-primary" onclick="openGamepadMenu_click()" {%if profile['gamepads']|length >= 4%} disabled {%endif%}>Add Gamepad</button>
-                    <div id="popupAddGamepad" class="hidden">
+        </div>
+        <div class="col-md-3 panel init">
+            <div class="item-content relative overflow">
+                <h1 id='gamepadCount'>{{profile["gamepads"]|length}}</h1>
+                <button id='btnAddGamepad' class="btn btn-primary" onclick="openGamepadMenu_click()" {%if
+                    profile['gamepads']|length>= 4%} disabled {%endif%}>Add Gamepad</button>
+                <div id="popupAddGamepad" class="hidden">
 
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 panel init">
-                <div class="item-content center vertical-center">
-                    <button class="btn btn-primary no-margin" onclick="saveProfile_click()">Save</button>
-                    <button class="btn btn-secondary no-margin" onclick="cancelEdit_click()">Cancel</button>
                 </div>
             </div>
         </div>
-        <div class="row" id="gamepadInsert">
-            {% for gamepad in profile["gamepads"] %}
-            {% set gamepadLoop = loop%}    
-            <div class="col-lg-6 panel init panel-gamepad" gamepad-index='{{loop.index0}}'>
-                <div class="item-content">
-                    <p class="gamepad-id">{{gamepad["name"]}}</p>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" class="gamepad-name" placeholder="Enter Gamepad Name" value="{{gamepad['friendly_name']}}"/>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <button class="btn btn-danger" style="margin: 0;" onclick="removeGamepad({{loop.index0}})">Delete Gamepad</button>
-                        </div>
+        <div class="col-md-3 panel init">
+            <div class="item-content center vertical-center">
+                <button class="btn btn-primary no-margin" onclick="saveProfile_click()">Save</button>
+                <button class="btn btn-secondary no-margin" onclick="cancelEdit_click()">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="gamepadInsert">
+        {% for gamepad in profile["gamepads"] %}
+        {% set gamepadLoop = loop%}
+        <div class="col-lg-6 panel init panel-gamepad" gamepad-index='{{loop.index0}}'>
+            <div class="item-content">
+                <p class="gamepad-id">{{gamepad["name"]}}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="gamepad-name" placeholder="Enter Gamepad Name" value="{{gamepad['friendly_name']}}" />
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            {%for axes in gamepad.axes%}
-                                <div class="control-group axes" axes-index='{{loop.index0}}'>
-                                    <p>Axes {{loop.index}}:</p>
-                                    <select class="select-axes" gamepad-index='{{gamepadLoop.index0}}' axes-index='{{loop.index0}}' temp-value='{{axes}}'>
+                    <div class="col-md-6 text-right">
+                        <button class="btn btn-danger" style="margin: 0;" onclick="removeGamepad({{loop.index0}})">Delete
+                            Gamepad</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        {%for axes in gamepad.axes%}
+                        <div class="control-group axes" axes-index='{{loop.index0}}'>
+                            <p>Axes {{loop.index}}:</p>
+                            <select class="select-axes" gamepad-index='{{gamepadLoop.index0}}' axes-index='{{loop.index0}}'
+                                temp-value='{{axes}}'>
 
-                                    </select>
-                                </div>
-                            {%endfor%}
+                            </select>
                         </div>
-                        <div class="col-md-8">
-                            {%for button in gamepad.buttons%}
-                                <div class="control-group button" button-index='{{loop.index0}}'>
-                                    <p>Button {{loop.index}}:</p>
-                                    <select class="select-button" gamepad-index='{{gamepadLoop.index0}}' button-index='{{loop.index0}}' temp-value='{{button}}'>
-                                    
-                                    </select>
-                                </div>
-                            {%endfor%}
+                        {%endfor%}
+                    </div>
+                    <div class="col-md-8">
+                        {%for button in gamepad.buttons%}
+                        <div class="control-group button" button-index='{{loop.index0}}'>
+                            <p>Button {{loop.index}}:</p>
+                            <select class="select-button" gamepad-index='{{gamepadLoop.index0}}' button-index='{{loop.index0}}'
+                                temp-value='{{button}}'>
+
+                            </select>
                         </div>
+                        {%endfor%}
                     </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
+    </div>
 
 
 
@@ -276,7 +281,7 @@
 
 
 
-<!--
+    <!--
         <div id="modalEditProfile" class="modal">
             <div class="modal-content"> 
                 <div class="header">
@@ -284,7 +289,8 @@
                 </div>
                 <div class='btn btn-primary modal-trigger' style="width: 130px; text-align: center;" modal-id='modalAddGamepad' onclick='openGamepadMenu_click();'>Add Gamepad</div>
                 <div id="joystick-selector-container">
-                    <!-- Placeholder for joystick selectors to go --><!--
+                    <!-- Placeholder for joystick selectors to go -->
+    <!--
 
                 </div>
                 <div id="current-joystick-container">
@@ -300,5 +306,6 @@
             </div>
         </div> 
 -->
-    </body>
+</body>
+
 </html>

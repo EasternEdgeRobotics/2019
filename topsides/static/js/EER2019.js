@@ -102,7 +102,7 @@ function setQueryParameter(name, value){
      *      2. Create a div inside of the previous div with the class [modal-content]
      *      3. Create an element to use as a trigger to open the modal (ex: button)
      *          - give that element the [modal-trigger] class
-     *          - set the atrribute [modal-id] of that element to the id of the div in step 1.
+     *          - set the attribute [modal-id] of that element to the id of the div in step 1.
      *  
      */
 $(document).ready(function(){
@@ -115,7 +115,7 @@ function modalPrep(){
         var modalID = $(this).attr("modal-id");
         $("#"+modalID).toggleClass("visible", true);
     });
-    $(".modal, .modal-close").click(function(){ //click event to close modals (whenblack overlay is clicked.
+    $(".modal, .modal-close").click(function(){ //click event to close modals (when black overlay is clicked.
         $(this).toggleClass("visible", false);
         $(this).parents(".modal").toggleClass("visible", false);
     });

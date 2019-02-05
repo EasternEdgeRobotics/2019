@@ -13,20 +13,25 @@ class Thruster:
     """Thruster class."""
 
     # When using motor controllers, the maestro's speed setting can be used to tune the
-    # responsiveness of the robot.  Low values dampen acceleration, making for a more
+    # responsiveness of the robot. Low values dampen acceleration, making for a more
     # stable robot. High values increase responsiveness, but can lead to a tippy robot.
     # Try values around 50 to 100.
 
     def __init__(self, maestro, ch):
-        """Pass the maestro controller object and the maestro channel numbers being used for the thruster's motor controller."""
+        """
+        Setup the thruster or servo.
+
+        :param maestro: maestro controller object
+        :param ch: maestro channel number for the thruster or servo controller
+        """
         self.maestro = maestro
         self.ch = ch
-        # Init thruster accel and speed parameters
+        # Initialize thruster acceleration and speed parameters
         self.maestro.setAccel(ch, 0)
         self.maestro.setSpeed(ch, RESPONSE)
-        # Thruster min/max and center Values
+        # Thruster min, max and center values
         if ((ch == 8) or (ch == 11)):
-            # Change range values for camera servos
+            # Change range values for the camera servos
             self.min_s = 2200
             self.max_s = 10000
             self.center_s = 5800
@@ -36,7 +41,11 @@ class Thruster:
             self.center_s = CENTER_SPEED
 
     def ThrusterScale(self, thruster):
-        """Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits."""
+        """
+        Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits.
+
+        :param thruster: thruster to scale
+        """
         if (thruster >= 0):
             t = int(self.center_s + (self.max_s - self.center_s) * thruster)
         else:
@@ -45,9 +54,9 @@ class Thruster:
 
     def Fly(self, speed):
         """
-        Drive thrusters given speed parameters.
+        Drive thrusters using given speed parameters.
 
-        Valid inputs range between -1.0 and 1.0.
+        :param speed: speed of thrusters with valid range between -1.0 to 1.0
         """
         thruster = self.ThrusterScale(speed)
         print(thruster)

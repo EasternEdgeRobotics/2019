@@ -1,6 +1,8 @@
 {
-    "ipHost": "localhost",
+    "ipHost": "192.168.88.5",
+    "ipHost-dev": "localhost",
     "portHost": 5000,
-    "ipSend": "localhost",
+    "ipSend": "192.168.88.2",
+    "ipSend-dev": "localhost",
     "portSend": 5001
 }
