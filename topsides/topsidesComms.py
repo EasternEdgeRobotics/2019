@@ -5,6 +5,17 @@ import queue
 import threading
 from TopsidesGlobals import GLOBALS
 
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
+portSend = GLOBALS['portSend']
+portHost = GLOBALS['portHost']
+
 received = queue.Queue()
 # Try opening a socket for communication
 try:
@@ -16,7 +27,7 @@ except Exception as e:
     print("failed")
 # Bind the ip and port of topsides to the socket and loop coms
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((GLOBALS['ipHost'], GLOBALS['portHost']))
+s.bind((ipHost, portHost))
 
 # Queue to hold send commands to be read by simulator
 simulator = queue.Queue()
@@ -25,9 +36,9 @@ simulator = queue.Queue()
 # This function sends data to the ROV
 def sendData(inputData):
     global s
-    s.sendto(inputData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
 
-      
+
 # This function is constantly trying to receive data from the ROV
 def receiveData():
     global s

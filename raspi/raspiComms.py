@@ -8,9 +8,15 @@ from RaspiGlobals import GLOBALS
 send = queue.Queue()
 t = []
 
-ipSend = GLOBALS['ipSend']
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
 portSend = GLOBALS['portSend']
-ipHost = GLOBALS['ipHost']
 portHost = GLOBALS['portHost']
 
 # Try opening a socket for communication
@@ -30,10 +36,10 @@ def sendData():
     global s, send
     sendData = send.get()
     while sendData != "exit":
-        s.sendto(sendData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+        s.sendto(sendData.encode('utf-8'), (ipSend, portSend))
         print("sent response: " + sendData + " to " + str(ipSend) + " " + str(portSend))
         sendData = send.get()
-    s.sendto(sendData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+    s.sendto(sendData.encode('utf-8'), (ipSend, portSend))
     print("sent response: " + sendData + " to " + str(ipSend) + " " + str(portSend))
 
 
@@ -52,7 +58,7 @@ def receiveData():
                     exec(open("fControl.py").read())
                 except Exception as e:
                     response = str(e)
-                    # print(response)           
+                    # print(response)
                 del sys.argv[1:]
             continue
         if data == "exit":
@@ -82,7 +88,7 @@ def receiveData():
 
 def executeData(file, flag):
     try:
-        exec(open(file).read(), {"send":send, "flag":flag})
+        exec(open(file).read(), {"send": send, "flag": flag})
     except Exception as e:
         send.put(str(e))
         flag.set()
