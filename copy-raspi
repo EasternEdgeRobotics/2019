@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-scp -r raspi pi@192.168.88.4:
