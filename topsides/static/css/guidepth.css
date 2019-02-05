@@ -1,0 +1,33 @@
+p {
+	font-family: roboto;
+	font-size: 20px;
+
+}
+.button {
+	background-color: #3d18a9;
+	border: none;
+	color: white;
+	font-size: 20px;
+	border-radius: 2px;
+	padding: 5px 15px;
+}
+.parent {
+	position: relative;
+	top: 0;
+	left: 0;
+}
+.bg {
+	position: relative;
+	z-index: -1;
+}
+.dot {
+	position: absolute;
+	left: 80px;
+	z-index: 1;
+}
+.flo {
+	position: absolute;
+	left: 70px;
+	z-index: 2;
+}
+	
