@@ -1,8 +1,8 @@
-.grid{
+.grid {
     margin: 0 auto;
 }
 
-.grid-item{
+.grid-item {
     /*border: 2px solid red;
     border-radius: 15px;*/
     min-width: 300px;
@@ -16,18 +16,18 @@
 
 }
 
-.grid-item.init{
+.grid-item.init {
     transition-property: left, top;
     transition-duration: 0.5s;
 }
 
-.item-content{
+.item-content {
     position: relative;
     background-color: white;
     border-radius: 15px;
     overflow: hidden;
     min-height: 100px;
-    box-shadow: 0px 0px 20px rgb(0,0,0,0.3);
-    padding: 40px ;
+    box-shadow: 0px 0px 20px rgb(0, 0, 0, 0.3);
+    padding: 40px;
     text-align: center;
 }
