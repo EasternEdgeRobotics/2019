@@ -8,6 +8,7 @@ CENTER_SPEED = 6000
 MAX_SPEED = 8000
 RESPONSE = 70
 
+
 class Thruster:
     """Thruster class."""
 
@@ -19,8 +20,8 @@ class Thruster:
     def __init__(self, maestro, ch):
         """
         Setup the thruster or servo.
-        
-        :param maestro: maestro controller object 
+
+        :param maestro: maestro controller object
         :param ch: maestro channel number for the thruster or servo controller
         """
         self.maestro = maestro
@@ -42,7 +43,7 @@ class Thruster:
     def ThrusterScale(self, thruster):
         """
         Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits.
-        
+
         :param thruster: thruster to scale
         """
         if (thruster >= 0):
