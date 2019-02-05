@@ -1,7 +1,5 @@
-
-
 /*var eventSource = new EventSource("simulator/getCommand");
-eventSource.onmessage = function(e){ //when stream recieves message
+eventSource.onmessage = function(e){ //when stream receives message
     console.log(e.data)
 };*/
 
