@@ -11,7 +11,7 @@ tChan = int(sys.argv[1])
 tSpeed = float(sys.argv[2])
 flag.set()
 # 8 ports are available for thrusters and 2 for servos
-PORTS = [0, 1, 2, 3, 7, 15, 16, 17, 8, 11]
+PORTS = [16, 10, 15, 9, 14, 6, 7, 17, 8, 11]
 # Inits the maestro controller from the library.
 servo = maestro.Controller()
 # Initialize the control module with maestro channel and thruster port
