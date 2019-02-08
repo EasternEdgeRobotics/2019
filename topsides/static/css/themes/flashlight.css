@@ -2,19 +2,33 @@
     GENERAL
 */
 
-body[theme='@theme'] p{}
+body[theme='@theme'] p{
+    color: white;
+}
 
-body[theme='@theme'] h1{}
+body[theme='@theme'] h1{
+    color: white;
+}
 
-body[theme='@theme'] h2{}
+body[theme='@theme'] h2{
+    color: white;
+}
 
-body[theme='@theme'] h3{}
+body[theme='@theme'] h3{
+    color: white;
+}
 
-body[theme='@theme'] h4{}
+body[theme='@theme'] h4{
+    color: white;
+}
 
-body[theme='@theme'] h5{}
+body[theme='@theme'] h5{
+    color: white;
+}
 
-body[theme='@theme'] h6{}
+body[theme='@theme'] h6{
+    color: white;
+}
 
 body[theme='@theme'] input[type="text"]{}
 
@@ -27,7 +41,9 @@ body[theme='@theme'] select{}
     EER GENERAL
 */
 
-body[theme='@theme'] .eer-logo{}
+body[theme='@theme'] .eer-logo{
+    filter: brightness(0.9);
+}
 
 
 /*
@@ -73,27 +89,50 @@ body[theme='@theme'] .spiner{}
                                                         
 */
 
-body[theme='@theme'] #pageBody{}
+body[theme='@theme'] #pageBody{
+    background-color: #33393b
+}
 
-body[theme='@theme'] .sidebar{}
+body[theme='@theme'] .sidebar{
+    background-color: #232627;
+    padding: 0px !important;
+}
 
 body[theme='@theme'] .btn-nav{}
 
-    body[theme='@theme'] .btn-nav .background{}
+    body[theme='@theme'] .btn-nav .background{
+        border-radius: 0px !important;
+    }
     
-    body[theme='@theme'] .btn-nav p{}
+    body[theme='@theme'] .btn-nav p{
+        color: #8e8e8e;
+    }
 
-    body[theme='@theme'] .btn-nav path{}
+    body[theme='@theme'] .btn-nav svg{
+        max-width: 100px;
+    }
+
+    body[theme='@theme'] .btn-nav path{
+        fill: #8e8e8e;
+    }
 
 body[theme='@theme'] .btn-nav.active{}
 
-    body[theme='@theme'] .btn-nav.active .background{}
+    body[theme='@theme'] .btn-nav.active .background{
+        background-color: #363a3c;
+    }
 
-    body[theme='@theme'] .btn-nav.active p{}
+    body[theme='@theme'] .btn-nav.active p{
+    }
 
-    body[theme='@theme'] .btn-nav.active path{}
+    body[theme='@theme'] .btn-nav.active path{
+    }
 
-body[theme='@theme'] .panel{}
+body[theme='@theme'] .panel{
+    background-color: #33393b;
+    border: none !important;
+    box-shadow: none !important;
+}
 
     body[theme='@theme'] .panel p{}
 
@@ -112,6 +151,19 @@ body[theme='@theme'] .panel{}
 
     /*  External Page Header  */
     body[theme='@theme'] .dashboard-header .head-content{}
+
+
+/*
+
+    GRID
+
+*/
+
+    body[theme='@theme'] .grid-item{
+        padding: 0px;
+        max-width: none !important;
+        width: 100% !important;
+    }
 
 
 /*

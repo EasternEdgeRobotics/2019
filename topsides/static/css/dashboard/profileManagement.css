@@ -148,6 +148,10 @@ EDIT PAGE
         white-space: nowrap;
     }
 
+    .panel-gamepad .control-group.axes{
+        width: 100%;
+    }
+
     .panel-gamepad select{
         width: 70px;
     }

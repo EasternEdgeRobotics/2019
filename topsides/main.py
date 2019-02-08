@@ -54,28 +54,6 @@ def returnGui():
     return dashboardAPI.dashboard()
 
 
-@app.route("/controlTest")
-def controlTestPage():
-    """
-    Base url and table of contents.
-
-    :return: rendered controlTest.html web page
-    """
-    return render_template("controlTest.html")
-
-
-@app.route("/testGetPressure")
-def testGetPressure():
-    """
-    A test pressure sensor.
-
-    GET
-
-    :return: a random value simulating a pressure sensor
-    """
-    value = random.randint(99, 105)
-    return json.dumps(value)
-
 
 """
 Server start.
@@ -85,4 +63,6 @@ This is a standard python function that is True when this file is called from th
 if __name__ == "__main__":
     t.start()
     if topsidesComms.received.get() == "bound":
-        app.run(debug=True, host='0.0.0.0', use_reloader=True, port=GLOBALS['flaskPort'], threaded=True)
+        #load themes into system
+        themeAPI.loadThemes()
+        app.run(debug=True, host='0.0.0.0', use_reloader=False, port=GLOBALS['flaskPort'], threaded=True)

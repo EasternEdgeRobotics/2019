@@ -7,10 +7,11 @@ from TopsidesGlobals import GLOBALS
 theme_api = Blueprint("theme_api", __name__)
 
 def themeAPI():
-    loadThemes()
     return theme_api
 
+
 def loadThemes():
+    print("loading themes...")
     for filename in os.listdir("./static/css/themes"):
        
         if ".css" not in filename or filename == "template.css":
