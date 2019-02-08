@@ -2,6 +2,7 @@
     <script>
 
         var themeToSet = "";
+        
 
         $dash.pageLoad(function(){
             runPythonGET("themes/getnames", null, function(data){
@@ -19,25 +20,27 @@
             });
         });
 
+        //Sets the theme for the client (adds cookie)
         function setTheme(){
             runPythonPOST("themes/set", JSON.stringify({"theme": themeToSet}), function(){});
             $("body").attr("theme", themeToSet);
         }
 
+        //Takes the filename of the theme and turns it to nice text (AKA upper the first letter and replaces - and _ with spaces)
         function cleanName(name){
             name = name.charAt(0).toUpperCase() + name.slice(1);
             name = name.replace("-", " ").replace("_", " ");
             return name;
         }
     </script>
-    <div class="row">
+    <div class="row flex-row">
         <div class="col-lg-9">
             <div class="panel margins">
                 <h1>Select a Theme</h1>
                 <select id="themeSelect"></select>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-3 ">
             <div class="panel margins center">
                 <button class="btn btn-primary" onclick="setTheme();">Set Theme</button>
             </div>
@@ -46,6 +49,6 @@
 
     <div class="panel margins" >
         <h1>Theme Preview</h1>
-        <iframe style="width: 100%; height: 500px;" id="themePreview" src=""></iframe>
+        <iframe style="width: 100%; height: 620px; border-radius: 30px; border: none; box-shadow: 0px 0px 20px rgba(0,0,0,0.5)" id="themePreview" src=""></iframe>
     </div>
 </body>

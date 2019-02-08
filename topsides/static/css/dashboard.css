@@ -141,6 +141,10 @@ EXTENRAL PAGE HEADER
     margin: 20px;
 }
 
+.panel.full{
+    width: 100%;
+}
+
 .center{
     text-align: center;
     justify-content: center;

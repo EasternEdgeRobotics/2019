@@ -1,11 +1,29 @@
-<body theme='{{theme}}'>
+<!--
+
+    This is a page that is loaded inside the ifrome on the dashboard theme page
+    This is used as a preview for themes
+
+
+-->
+
+
+<html style="overflow: hidden;">
+<body theme='{{theme}}' style="overflow: visible;">
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap/bootstrap.min.css')}}" type="text/css"  />
     <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}" type="text/css"  />
     <link href="/static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
-        
+    
+    <style>
+        body{
+            margin: -5px;
+        }
+        body *{
+            margin: 5px;
+        }
+    </style>
 
     <link rel="stylesheet" type="text/css" href="/static/css/themes/loaded/{{theme}}.css">
-    <div id="pageBody" style="padding: 30px;">
+    <div id="pageBody" style="padding: 30px; height: 100%;">
     <div class="panel row">
         <div class="col-md-5">
             <h1>Header</h1>
@@ -34,3 +52,4 @@
     </div>
     </div>
 </body>
+</html>
