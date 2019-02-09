@@ -30,11 +30,29 @@ body[theme='@theme'] h6{
     color: white;
 }
 
-body[theme='@theme'] input[type="text"]{}
+body[theme='@theme'] input[type="text"]{
+    background-color: #515456;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid rgb(60, 168, 255);
+    box-shadow: 0px 0px 3px rgba(60, 168, 255, 1);
+}
 
-body[theme='@theme'] select{}
+body[theme='@theme'] select{
+    padding: 5px 20px 5px 5px;
+    background-color: #515456;
+    color: white;
+    border: 1px solid rgb(60, 168, 255);
+    box-shadow: 0px 0px 3px rgba(60, 168, 255, 0.5);
+    border-radius: 5px;
+    
+}
 
-    body[theme='@theme'] select option{}
+    body[theme='@theme'] select option{
+        padding: 5px 0px;
+    }
 
 
 /*
@@ -148,6 +166,10 @@ body[theme='@theme'] .panel{
 
     body[theme='@theme'] .panel h6{}
 
+    body[theme='@theme'] .panel.panel-graph{
+        text-align: center;
+    }
+
 
     /*  External Page Header  */
     body[theme='@theme'] .dashboard-header .head-content{}
@@ -159,7 +181,7 @@ body[theme='@theme'] .panel{
 
 */
 
-    body[theme='@theme'] .grid-item{
+    body[theme='@theme'] .grid-item.profile{
         padding: 0px;
         max-width: none !important;
         width: 100% !important;
@@ -229,15 +251,29 @@ body[theme='@theme'] .badge-dark{}
 */
 
 
-body[theme='@theme'] .btn{}
+body[theme='@theme'] .btn{
+    border-radius: 0px !important;
 
-body[theme='@theme'] .btn-primary{}
+}
+
+    body[theme='@theme'] .btn:hover{
+        filter: brightness(0.8);
+        transition: 0.3s;
+    }
+
+body[theme='@theme'] .btn-primary{ 
+    background-color: #3679c1;
+    border-color: #3679c1;
+}
 
 body[theme='@theme'] .btn-secondary{}
 
 body[theme='@theme'] .btn-success{}
 
-body[theme='@theme'] .btn-danger{}
+body[theme='@theme'] .btn-danger{
+    background-color: #ab3f49;
+    border-color: #ab3f49;
+}
 
 body[theme='@theme'] .btn-warning{}
 

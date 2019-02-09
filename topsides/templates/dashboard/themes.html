@@ -32,23 +32,33 @@
             name = name.replace("-", " ").replace("_", " ");
             return name;
         }
+
+        function reloadThemes(){
+            runPythonGET("themes/reload", null, function(){
+                location.reload();
+            });
+        }
+
     </script>
     <div class="row flex-row">
-        <div class="col-lg-9">
+        <div class="col-lg-8">
             <div class="panel margins">
                 <h1>Select a Theme</h1>
                 <select id="themeSelect"></select>
             </div>
         </div>
-        <div class="col-lg-3 ">
+        <div class="col-lg-4 ">
             <div class="panel margins center">
                 <button class="btn btn-primary" onclick="setTheme();">Set Theme</button>
+                <button class="btn btn-info" onclick="reloadThemes();">Reload Themes</button>
             </div>
         </div>
     </div>
-
     <div class="panel margins" >
         <h1>Theme Preview</h1>
-        <iframe style="width: 100%; height: 620px; border-radius: 30px; border: none; box-shadow: 0px 0px 20px rgba(0,0,0,0.5)" id="themePreview" src=""></iframe>
+    </div>
+    
+    <div class="container" >
+        <iframe style="width: 100%; margin: 20px 0px; height: 620px; border-radius: 30px; border: none; box-shadow: 0px 0px 20px rgba(0,0,0,0.5)" id="themePreview" src=""></iframe>
     </div>
 </body>

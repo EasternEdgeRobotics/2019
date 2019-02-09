@@ -57,6 +57,12 @@ def getCurrentTheme():
         res.set_cookie("theme", GLOBALS["defaultTheme"])
     return res
 
+@theme_api.route("/themes/reload", methods=["GET"])
+def reloadThemes():
+    loadThemes()
+    return "themes loaded", 200
+
+
 @theme_api.route("/themes/preview")
 def previewTheme():
     theme = request.args.get("theme", GLOBALS["defaultTheme"])

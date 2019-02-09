@@ -210,16 +210,24 @@ body[theme='@theme'] .badge-dark{}
 */
 
 
-body[theme='@theme'] .btn{}
+body[theme='@theme'] .btn{
+    border: none !important;
+}
 
 body[theme='@theme'] .btn-primary{
     background: rgba(31,128,207,1);
     background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
 }
 
-body[theme='@theme'] .btn-secondary{}
+body[theme='@theme'] .btn-secondary{
+    background: rgba(108, 117, 125, 1);
+    background: linear-gradient(to right, rgb(108, 117, 125), rgb(159, 170, 179));
+}
 
-body[theme='@theme'] .btn-success{}
+body[theme='@theme'] .btn-success{
+    background: #28a745;
+    background: linear-gradient(to right, #28a745, #5cbf72);
+}
 
 body[theme='@theme'] .btn-danger{
     background: rgba(244,69,56,1);
@@ -228,7 +236,11 @@ body[theme='@theme'] .btn-danger{
 
 body[theme='@theme'] .btn-warning{}
 
-body[theme='@theme'] .btn-info{}
+body[theme='@theme'] .btn-info{
+    background: #17a2b8;
+    background: linear-gradient(to right, #17a2b8 , #5ad0e2)
+
+}
 
 body[theme='@theme'] .btn-light{}
 
