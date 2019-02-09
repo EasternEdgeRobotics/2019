@@ -61,10 +61,9 @@ t = threading.Thread(target=receiveData)
 t.start()
 
 if __name__ == "__main__":
-    command = input()
-    while command != "exit":
-        sendData(command)
-        command = input()
-    sendData(command)
-    while t.is_alive():
-        continue
+    import time
+    for i in range(0, 10):
+        sendData("getGyro.py")
+        time.sleep(2)
+    for i in range(0, 10):
+        print(received.get())

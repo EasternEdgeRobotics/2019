@@ -5,8 +5,10 @@ import serial
 import syslog
 import time
 
+#flag.set()
+
 #The following line is for serial over GPIO
-port = "/dev/cu.usbmodem14201" ##'/dev/ttyACMO'
+port = "/dev/cu.usbmodem14201"
 
 
 ard = serial.Serial(port,115200,timeout=5)
@@ -15,7 +17,7 @@ time.sleep(2) # wait for Arduino
 i = 0
 
 msg = str(ard.read(ard.inWaiting()))
-# print(msg)
+print(msg)
 
 
 # print(msg);
@@ -36,11 +38,14 @@ try:
     gyro_z = float(gyro_z[1])
     #print(accelx, accely);
     print(gyro_x, " ",gyro_y, " ",gyro_z)
+    send.put("x " + gyro_x)
+    send.put("y " + gyro_y)
+    send.put("z " + gyro_z)
     ## send accel values
 except:
     print("")
 
 
-time.sleep(.075); ## .75
+#time.sleep(.075); ## .75
 
 print("End");
