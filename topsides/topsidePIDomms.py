@@ -21,6 +21,7 @@ send = queue.Queue()
 received = queue.Queue()
 
 depth = pid(); ## make a depth object of the pid class
+angular = pid();
 ## initialize depth pid constants
 
 
@@ -35,11 +36,11 @@ def depth_PID_init():
 def depth_PID(cDepth):
 
     depth_PID_init() ## initialize PID constants
-    intError = 0.5 ## increases or decrease based on magnitude of oscillation
+    depth.intError = 0.5 ## increases or decrease based on magnitude of oscillation
     depth.error = depth.target - abs(cDepth) ## Keep current depth at an absolute value
 
     ## increase integral if the error does not zero out as power decreases
-    if(abs(depth.error) < intError):
+    if(abs(depth.error) < depth.intError):
         depth.integral += 0.03
     else:
         depth.integral = 0
@@ -54,6 +55,32 @@ def depth_PID(cDepth):
     return power;
 
 
+def angular_PID_init():
+    angular.KP = 0.0
+    angular.KI = 0.0
+    angular.kD = 0.0
+
+def angular_PID(angle):
+
+    angular_PID_init();
+    angular.intError = 20
+
+    angular.error = angular.target - abs(angle) ## Keep current depth at an absolute value
+
+    ## increase integral if the error does not zero out as power decreases
+    if(abs(angular.error) < angular.intError):
+        angular.integral += 5
+    else:
+        angular.integral = 0
+
+    angular.integral = 0 if angular.error == 0 else angular.integral
+    angular.derivative = angular.error - angular.last_error
+    angular.last_error = angular.error
+
+    power = (angular.error*angular.kP)+(angular.integral*angular.kI)+(angular.derivative*angular.kD)
+
+    print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
+    return power;
 
 
 def startComms(input):
@@ -95,6 +122,52 @@ def startComms(input):
     outputData = outputData.decode("utf-8")
     print(outputData, file=sys.stderr)
     return outputData
+
+
+def run_angular_PID(yaw=None, pitch=None, roll=None):
+
+    if(yaw != None):
+        angular.target = yaw
+        ## run rov now
+
+        while True:
+            c_yaw = float(startComms(["192.168.88.4","getGyro.py"]));
+            power = angular_PID(c_yaw);
+
+            print('power: '+power)
+
+            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
+            for x in range(len(setThruster)):
+                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
+
+    elif(pitch != None):
+        angular.target = pitch
+        ## run rov now
+
+        while True:
+            c_pitch = float(startComms(["192.168.88.4","getGyro.py"]));
+            power = angular_PID(c_pitch);
+
+            print('power: '+power)
+
+            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
+            for x in range(len(setThruster)):
+                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
+
+    elif(roll != None):
+
+        angular.target = roll
+        ## run rov now
+
+        while True:
+            c_roll = float(startComms(["192.168.88.4","getGyro.py"]));
+            power = angular_PID(c_roll);
+
+            print('power: '+power)
+
+            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
+            for x in range(len(setThruster)):
+                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
 
 
 def getAndSendVals():

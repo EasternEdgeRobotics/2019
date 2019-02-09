@@ -9,3 +9,4 @@ class pid:
         self.integral = 0.0
         self.derivative = 0.0
         self.last_error = 0.0
+        self.intError = 0.0
