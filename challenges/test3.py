@@ -2,6 +2,10 @@ import cv2
 import numpy as np
 import math
 
+# create video object that opens back camera for calls in opencv api
+videoFeed = 1
+video = cv2.VideoCapture(videoFeed)
+
 def preprocess(orig_frame):
     # Blurs image using a gaussian filter kernal, (n,m) are width and height, must be + and odd #'s, 0 is border type
     frame = cv2.GaussianBlur(orig_frame, (5, 5), 0)
@@ -12,7 +16,7 @@ def preprocess(orig_frame):
     # Define hsv bounds for red
     low_red1 = np.array([0,80,0])
     up_red1 = np.array([40,255,255])
-    low_red2 = np.array([130,80,0])
+    low_red2 = np.array([130,68,0])
     up_red2 = np.array([180,255,255])
 
     # Threshold the hsv image to get only red colors
@@ -22,7 +26,7 @@ def preprocess(orig_frame):
 
     mask_ne = cv2.bitwise_or(mask1, mask2)
 
-    kernel = np.ones((10,10),np.uint8)
+    kernel = np.ones((70,70),np.uint8)
     mask = cv2.erode(mask_ne,kernel,iterations = 1)
 
     # Apply Canny edge detection algorithm to get a binary output of edges
@@ -45,7 +49,7 @@ def findLines(mask, frame):
                     ver = ver + 1
                 else:
                     hor = hor + 1
-    print('hor:', hor,'vert:', ver)
+    # print('hor:', hor,'vert:', ver)
     return line_image, ver, hor
 
 def findLinesLSD(mask, frame):
@@ -69,7 +73,7 @@ def findLinesLSD(mask, frame):
                 else:
                     hor = hor + 1
 
-    # print('hor:', hor,'vert:', ver)
+    print('hor:', hor,'vert:', ver)
     return line_image, ver, hor
 
 def findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line):
@@ -89,60 +93,31 @@ def findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line):
         cv2.line(frame, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
         bounds = 40
 
-        size_l_bound = 60
-        size_h_bound = 120
-
         # Horizontal line
         if ver == 0:
             last_line = 'horizontal'
             error_dir = ''
-            size_error = ''
             error = abs(cY - mid_height)
-
-            # Line size conditionals
-            line_size = np.count_nonzero(mask_ne[0:height,0:1])
-            if line_size < size_l_bound:
-                size_error = 'In'
-            elif line_size > size_h_bound:
-                size_error = 'Out'
-            else:
-                error_dir = 'None'
-
-            # Left/Right error conditionals
             if cY > mid_height + bounds:
                 error_dir = 'Up'
             elif cY < mid_height - bounds:
                 error_dir = 'Down'
             else:
                 error_dir = 'None'
-
-            print('Horizontal line','| Drive:', main_dir,'| Vertical error:', error, '| Correct:', error_dir, '| Line size:', line_size, '| Correct:', size_error)
+            print('Horizontal line','| Drive:', main_dir,'| Vertical error:', error,  '| Correct:', error_dir)
 
         # Vertical line
         elif hor == 0:
             last_line = 'vertical'
             error_dir = ''
-            size_error = ''
             error = abs(cX - mid_width)
-           
-            # Line size conditionals
-            line_size = np.count_nonzero(mask_ne[79:80])
-            if line_size < size_l_bound:
-                size_error = 'In'
-            elif line_size > size_h_bound:
-                size_error = 'Out'
-            else:
-                error_dir = 'None'
-
-            # Left/Right error conditionals
             if cX > mid_width + bounds:
                 error_dir = 'Left'
             elif cX < mid_width - bounds:
                 error_dir = 'Right'
             else:
                 error_dir = 'None'
-
-            print('Vertical Line','| Drive:', main_dir, '| Horizontal Error:', error, '| Correct:', error_dir, '| Line size:', line_size, '| Correct:', size_error)
+            print('Vertical Line','| Drive:', main_dir, '| Horizontal Error:', error, '| Correct:', error_dir)
 
         # Corner            
         elif hor > 10 and ver > 10:
@@ -182,91 +157,42 @@ def findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line):
             print('.')
     return last_line, main_dir
 
-def runLineFollower():
-    # create video object that opens back camera for calls in opencv api
-    videoFeed = 1
-    video = cv2.VideoCapture(videoFeed)
-    # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-    
-    print('Enter Initial Direction')
-    dir = input()
-    print('Initial direction chosen:', dir)
+print('Enter Initial Direction')
+dir = input()
+print('Initial direction chosen:', dir)
 
-    direction =   { 'w':'up',
-                    'a':'left',
-                    's':'down',
-                    'd':'right'}
-    last_line = ''
-    main_dir = direction[dir]
+direction = { 'w':'up',
+                'a':'left',
+                's':'down',
+                'd':'right'}
+last_line = ''
+main_dir = direction[dir]
 
-    while True: 
-        # Read camera frames
-        ret, frame = video.read()
-        if not ret:
-            video = cv2.VideoCapture(videoFeed)
-            # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-            continue
+while True: 
+    # Read camera frames
 
-        # Do processing work
-        edges, mask, mask_ne = preprocess(frame)
-        line_image, ver, hor = findLines(mask, frame)
-        last_line, main_dir = findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line)
+    # e1 = cv2.getTickCount()
+    ret, frame = video.read()
+    if not ret:
+        video = cv2.VideoCapture(videoFeed)
+        continue
 
-        # Permord image display functionality
-        weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
-        cv2.imshow("Frame", mask_ne)
-        cv2.imshow("Mask", weighted_image)
-
-        key = cv2.waitKey(25)
-        if key == 27:
-            break
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    edges, mask, mask_ne = preprocess(frame)
+    line_image, ver, hor = findLines(mask, frame)
+    # line_image, ver, hor = findLinesLSD(mask, frame)
+    last_line, main_dir = findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line)
 
 
-if __name__ == '__main__':
-    # create video object that opens back camera for calls in opencv api
-    videoFeed = 1
-    video = cv2.VideoCapture(videoFeed)
-    # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+    weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
+    cv2.imshow("Frame", mask_ne)
+    cv2.imshow("Mask", weighted_image)
 
-    print('Enter Initial Direction')
-    dir = input()
-    print('Initial direction chosen:', dir)
+    # e2 = cv2.getTickCount()
+    # t = (e2 - e1)/cv2.getTickFrequency()
+    # print( t )
+    key = cv2.waitKey(25)
+    if key == 27:
+        break
 
-    direction =   { 'w':'up',
-                    'a':'left',
-                    's':'down',
-                    'd':'right'}
-    last_line = ''
-    main_dir = direction[dir]
-
-    while True: 
-        # Read camera frames
-
-        # e1 = cv2.getTickCount()
-        ret, frame = video.read()
-        if not ret:
-            video = cv2.VideoCapture(videoFeed)
-            # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-            continue
-
-        edges, mask, mask_ne = preprocess(frame)
-        line_image, ver, hor = findLines(mask, frame)
-        # line_image, ver, hor = findLinesLSD(mask, frame)
-        
-        last_line, main_dir = findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line)
-
-        weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
-        cv2.imshow("Frame", mask_ne)
-        cv2.imshow("Mask", weighted_image)
-
-        # e2 = cv2.getTickCount()
-        # t = (e2 - e1)/cv2.getTickFrequency()
-        # print( t )
-        key = cv2.waitKey(25)
-        if key == 27:
-            break
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
