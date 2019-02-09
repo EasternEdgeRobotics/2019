@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+# Front camera -> port 8
 
-xterm -geometry 93x31+0+0 -e gst-launch-1.0 udpsrc port=5000 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink &
-sshpass -p raspberry ssh pi@192.168.88.4 raspivid -t 0 -n -h 702 -w 1280 -fps 60 -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! udpsink host=192.168.1.20 port=5000
+# Open topsides camera capture if it is not already running
+if ps ax | grep -v grep | grep "gst-launch-1.0 udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink" > /dev/null
+then
+    echo "Topsides capture is already running."
+else
+    setsid xterm -geometry 93x31+0+0 -e nice -n -20 gst-launch-1.0 udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink &
+fi
+
+sshpass -p raspberry ssh pi@192.168.88.4 raspivid -t 0 -vf -hf -n -h 720 -w 1280 -fps 60 -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! udpsink host=192.168.88.2 port=5002

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Start Cameras 2
+Exec=./start-cameras-2
+Terminal=true
+Type=Application
+Categories=Application
+Name[en_CA]=Start Cameras 2

@@ -25,7 +25,7 @@
 
     "control-links":[
         {
-            "name": "First GUI",
+            "name": "GUI",
             "file_name": "gui.html",
             "outside_dashboard": true
         }

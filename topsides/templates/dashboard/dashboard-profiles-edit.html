@@ -119,6 +119,7 @@
                 return {"name": "", "buttons": [], "axes":[]};
             }
 
+
             function removeGamepad(profileIndex){
                 profileToEdit["gamepads"].splice(profileIndex,1);
                 if(profileToEdit.gamepads.length < 4){
@@ -230,8 +231,8 @@
         <div class="row" id="gamepadInsert">
             {% for gamepad in profile["gamepads"] %}
             {% set gamepadLoop = loop%}    
-            <div class="col-lg-6 init" gamepad-index='{{loop.index0}}'>
-                <div class="item-content panel panel-gamepad">
+            <div class="col-lg-6 init panel-gamepad" gamepad-index='{{gamepadLoop.index0}}'>
+                <div class="item-content panel">
                     <p class="gamepad-id">{{gamepad["name"]}}</p>
                     <div class="row">
                         <div class="col-md-6">

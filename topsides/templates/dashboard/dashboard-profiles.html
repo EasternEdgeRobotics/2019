@@ -30,54 +30,57 @@
                 
             });
 
-            
-            function editProfile_click(id){
-                $dash.navigate("dashboard/editProfile?id="+id);
-            }
-            
 
-            /**addGamepadInfo
-             * 
-             *  generates and appends html for the edit panel of a gamepad
-            */
-            
+        function editProfile_click(id) {
+            $dash.navigate("dashboard/editProfile?id=" + id);
+        }
 
-            /** newProfile_click
-             * 
-             *      resets the profile edit menu and sets the profileToEdit to a fresh, new profile
-             * 
-            */
-            function newProfile_click(id){
-                $dash.navigate("dashboard/editProfile");
-            }
-            
-            
 
-            
+        /**addGamepadInfo
+         * 
+         *  generates and appends html for the edit panel of a gamepad
+         */
 
-                        //sends POST to server to delete a profile
-            function deleteProfile(id){
-                runPythonPOST("deleteProfile", JSON.stringify({profileId:id}), function(){
-                    location.reload();
-                });
-            }
-        </script>
 
-        <div class="grid" id="profileInsert">
-            <div class="grid-sizer"></div>
-            <div class="grid-item init col-lg-3 col-md-6">
-                <div class="item-content panel left">
-                    <h1 id='profileCount'></h1>
-                    <h1 id="fileSize"></h1>
-                </div>
-            </div>
-            <div class="grid-item init col-lg-3 col-md-6">
-                <div class="item-content panel center">
-                    <h3>Create New Profile</h3>
-                    <button class="btn btn-primary" onclick="newProfile_click();">Create New</button>
-                </div>
+        /** newProfile_click
+         * 
+         *      resets the profile edit menu and sets the profileToEdit to a fresh, new profile
+         * 
+         */
+        function newProfile_click(id) {
+            $dash.navigate("dashboard/editProfile");
+        }
+
+
+
+
+
+        //sends POST to server to delete a profile
+        function deleteProfile(id) {
+            runPythonPOST("deleteProfile", JSON.stringify({
+                profileId: id
+            }), function () {
+                location.reload();
+            });
+        }
+    </script>
+
+    <div class="grid" id="profileInsert">
+        <div class="grid-sizer"></div>
+        <div class="grid-item init col-lg-3 col-md-6">
+            <div class="item-content panel left">
+                <h1 id='profileCount'></h1>
+                <h1 id="fileSize"></h1>
             </div>
         </div>
+        <div class="grid-item init col-lg-3 col-md-6">
+            <div class="item-content panel center">
+                <h3>Create New Profile</h3>
+                <button class="btn btn-primary" onclick="newProfile_click();">Create New</button>
+            </div>
+        </div>
+    </div>
 
-    </body>
+</body>
+
 </html>

@@ -171,6 +171,18 @@ body[theme='@theme'] .panel{
     }
 
 
+    body[theme='@theme'] .panel-gamepad{
+        max-width: 1000px;
+        flex: none;
+        margin: 25px auto;
+        box-shadow: 0px 15px 20px -20px rgba(255, 255, 255, 0.5);
+    }
+
+    body[theme='@theme'] .panel-gamepad:last-child{
+        box-shadow: none !important;
+    }
+
+
     /*  External Page Header  */
     body[theme='@theme'] .dashboard-header .head-content{}
 

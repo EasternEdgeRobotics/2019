@@ -1,3 +1,4 @@
+"""Raspberry Pi Globals."""
 import json
 
 GLOBALS = {}

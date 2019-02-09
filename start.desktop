@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Start
+Exec=./start
+Terminal=true
+Type=Application
+Categories=Application
+Name[en_CA]=Start

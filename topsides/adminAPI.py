@@ -1,5 +1,5 @@
-from flask import Blueprint, Flask, render_template, jsonify, request
-import json
+"""Admin API."""
+from flask import Blueprint, render_template, request
 import random
 import string
 import datetime
@@ -13,6 +13,7 @@ topsidesComms = None
 activeKey = None
 activeKeyExpiry = None
 
+
 def adminAPI(comms):
     global topsidesComms
     topsidesComms = comms
@@ -22,6 +23,7 @@ def adminAPI(comms):
 @admin_api.route("/adminlogin")
 def loadAdminLoginPage():
     return render_template("adminLogin.html")
+
 
 @admin_api.route("/authAdminLogin", methods=["POST", "GET"])
 def attemptLogin():
