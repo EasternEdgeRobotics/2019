@@ -12,7 +12,7 @@
 */
 function runPythonGET(scriptName, data, returnFunction){
     //TODO: Add code to ensure data is JSON
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: "http://localhost:80/" + scriptName,
         contentType: "application/json; charset=utf-8",
@@ -43,7 +43,7 @@ function runPythonGET(scriptName, data, returnFunction){
 */
 function runPythonPOST(scriptName, data, returnFunction){
     //TODO: Add code to ensure data is JSON
-    $.ajax({
+    return $.ajax({
         type: "POST",
         url: "http://localhost:80/" + scriptName,
         contentType: "application/json; charset=utf-8",
@@ -63,33 +63,18 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-//TODO --------------------------------------------------------------------------------------
 
-
-/** HandleSliderValues
- *
- *  Empty function for handling slider values.
- *  joystick values will be handled on the server side (Python)
- *
- */
-function HandleSliderValues(){
-
+function getQueryParameter(name) {
+    return new URLSearchParams(window.location.search).get(name);
 }
 
+function setQueryParameter(name, value){
+    var s = new URLSearchParams(window.location.search);
+    s.set(name, value);
+    var newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?" + s.toString();
+    history.pushState(null, '', newurl);
+}
 
-
-
- /** GetAllValues
-  *
-  *  Cleaner function to run a GET command to server and return all nessessary values in a single server call
-  *  instead of all seperate.
-  *
-  */
- function GetAllValues(){
-
- 
-
- }
  /*
 
 
@@ -117,7 +102,7 @@ function HandleSliderValues(){
      *      2. Create a div inside of the previous div with the class [modal-content]
      *      3. Create an element to use as a trigger to open the modal (ex: button)
      *          - give that element the [modal-trigger] class
-     *          - set the atrribute [modal-id] of that element to the id of the div in step 1.
+     *          - set the attribute [modal-id] of that element to the id of the div in step 1.
      *  
      */
 $(document).ready(function(){
@@ -130,7 +115,7 @@ function modalPrep(){
         var modalID = $(this).attr("modal-id");
         $("#"+modalID).toggleClass("visible", true);
     });
-    $(".modal, .modal-close").click(function(){ //click event to close modals (whenblack overlay is clicked.
+    $(".modal, .modal-close").click(function(){ //click event to close modals (when black overlay is clicked.
         $(this).toggleClass("visible", false);
         $(this).parents(".modal").toggleClass("visible", false);
     });

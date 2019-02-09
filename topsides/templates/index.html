@@ -1,54 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Index</title>
-        <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}" type="text/css"  />
 
-        <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
-        <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
-        <script>
-            // Test repeating function for getting values from python
-            setInterval(function(){
-                runPythonGET("testGetPressure", null ,function(data){
-                    $("#testPressure").html(data);
-                });
-            }, 100);
-        </script>
-        <style>
-            h3{
-                font-family: Arial, Helvetica, sans-serif;
-                display: inline-block;
-                transition: 0.3s;
-                margin: 20px;
-            }
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}" type="text/css" />
 
-            a{
-                text-decoration: none;
-            }
+    <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
+</head>
 
-            h3:hover{
-                transform: scale(1.05);
-            }
-        </style>
-    </head>
-    <body>
-        <div class="eer-logo-img"></div>
-        <br/>
+<body>
+    <div class="eer-logo-img"></div>
+    <br />
 
-        <!--<div class="status-value-container">
-            <div class="status-value status-value-outer">
-                <div class="status-value status-value-inner">
-                    <p id="testPressure">Text</p>
-                    <div class="aaa"><div></div></div>
-                </div>
-            </div>
-        </div>-->
+    <a class="no-decoration" href="editprofile">
+        <h3 class="index-links">Edit profiles</h3>
+    </a>
+    <a class="no-decoration" href="testControls">
+        <h3 class="index-links">Full Control Test</h3>
+    </a>
+    <a class="no-decoration" href="testNotificationsPage">
+        <h3 class="index-links">Notifications Test</h3>
+    </a>
+    <a class="no-decoration" href="gui">
+        <h3 class="index-links">Gui</h3>
+    </a>
+    <a class="no-decoration" href="dev">
+        <h3 class="index-links">Development page</h3>
+    </a>
+    <a class="no-decoration" href="simulator">
+        <h3 class="index-links">Simulator</h3>
+    </a>
+</body>
 
-        <a href="editprofile"><h3>Edit profiles</h3></a>
-        <a href="testControls"><h3>Full Control Test</h3></a>
-        <a href="testNotificationsPage"><h3>Notifications Test</h3></a>
-        <a href="gui"><h3>Gui</h3></a>
-        <a href="dev"><h3>Development page</h3></a>
-    </body>
 </html>

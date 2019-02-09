@@ -27,9 +27,9 @@
         <div class="input-group">
             <p>{{global}}</p>
             {% if (isinstance(topsides_globals[global], int)) %}
-            <input id="topsides_{{global}}" type="number" name="{{global}}" value="{{topsides_globals[global]}}"/>
+            <input id="topsides_{{global}}" type="number" name="{{global}}" value="{{topsides_globals[global]}}" />
             {% else %}
-            <input id="topsides_{{global}}" name="{{global}}" value="{{topsides_globals[global]}}"/>
+            <input id="topsides_{{global}}" name="{{global}}" value="{{topsides_globals[global]}}" />
             {% endif %}
         </div>
         {% endfor %}

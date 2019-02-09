@@ -1,16 +1,24 @@
 class ProfileHandler{
 
-    //Constructor, runs GET for profiles and stores information (asyncronously)
+    //Constructor, runs GET for profiles and stores information (asynchronously)
     constructor(){
         var profileHandler = this;
-        runPythonGET("getProfiles", null, function(data){
+        var xhr = runPythonGET("getProfiles", null, function(data){
+            profileHandler._filesize = xhr.getResponseHeader("Content-Length")*3; //filesize (*3 adjusts for whitespace)
             profileHandler._profiles = data;
+            if(profileHandler._onProfileLoad != null){
+                profileHandler._onProfileLoad(data);
+            }
         });
     }
 
     //getter for profiles, therefore you can use profilehandler.profiles to get the profiles
     get profiles(){
         return this._profiles;
+    }
+
+    get fileSize(){
+        return this._filesize;
     }
 
 
@@ -36,7 +44,7 @@ class ProfileHandler{
     /** getNextId
      * 
      *  @description
-     *      returns the integer of the next avaliable unique id when saving new profiles
+     *      returns the integer of the next available unique id when saving new profiles
      * 
      *  @returns
      *      next unique id
@@ -68,7 +76,7 @@ class ProfileHandler{
 
     /** deleteProfile
      * 
-     *  sneds ID to server for profile to delete from server
+     *  sends ID to server for profile to delete from server
      * 
      * @param {int} id - id value for the profile
      */
@@ -77,4 +85,17 @@ class ProfileHandler{
 
         });
     }
+
+    /** profilesLoaded
+     * 
+     *  @description
+     *      setter for a function that will run when the handler finishes loading profiles from the server
+     *      if the profiles are already loaded, the function will run
+     */
+    set onProfilesLoaded(func){
+        this._onProfileLoad = func;
+        if(this._profiles != null)
+            this._onProfileLoad();
+    }
+
 }
