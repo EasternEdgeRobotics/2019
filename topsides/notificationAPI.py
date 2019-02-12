@@ -1,5 +1,5 @@
 """Notification API."""
-from flask import Blueprint, render_template, Response, Flask, copy_current_request_context
+from flask import Blueprint, render_template, Response, Flask, copy_current_request_context, request
 from flask_socketio import SocketIO, emit
 import threading
 import time
@@ -61,7 +61,11 @@ def loadNotificationTestPage():
 
 
 
-@notification_api.route("/put", methods=["GET"])
+@notification_api.route("/notification/send", methods=["POST"])
 def temp():
-    putNotification("test", "info")
-    return "done"
+    message = request.json.get("message", request.json.get("msg", request.json.get("m", None)))
+    mType = request.json.get("type", request.json.get("t", "info"))
+    if(message != None):
+        putNotification(message, mType)
+        return "Notification sent sucessfully!", 200
+    return "Failed to send notification", 500
