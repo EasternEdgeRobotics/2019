@@ -22,6 +22,9 @@ $(document).ready(function(){
             $dash.loadPage(getQueryParameter("page"));
         }
     });
+
+    //init notification handler
+    new NotificationHandler("notification");
 });
 
 function navButtonClick(btn){

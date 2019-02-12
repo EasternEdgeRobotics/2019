@@ -93,6 +93,43 @@ body[theme='@theme'] .graph-dark{}
 
 body[theme='@theme'] .spiner{}
 
+/*
+    SNACKBAR
+*/
+
+body[theme='@theme'] .snackbar{
+    background-color: #363a3c;
+    color: white;
+    bottom: 0px;
+    left: 0px;
+    border-radius: 0px;
+}
+
+body[theme="@theme"] .snackbar:before{
+    font-size: 32px;
+    padding: 0px 20px 0px 10px;
+}
+
+body[theme='@theme'] .snackbar[type='info']{
+    border: none;
+}
+
+body[theme='@theme'] .snackbar[type='info']:before{
+    content: "i";
+}
+
+body[theme='@theme'] .snackbar[type='success']::before{
+    content: "\2611";
+}
+
+body[theme='@theme'] .snackbar[type='warning']::before{
+    content: "\26A0";
+}
+
+body[theme='@theme'] .snackbar[type='danger']::before{
+    content: "\26D4";
+}
+
 
 
 

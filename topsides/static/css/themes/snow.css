@@ -73,6 +73,35 @@ body[theme='@theme'] .graph-dark{}
 
 body[theme='@theme'] .spiner{}
 
+/*
+    SNACKBAR
+*/
+
+body[theme='@theme'] .snackbar{
+    bottom: 0px;
+    left: 0px;
+    min-height: 50px;
+    border-radius: 0px;
+}
+
+body[theme='@theme'] .snackbar[type='info']{
+    border: none;
+    background-color: rgba(95, 44, 124, 0.9);
+    color: white;
+}
+
+body[theme='@theme'] .snackbar[type='success']{
+    background-color: rgba(68, 220, 101, 0.9);
+}
+
+body[theme='@theme'] .snackbar[type='warning']{
+    background-color: rgba(255, 206, 122, 0.9);
+}
+
+body[theme='@theme'] .snackbar[type='danger']{
+    background-color: rgba(255, 81, 81, 0.9);;
+}
+
 
 
 

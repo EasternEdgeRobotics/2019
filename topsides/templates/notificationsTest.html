@@ -13,8 +13,8 @@
     <script>
         var NOTIFICATIONHANDLER = new NotificationHandler("testGood");
 
-        function f() {
-            runPythonPOST("notification/send", JSON.stringify({message: "test", type: "primary"}), function () {});
+        function f(type) {
+            runPythonPOST("notification/send", JSON.stringify({message: "This is a test notification. Hello World, how are you?", type: type}), function () {});
         }
     </script>
 </head>
@@ -22,7 +22,10 @@
 <body>
     <div class="snackbar hidden" id="testGood"></div>
 
-    <button class="button" onclick="f();">Send Notification</button>
+    <button class="button" onclick="f('info');">Send Info</button>
+    <button class="button" onclick="f('success');">Send Success</button>
+    <button class="button" onclick="f('warning');">Send Warning</button>
+    <button class="button" onclick="f('danger');">Send Danger</button>
 </body>
 
 </html>

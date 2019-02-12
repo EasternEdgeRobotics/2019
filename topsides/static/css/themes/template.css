@@ -60,6 +60,21 @@ body[theme='@theme'] .graph-dark{}
 body[theme='@theme'] .spiner{}
 
 
+/*
+    SNACKBAR
+*/
+
+body[theme='@theme'] .snackbar{}
+
+body[theme='@theme'] .snackbar[type='info']{}
+
+body[theme='@theme'] .snackbar[type='success']{}
+
+body[theme='@theme'] .snackbar[type='warning']{}
+
+body[theme='@theme'] .snackbar[type='danger']{}
+
+
 
 
 

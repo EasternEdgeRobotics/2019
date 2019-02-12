@@ -3,6 +3,9 @@ class NotificationHandler{
     constructor(snackbarID){
         this.snackbar = snackbarID;
         this.open = false;
+
+        $("#"+snackbarID).toggleClass("hidden", true);
+
         if(typeof io != "undefined"){
             var nf = this;
             var socket = io.connect("/notification/stream");
