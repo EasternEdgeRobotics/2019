@@ -294,3 +294,14 @@ body[theme='@theme'] .btn-info{}
 body[theme='@theme'] .btn-light{}
 
 body[theme='@theme'] .btn-dark{}
+
+
+
+body[theme='@theme'] .card {
+    background-color: #33393b;
+    color: #ffffff;
+}
+
+body[theme='@theme'] .card-header {
+    background-color: #232627;
+}
