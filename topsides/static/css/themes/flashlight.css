@@ -184,7 +184,9 @@ body[theme='@theme'] .panel{
 
 
     /*  External Page Header  */
-    body[theme='@theme'] .dashboard-header .head-content{}
+    body[theme='@theme'] .dashboard-header .head-content{
+        background-color: #232627;
+    }
 
 
 /*
