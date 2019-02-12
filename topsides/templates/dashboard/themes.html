@@ -1,0 +1,64 @@
+<body>
+    <script>
+
+        var themeToSet = "";
+        
+
+        $dash.pageLoad(function(){
+            runPythonGET("themes/getnames", null, function(data){
+                data.forEach(function(name){
+                    $("#themeSelect").append("<option value='" + name + "'>" + cleanName(name) + "</option>");
+                });
+
+                themeToSet = $("option")[0].value;
+                $("#themePreview").attr("src", "themes/preview?theme=" + themeToSet);
+            });
+
+            $("#themeSelect").change(function(){
+                themeToSet = $("#themeSelect").val();
+                $("#themePreview").attr("src", "themes/preview?theme=" + themeToSet);
+            });
+        });
+
+        //Sets the theme for the client (adds cookie)
+        function setTheme(){
+            runPythonPOST("themes/set", JSON.stringify({"theme": themeToSet}), function(){});
+            $("body").attr("theme", themeToSet);
+        }
+
+        //Takes the filename of the theme and turns it to nice text (AKA upper the first letter and replaces - and _ with spaces)
+        function cleanName(name){
+            name = name.charAt(0).toUpperCase() + name.slice(1);
+            name = name.replace("-", " ").replace("_", " ");
+            return name;
+        }
+
+        function reloadThemes(){
+            runPythonGET("themes/reload", null, function(){
+                location.reload();
+            });
+        }
+
+    </script>
+    <div class="row flex-row">
+        <div class="col-lg-8">
+            <div class="panel margins">
+                <h1>Select a Theme</h1>
+                <select id="themeSelect"></select>
+            </div>
+        </div>
+        <div class="col-lg-4 ">
+            <div class="panel margins center">
+                <button class="btn btn-primary" onclick="setTheme();">Set Theme</button>
+                <button class="btn btn-info" onclick="reloadThemes();">Reload Themes</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel margins" >
+        <h1>Theme Preview</h1>
+    </div>
+    
+    <div class="container" >
+        <iframe style="width: 100%; margin: 20px 0px; height: 620px; border-radius: 30px; border: none; box-shadow: 0px 0px 20px rgba(0,0,0,0.5)" id="themePreview" src=""></iframe>
+    </div>
+</body>

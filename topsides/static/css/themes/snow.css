@@ -1,0 +1,247 @@
+/*
+    GENERAL
+*/
+
+body[theme='@theme'] p{}
+
+body[theme='@theme'] h1{}
+
+body[theme='@theme'] h2{}
+
+body[theme='@theme'] h3{}
+
+body[theme='@theme'] h4{}
+
+body[theme='@theme'] h5{}
+
+body[theme='@theme'] h6{}
+
+body[theme='@theme'] input[type="text"]{}
+
+body[theme='@theme'] select{
+    padding: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(255, 255, 255);
+    border: none;
+    border-bottom: 1px solid black;
+    transition: 0.5s;
+}
+
+    body[theme='@theme'] select option{
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 5px;
+    }
+
+
+/*
+    EER GENERAL
+*/
+
+body[theme='@theme'] .eer-logo{}
+
+
+/*
+    GRAPHS
+*/
+
+body[theme='@theme'] .graph{}
+
+body[theme='@theme'] .graph-primary{
+    /*background-image: linear-gradient(to right, rgb(244,0,82), rgb(233,30, 99));*/
+    background-image: linear-gradient(to right, rgb(89, 180, 233), rgb(94,187, 255));
+}
+
+body[theme='@theme'] .graph-secondary{}
+
+body[theme='@theme'] .graph-success{}
+
+body[theme='@theme'] .graph-danger{}
+
+body[theme='@theme'] .graph-warning{}
+
+body[theme='@theme'] .graph-info{}
+
+body[theme='@theme'] .graph-light{}
+
+body[theme='@theme'] .graph-dark{}
+
+
+/*
+    SPINNER
+*/
+
+body[theme='@theme'] .spiner{}
+
+
+
+
+
+/*
+    _____            _     _                         _ 
+    |  __ \          | |   | |                       | |
+    | |  | | __ _ ___| |__ | |__   ___   __ _ _ __ __| |
+    | |  | |/ _` / __| '_ \| '_ \ / _ \ / _` | '__/ _` |
+    | |__| | (_| \__ \ | | | |_) | (_) | (_| | | | (_| |
+    |_____/ \__,_|___/_| |_|_.__/ \___/ \__,_|_|  \__,_|
+                                                        
+*/
+
+body[theme='@theme'] #pageBody{
+    background-color: #f2f2f2;
+}
+
+body[theme='@theme'] .sidebar{}
+
+body[theme='@theme'] .btn-nav{}
+
+    body[theme='@theme'] .btn-nav .background{
+        
+    }
+    
+    body[theme='@theme'] .btn-nav p{
+        color: #3f3f3f;
+    }
+
+    body[theme='@theme'] .btn-nav path{
+        fill: #3f3f3f;
+    }
+
+body[theme='@theme'] .btn-nav.active{}
+
+    body[theme='@theme'] .btn-nav.active .background{
+        background: rgba(31,128,207,1);
+        background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
+    }
+
+    body[theme='@theme'] .btn-nav.active p{
+        color: #fff;
+    }
+
+    body[theme='@theme'] .btn-nav.active path{
+        fill: #fff;
+    }
+
+body[theme='@theme'] .panel{
+    background-color: white;
+}
+
+    body[theme='@theme'] .panel p{}
+
+    body[theme='@theme'] .panel h1{}
+
+    body[theme='@theme'] .panel h2{}
+
+    body[theme='@theme'] .panel h3{}
+
+    body[theme='@theme'] .panel h4{}
+
+    body[theme='@theme'] .panel h5{}
+
+    body[theme='@theme'] .panel h6{}
+
+
+
+    body[theme='@theme'] .dashboard-header .head-content{
+        background-color: white;
+    }
+
+
+/*
+  ____              _       _                   
+ |  _ \            | |     | |                  
+ | |_) | ___   ___ | |_ ___| |_ _ __ __ _ _ __  
+ |  _ < / _ \ / _ \| __/ __| __| '__/ _` | '_ \ 
+ | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
+ |____/ \___/ \___/ \__|___/\__|_|  \__,_| .__/ 
+                                         | |    
+                                         |_|   
+*/
+
+/*
+    ALERTS
+*/
+
+body[theme='@theme'] .alert{}
+
+body[theme='@theme'] .alert-primary{}
+
+body[theme='@theme'] .alert-secondary{}
+
+body[theme='@theme'] .alert-success{}
+
+body[theme='@theme'] .alert-danger{}
+
+body[theme='@theme'] .alert-warning{}
+
+body[theme='@theme'] .alert-info{}
+
+body[theme='@theme'] .alert-light{}
+
+body[theme='@theme'] .alert-dark{}
+
+
+/*
+    BADGE
+*/
+
+
+body[theme='@theme'] .badge{}
+
+body[theme='@theme'] .badge-primary{}
+
+body[theme='@theme'] .badge-secondary{}
+
+body[theme='@theme'] .badge-success{}
+
+body[theme='@theme'] .badge-danger{}
+
+body[theme='@theme'] .badge-warning{}
+
+body[theme='@theme'] .badge-info{}
+
+body[theme='@theme'] .badge-light{}
+
+body[theme='@theme'] .badge-dark{}
+
+
+/*
+    BUTTONS
+*/
+
+
+body[theme='@theme'] .btn{
+    border: none !important;
+}
+
+body[theme='@theme'] .btn-primary{
+    background: rgba(31,128,207,1);
+    background: linear-gradient( to right, rgb(36, 143, 230), rgb(89, 180, 233));
+}
+
+body[theme='@theme'] .btn-secondary{
+    background: rgba(108, 117, 125, 1);
+    background: linear-gradient(to right, rgb(108, 117, 125), rgb(159, 170, 179));
+}
+
+body[theme='@theme'] .btn-success{
+    background: #28a745;
+    background: linear-gradient(to right, #28a745, #5cbf72);
+}
+
+body[theme='@theme'] .btn-danger{
+    background: rgba(244,69,56,1);
+    background: linear-gradient( to right, rgb(244,69,56), rgb(250,121,120));
+}
+
+body[theme='@theme'] .btn-warning{}
+
+body[theme='@theme'] .btn-info{
+    background: #17a2b8;
+    background: linear-gradient(to right, #17a2b8 , #5ad0e2)
+
+}
+
+body[theme='@theme'] .btn-light{}
+
+body[theme='@theme'] .btn-dark{}

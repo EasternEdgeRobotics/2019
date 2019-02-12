@@ -75,6 +75,16 @@ function setQueryParameter(name, value){
     history.pushState(null, '', newurl);
 }
 
+$(document).ready(function(){
+    runPythonGET("themes", null, function(themes){
+        $("head").append(themes.responseText);
+    });
+
+    runPythonGET("themes/get", null, function(data){
+        $("body").attr("theme", data.theme);
+    });
+});
+
  /*
 
 

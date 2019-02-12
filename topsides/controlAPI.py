@@ -95,6 +95,7 @@ def sendControlValues():
             "aft-camera": rotateCam2,
         }
         for control in thrusterData:
+            print(control + "   " + str(thrusterData))
             val = thrusterData[control]
             topsidesComms.putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
         return "good"

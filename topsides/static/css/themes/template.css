@@ -1,0 +1,196 @@
+/*
+    GENERAL
+*/
+
+body[theme='@theme'] p{}
+
+body[theme='@theme'] h1{}
+
+body[theme='@theme'] h2{}
+
+body[theme='@theme'] h3{}
+
+body[theme='@theme'] h4{}
+
+body[theme='@theme'] h5{}
+
+body[theme='@theme'] h6{}
+
+body[theme='@theme'] input[type="text"]{}
+
+body[theme='@theme'] select{}
+
+    body[theme='@theme'] select option{}
+
+
+/*
+    EER GENERAL
+*/
+
+body[theme='@theme'] .eer-logo{}
+
+
+/*
+    GRAPHS
+*/
+
+body[theme='@theme'] .graph{}
+
+body[theme='@theme'] .graph-primary{}
+
+body[theme='@theme'] .graph-secondary{}
+
+body[theme='@theme'] .graph-success{}
+
+body[theme='@theme'] .graph-danger{}
+
+body[theme='@theme'] .graph-warning{}
+
+body[theme='@theme'] .graph-info{}
+
+body[theme='@theme'] .graph-light{}
+
+body[theme='@theme'] .graph-dark{}
+
+
+/*
+    SPINNER
+*/
+
+body[theme='@theme'] .spiner{}
+
+
+
+
+
+/*
+    _____            _     _                         _ 
+    |  __ \          | |   | |                       | |
+    | |  | | __ _ ___| |__ | |__   ___   __ _ _ __ __| |
+    | |  | |/ _` / __| '_ \| '_ \ / _ \ / _` | '__/ _` |
+    | |__| | (_| \__ \ | | | |_) | (_) | (_| | | | (_| |
+    |_____/ \__,_|___/_| |_|_.__/ \___/ \__,_|_|  \__,_|
+                                                        
+*/
+
+body[theme='@theme'] #pageBody{}
+
+body[theme='@theme'] .sidebar{}
+
+body[theme='@theme'] .btn-nav{}
+
+    body[theme='@theme'] .btn-nav .background{}
+    
+    body[theme='@theme'] .btn-nav p{}
+
+    body[theme='@theme'] .btn-nav path{}
+
+body[theme='@theme'] .btn-nav.active{}
+
+    body[theme='@theme'] .btn-nav.active .background{}
+
+    body[theme='@theme'] .btn-nav.active p{}
+
+    body[theme='@theme'] .btn-nav.active path{}
+
+body[theme='@theme'] .panel{}
+
+    body[theme='@theme'] .panel p{}
+
+    body[theme='@theme'] .panel h1{}
+
+    body[theme='@theme'] .panel h2{}
+
+    body[theme='@theme'] .panel h3{}
+
+    body[theme='@theme'] .panel h4{}
+
+    body[theme='@theme'] .panel h5{}
+
+    body[theme='@theme'] .panel h6{}
+
+
+    /*  External Page Header  */
+    body[theme='@theme'] .dashboard-header .head-content{}
+
+
+/*
+  ____              _       _                   
+ |  _ \            | |     | |                  
+ | |_) | ___   ___ | |_ ___| |_ _ __ __ _ _ __  
+ |  _ < / _ \ / _ \| __/ __| __| '__/ _` | '_ \ 
+ | |_) | (_) | (_) | |_\__ \ |_| | | (_| | |_) |
+ |____/ \___/ \___/ \__|___/\__|_|  \__,_| .__/ 
+                                         | |    
+                                         |_|   
+*/
+
+/*
+    ALERTS
+*/
+
+body[theme='@theme'] .alert{}
+
+body[theme='@theme'] .alert-primary{}
+
+body[theme='@theme'] .alert-secondary{}
+
+body[theme='@theme'] .alert-success{}
+
+body[theme='@theme'] .alert-danger{}
+
+body[theme='@theme'] .alert-warning{}
+
+body[theme='@theme'] .alert-info{}
+
+body[theme='@theme'] .alert-light{}
+
+body[theme='@theme'] .alert-dark{}
+
+
+/*
+    BADGE
+*/
+
+
+body[theme='@theme'] .badge{}
+
+body[theme='@theme'] .badge-primary{}
+
+body[theme='@theme'] .badge-secondary{}
+
+body[theme='@theme'] .badge-success{}
+
+body[theme='@theme'] .badge-danger{}
+
+body[theme='@theme'] .badge-warning{}
+
+body[theme='@theme'] .badge-info{}
+
+body[theme='@theme'] .badge-light{}
+
+body[theme='@theme'] .badge-dark{}
+
+
+/*
+    BUTTONS
+*/
+
+
+body[theme='@theme'] .btn{}
+
+body[theme='@theme'] .btn-primary{}
+
+body[theme='@theme'] .btn-secondary{}
+
+body[theme='@theme'] .btn-success{}
+
+body[theme='@theme'] .btn-danger{}
+
+body[theme='@theme'] .btn-warning{}
+
+body[theme='@theme'] .btn-info{}
+
+body[theme='@theme'] .btn-light{}
+
+body[theme='@theme'] .btn-dark{}

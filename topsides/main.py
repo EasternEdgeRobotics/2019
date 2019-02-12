@@ -9,6 +9,7 @@ from notificationAPI import notificationAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 import dashboardAPI
+import themeAPI
 from adminAPI import adminAPI
 from simulatorAPI import simulatorAPI
 from TopsidesGlobals import GLOBALS
@@ -30,6 +31,7 @@ app.register_blueprint(adminAPI(topsidesComms))
 app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
+app.register_blueprint(themeAPI.themeAPI())
 
 
 @app.after_request
@@ -50,28 +52,6 @@ def returnGui():
     return dashboardAPI.dashboard()
 
 
-@app.route("/controlTest")
-def controlTestPage():
-    """
-    Base url and table of contents.
-
-    :return: rendered controlTest.html web page
-    """
-    return render_template("controlTest.html")
-
-
-@app.route("/testGetPressure")
-def testGetPressure():
-    """
-    A test pressure sensor.
-
-    GET
-
-    :return: a random value simulating a pressure sensor
-    """
-    value = random.randint(99, 105)
-    return json.dumps(value)
-
 
 @werkzeug.serving.run_with_reloader
 def run_server():
@@ -88,4 +68,5 @@ file is called from the command line (python3 main.py)
 (This statement is false for calls to the server)
 """
 if __name__ == "__main__":
+    themeAPI.loadThemes()
     run_server()

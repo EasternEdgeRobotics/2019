@@ -3,8 +3,7 @@ html {
     height: 100%;
 }
 
-#pageBody {
-    background-color: #f2f2f2;
+#pageBody{
     overflow-y: auto;
 }
 
@@ -44,8 +43,6 @@ html {
     position: absolute;
     border-radius: 15px;
     height: 100%;
-    background: rgba(31, 128, 207, 1);
-    background: linear-gradient(to right, rgb(36, 143, 230), rgb(89, 180, 233));
     opacity: 0;
     transition: 0.5s;
 }
@@ -63,24 +60,21 @@ html {
     margin: 0;
 }
 
+.btn-nav svg{
+    height: 100%;
+}
 
+@media screen and (min-width: 768px) and (max-width: 992px){
+    .btn-nav .text{
+        display: none;
+    }
+}
 
-.btn-nav path,
-.btn-nav .text {
-    fill: #3f3f3f;
-    color: #3f3f3f;
+.btn-nav path, .btn-nav .text{
     transition: 0.5s;
 }
 
-.btn-nav.active path,
-.btn-nav.active p {
-    fill: #ffffff;
-    color: #ffffff;
-    transition: 0.5s;
-}
-
-
-.nav-svg path {
+.nav-svg path{
     width: 100%;
 }
 
@@ -104,7 +98,6 @@ EXTERNAL PAGE HEADER
     width: 100%;
     top: -75px;
     transition: 0.3s;
-    background-color: white;
     padding: 10px 40px;
     box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.3);
 }
@@ -131,4 +124,29 @@ EXTERNAL PAGE HEADER
     position: fixed;
     top: calc(50% - 1rem);
     left: calc(50% - 1rem);
+}
+
+.panel{
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 0px 30px rgb(0,0,0,0.3);
+    padding: 20px 20px;
+}
+
+.panel.no-padding{
+    padding: 0px;
+}
+
+.panel.margins{
+    margin: 20px;
+}
+
+.panel.full{
+    width: 100%;
+}
+
+.center{
+    text-align: center;
+    justify-content: center;
 }
