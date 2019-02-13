@@ -39,7 +39,7 @@ def putNotification(msg, msg_type):
     if(msg_type not in types):
         msg_type = types[0]
     
-    notificationQueue.put({"msg": msg, "type": msg_type})
+    notificationQueue.put({"message": msg, "type": msg_type})
 
 
 

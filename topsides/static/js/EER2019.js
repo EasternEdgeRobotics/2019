@@ -136,6 +136,19 @@ function modalPrep(){
 }
 
 
+
+
+
+/**
+ * 
+ *  @deprecated
+ * - Troake
+ *  
+ * 
+ */
+
+
+
 /**
  *  @name Snackbar
  *  @author Troake
@@ -149,10 +162,11 @@ function modalPrep(){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+/*
 $(document).ready(function(){
     //$(".snackbar").html("<div class='snack'></div>");
 });
-
+*/
 
 /**openSnackbar
  * 
@@ -172,14 +186,14 @@ function openSnackbar(id, message, time=3000, requireExit = false){
         }
     });
 }*/
-
+/*
 function closeSnackbar(id){
     $.each($('.snackbar'), function (i, obj) {
         if($(obj).attr('id') == id){
             $(obj).toggleClass('visible', false);
         }
     });
-}
+}*/
 
 
 /**
