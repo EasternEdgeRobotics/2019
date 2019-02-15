@@ -10,4 +10,4 @@ raspi/print.py
 .vscode/
 .vs/
 #Themes
-**/themes/loaded/
+**/themes/loaded
