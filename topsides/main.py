@@ -19,7 +19,7 @@ import werkzeug.serving
 import topsidesComms
 from flask_socketio import SocketIO
 
-gevent.monkey.patch_all()
+#gevent.monkey.patch_all()
 app = Flask(__name__)
 socketio = SocketIO(app)
 CORS(app)

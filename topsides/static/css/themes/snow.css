@@ -87,7 +87,7 @@ body[theme='@theme'] .snackbar{
 body[theme='@theme'] .snackbar[type='info']{
     border: none;
     background-color: rgba(95, 44, 124, 0.9);
-    color: white;
+    color: white; 
 }
 
 body[theme='@theme'] .snackbar[type='success']{

@@ -288,7 +288,7 @@ class ControlHandler{
 
     finishedAssignGamepads(){
         if(this._notificationHandler != null)
-            this._notificationHandler.localNotification("Gamepads successfully assigned for profile: " + this._profile.name, "good");
+            this._notificationHandler.localNotification("Gamepads successfully assigned for profile: " + this._profile.name, "success");
     }
 
 
