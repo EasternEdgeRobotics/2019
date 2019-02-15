@@ -9,3 +9,5 @@ raspi/print.py
 # Visual Studio
 .vscode/
 .vs/
+#Themes
+**/themes/loaded/
