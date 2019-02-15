@@ -1,6 +1,6 @@
 """Loads and deletes control profiles."""
-import json
 from flask import Blueprint, Flask, render_template, jsonify, request
+import json
 
 profile_api = Blueprint('profile_api', __name__)
 
@@ -140,3 +140,11 @@ def saveProfile(profile):
         file.seek(0)
         json.dump(data, file, indent=4)
         file.truncate()
+
+
+def getProfileByID(id):
+    profiles = loadProfiles()
+    for profile in profiles:
+        if(str(profile['id']) == str(id)):
+            return profile
+    return None

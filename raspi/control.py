@@ -1,4 +1,4 @@
-"""Module to control the thruster using the maestro library."""
+"""Module to control the thrusters and servos using the maestro library."""
 
 # Motor Controller limits measured in maestro units
 # Values should be adjusted so that the center, stops the thrusters;
@@ -24,10 +24,16 @@ class Thruster:
         # Init thruster accel and speed parameters
         self.maestro.setAccel(ch, 0)
         self.maestro.setSpeed(ch, RESPONSE)
-        # thruster min/max and center Values
-        self.min_s = MIN_SPEED
-        self.max_s = MAX_SPEED
-        self.center_s = CENTER_SPEED
+        # Thruster min/max and center Values
+        if ((ch == 8) or (ch == 11)):
+            # Change range values for camera servos
+            self.min_s = 2200
+            self.max_s = 10000
+            self.center_s = 5800
+        else:
+            self.min_s = MIN_SPEED
+            self.max_s = MAX_SPEED
+            self.center_s = CENTER_SPEED
 
     def ThrusterScale(self, thruster):
         """Scale thruster speed(-1.0 to 1.0) to maestro servo min/center/max limits."""

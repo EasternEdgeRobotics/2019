@@ -1,8 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Name=Startup
-Exec=./startup
-Terminal=true
-Type=Application
-Categories=Application
-Name[en_CA]=Startup

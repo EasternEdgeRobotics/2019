@@ -1,10 +1,13 @@
 class ControlOptions{
     constructor(){
+        this._axes = null;
         var controlOption = this;
+        this._loadFunction = function(){};
         runPythonGET("getControlOptions", null, function(data){
             controlOption._axes = data["axes"];
             controlOption._buttons = data["button"];
             controlOption._toggleButtons = data["buttonToggle"];
+            controlOption._loadFunction();
         });
     }
 
@@ -20,6 +23,15 @@ class ControlOptions{
 
     get toggleButtons(){
         return this._toggleButtons;
+    }
+
+    set onOptionsLoaded(f){
+        if(f instanceof Function){
+            this._loadFunction = f;
+            if(this._axes != null){
+                this._loadFunction();
+            }
+        }
     }
 
     //returns string to generate <select> options (USED ON PROFILEEDIT PAGE)
