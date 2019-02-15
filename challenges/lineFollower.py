@@ -10,24 +10,34 @@ def preprocess(orig_frame):
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Define hsv bounds for red
-    low_red1 = np.array([0,80,0])
-    up_red1 = np.array([40,255,255])
-    low_red2 = np.array([130,80,0])
-    up_red2 = np.array([180,255,255])
+    low_red1    = np.array([0,80,0])
+    up_red1     = np.array([40,255,255])
+    low_red2    = np.array([130,80,0])
+    up_red2     = np.array([180,255,255])
+
+    # Define hsv bounds for blue
+    low_blue    = np.array([110,50,50])
+    up_blue     = np.array([130,255,255])
 
     # Threshold the hsv image to get only red colors
     mask1 = cv2.inRange(hsv, low_red1, up_red1)
     mask2 = cv2.inRange(hsv, low_red2, up_red2)
 
+    # Threshold the hsv image to get only blue colors
+    mask_blue = cv2.inRange(hsv, low_blue, up_blue)
 
     mask_ne = cv2.bitwise_or(mask1, mask2)
 
     kernel = np.ones((10,10),np.uint8)
     mask = cv2.erode(mask_ne,kernel,iterations = 1)
 
+    kernel_blue = np.ones((10,10),np.uint8)
+
+    mask_blue = cv2.erode(mask_blue,kernel_blue,iterations = 1)
+
     # Apply Canny edge detection algorithm to get a binary output of edges
     edges = cv2.Canny(mask, 75, 150)
-    return edges, mask, mask_ne
+    return edges, mask, mask_ne, mask_blue
 
 def findLines(mask, frame):
     lines = cv2.HoughLinesP(mask, 1, np.pi/180, 100, np.array([]), minLineLength = 100, maxLineGap=10)
@@ -45,7 +55,7 @@ def findLines(mask, frame):
                     ver = ver + 1
                 else:
                     hor = hor + 1
-    print('hor:', hor,'vert:', ver)
+    # print('hor:', hor,'vert:', ver)
     return line_image, ver, hor
 
 def findLinesLSD(mask, frame):
@@ -180,49 +190,45 @@ def findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line):
 
         else:
             print('.')
+
+        # BLue line detection
+        left_roi_blue = mask_blue[0:height,0:1].any()
+        right_roi_blue = mask_blue[0:height,639:640].any()
+        top_roi_blue = mask_blue[79:80].any()
+        bot_roi_blue = mask_blue[419:420].any()
+
+        blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])
+        
+        if left_roi_blue is not True and right_roi_blue is not True and top_roi_blue is not True and bot_roi_blue is not True and blue_pixels > 1000:
+            print('Blue boi')
+
+
+
     return last_line, main_dir
 
+def drawMap(frame):
+    x1_map = 400
+    y1_map = 0
+    x2_map = 460
+    y2_map = 60
+    xrange = [1,2,3,4]
+    yrange = [1,2,3]
+
+    for i in yrange:
+        for j in xrange:
+            cv2.rectangle(frame,(x1_map,y1_map),(x2_map,y2_map),(0,255,0),1)
+            x1_map = x1_map + 60
+            x2_map = x2_map + 60
+        x1_map = 400
+        x2_map = 460
+        y1_map = y1_map + 60
+        y2_map = y2_map + 60
+
+    return frame
+
+
 def runLineFollower():
-    # create video object that opens back camera for calls in opencv api
-    videoFeed = 1
-    video = cv2.VideoCapture(videoFeed)
-    # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-    
-    print('Enter Initial Direction')
-    dir = input()
-    print('Initial direction chosen:', dir)
-
-    direction =   { 'w':'up',
-                    'a':'left',
-                    's':'down',
-                    'd':'right'}
-    last_line = ''
-    main_dir = direction[dir]
-
-    while True: 
-        # Read camera frames
-        ret, frame = video.read()
-        if not ret:
-            video = cv2.VideoCapture(videoFeed)
-            # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-            continue
-
-        # Do processing work
-        edges, mask, mask_ne = preprocess(frame)
-        line_image, ver, hor = findLines(mask, frame)
-        last_line, main_dir = findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line)
-
-        # Permord image display functionality
-        weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
-        cv2.imshow("Frame", mask_ne)
-        cv2.imshow("Mask", weighted_image)
-
-        key = cv2.waitKey(25)
-        if key == 27:
-            break
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
+   '''Add function run code'''
 
 if __name__ == '__main__':
     # create video object that opens back camera for calls in opencv api
@@ -251,19 +257,23 @@ if __name__ == '__main__':
             # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
             continue
 
-        edges, mask, mask_ne = preprocess(frame)
+        frame = drawMap(frame)
+
+        edges, mask, mask_ne, mask_blue = preprocess(frame)
         line_image, ver, hor = findLines(mask, frame)
         # line_image, ver, hor = findLinesLSD(mask, frame)
-        
+
         last_line, main_dir = findMoments(frame, mask, mask_ne, ver, hor, main_dir, last_line)
 
         weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
-        cv2.imshow("Frame", mask_ne)
+
+        # cv2.imshow("Frame", mask_ne)
         cv2.imshow("Mask", weighted_image)
+        # cv2.imshow("Mask", mask_blue)
 
         # e2 = cv2.getTickCount()
         # t = (e2 - e1)/cv2.getTickFrequency()
-        # print( t )
+        # print(t)
         key = cv2.waitKey(25)
         if key == 27:
             break
