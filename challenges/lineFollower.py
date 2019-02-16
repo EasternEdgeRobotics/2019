@@ -20,17 +20,17 @@ def preprocess(orig_frame):
     up_blue     = np.array([130,255,255])
 
     # Threshold the hsv image to get only red colors
-    mask1 = cv2.inRange(hsv, low_red1, up_red1)
-    mask2 = cv2.inRange(hsv, low_red2, up_red2)
+    mask_red_low = cv2.inRange(hsv, low_red1, up_red1)
+    mask_red_high = cv2.inRange(hsv, low_red2, up_red2)
 
     # Threshold the hsv image to get only blue colors
     mask_blue = cv2.inRange(hsv, low_blue, up_blue)
 
-    mask_ne = cv2.bitwise_or(mask1, mask2)
+    mask_red_ne = cv2.bitwise_or(mask_red_low, mask_red_high)
 
     # kernel = np.ones((10,10),np.uint8)
     kernel = np.ones((70,70),np.uint8)
-    mask = cv2.erode(mask_ne,kernel,iterations = 1)
+    mask = cv2.erode(mask_red_ne,kernel,iterations = 1)
 
     kernel_blue = np.ones((10,10),np.uint8)
 
@@ -38,7 +38,7 @@ def preprocess(orig_frame):
 
     # Apply Canny edge detection algorithm to get a binary output of edges
     edges = cv2.Canny(mask, 75, 150)
-    return edges, mask, mask_ne, mask_blue
+    return edges, mask, mask_red_ne, mask_blue
 
 def findLines(mask, frame):
     lines = cv2.HoughLinesP(mask, 1, np.pi/180, 100, np.array([]), minLineLength = 100, maxLineGap=10)

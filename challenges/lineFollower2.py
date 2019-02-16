@@ -2,6 +2,13 @@ import cv2
 import numpy as np
 import math
 
+import sys
+# sys.path.append("../raspi/")
+# import fControl
+
+# sys.path.append.("../topsides/")
+from detectCracks import detectCracks
+
 class VideoStream:
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
@@ -21,6 +28,7 @@ class VideoStream:
         self.main_dir = direction[dir]
         self.checkOne = False
         self.blue_boi = False
+        self.isBlueFound = False
         self.blue_line_location = [0,0]
         self.blue_line_location_str = ''
 
@@ -32,13 +40,14 @@ class VideoStream:
                 self.video = cv2.VideoCapture(source)
                 # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
+            frame = frame[60:420,0:640]
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
             line_image, ver, hor = self.linesHough(mask, frame)
             self.logic(frame, mask, mask_ne, ver, hor, mask_blue)
             line_image = self.drawMap(line_image, mask_black)
             cv2.imshow("Frame", line_image)
-            cv2.imshow("Mask Black", mask)
+            cv2.imshow("Mask Black", mask_black)
 
             key = cv2.waitKey(25)
             if key == 27:
@@ -79,7 +88,7 @@ class VideoStream:
 
 
         # kernel = np.ones((10,10),np.uint8)
-        kernel = np.ones((70,70),np.uint8)
+        kernel = np.ones((25,25),np.uint8)
         mask = cv2.erode(mask_ne,kernel,iterations = 1)
 
         kernel_blue = np.ones((10,10),np.uint8)
@@ -156,7 +165,7 @@ class VideoStream:
         mid_height = height//2  # 240
         mid_width = width//2    # 320
         height_start = 0        # 60
-        height_end = height # 420
+        height_end = height    # 420
 
         M = cv2.moments(mask)
         if M["m00"] != 0:
@@ -222,22 +231,21 @@ class VideoStream:
 
                 print('Vertical Line','| Drive:', self.main_dir, '| Horizontal Error:', error, '| Correct:', error_dir, '| Line size:', line_size, '| Correct:', size_error)
             # Corner            
-            elif hor > 10 and ver > 10:
+            elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
                 corner_dir = ''
                 error = 0
+                print('self.lastline',self.last_line)
                 # Corner inlet: Horizontal, Determine corner outlet: Up or Down
                 if self.last_line == 'horizontal':
                     top_roi = mask[height_start:height_start+1].any()
                     bot_roi = mask[height_end-1:height_end].any()
-                    # print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
+                    print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
                     corner_dir = 'vertical'
                     error = abs(cX - mid_width)
                     if top_roi:
                         self.main_dir = 'up'
                     if bot_roi:
                         self.main_dir = 'down'
-                        print('maindir1', self.main_dir)
-                    print('maindir2', self.main_dir)
                 # Corner inlet: Vertical, Determine corner outlet: Left or Right
                 elif self.last_line == 'vertical':
                     left_roi = mask[0:height,0:1].any()
@@ -258,14 +266,16 @@ class VideoStream:
                 print('.')
 
             # BLue line detection
-            left_roi_blue = mask_blue[0:height,0:1].any()
-            right_roi_blue = mask_blue[0:height,width-1:width].any()
-            top_roi_blue = mask_blue[0:1,0:width].any()
-            bot_roi_blue = mask_blue[height-1:height,0:width].any()
+            left_roi_blue = mask_blue[height_start:height_end,0:10].any()
+            right_roi_blue = mask_blue[height_start:height_end,width-10:width].any()
+            top_roi_blue = mask_blue[height_start:height_start+10,0:width].any()
+            bot_roi_blue = mask_blue[height_end-10:height_end,0:width].any()
             blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
-            if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000:
+            if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:
                 print('Blue boi')
+                detectCracks()
                 self.blue_boi = True
+                self.isBlueFound = True
 
     def drawMap(self, frame, mask_black):
         width = frame.shape[1]
@@ -278,7 +288,7 @@ class VideoStream:
 
         for i in yrange:
             for j in xrange:
-                cv2.rectangle(frame,(x1_map,y1_map),(x2_map,y2_map),(0,0,0),1)
+                cv2.rectangle(frame,(x1_map,y1_map),(x2_map,y2_map),(0,255,100),1)
                 x1_map = x1_map - 60
                 x2_map = x2_map - 60
             x2_map = width -1
@@ -293,55 +303,58 @@ class VideoStream:
             mid_height = height//2 
             mid_width = width//2 
 
+            start_height = 0
+            end_height = height
+
             if self.blue_boi == True:
                 self.blue_line_location = self.location[:] # passes by value
                 self.blue_line_location_str = str(self.location)
                 self.blue_boi = False
                 
 
-            black_pixels_up = np.count_nonzero(mask_black[mid_height-50:mid_height-40,0:width])
-            black_pixels_down = np.count_nonzero(mask_black[mid_height+40:mid_height+50,0:width])
-            black_pixels_left = np.count_nonzero(mask_black[0:height,mid_width-50:mid_width-40])
-            black_pixels_right = np.count_nonzero(mask_black[0:height+50,mid_width+40:mid_width+50])
-
+            black_pixels_up     = np.count_nonzero(mask_black[mid_height-50:mid_height-40, 0:width])
+            black_pixels_down   = np.count_nonzero(mask_black[mid_height+40:mid_height+50, 0:width])
+            black_pixels_left   = np.count_nonzero(mask_black[start_height:end_height,     mid_width-50:mid_width-40])
+            black_pixels_right  = np.count_nonzero(mask_black[start_height:end_height,     mid_width+40:mid_width+50])
+            black_threshold = 500
             
             if self.main_dir == 'down':
-                if black_pixels_down > 1000:
+                if black_pixels_down > black_threshold:
                     self.checkOne = True
                 if self.checkOne == True:
-                    if black_pixels_up > 1000:
+                    if black_pixels_up > black_threshold:
                         self.location[0] = self.location[0]+1
                         self.checkOne = False
             if self.main_dir == 'up':
-                if black_pixels_up > 1000:
+                if black_pixels_up > black_threshold:
                     self.checkOne = True
                 if self.checkOne == True:
-                    if black_pixels_down > 1000:
+                    if black_pixels_down > black_threshold:
                         self.location[0] = self.location[0]-1
                         self.checkOne = False
             if self.main_dir == 'left':
-                if black_pixels_left > 1000:
+                if black_pixels_left > black_threshold:
                     self.checkOne = True
                 if self.checkOne == True:
-                    if black_pixels_right > 1000:
+                    if black_pixels_right > black_threshold:
                         self.location[1] = self.location[1]-1
                         self.checkOne = False
             if self.main_dir == 'right':
-                if black_pixels_right > 1000:
+                if black_pixels_right > black_threshold:
                     self.checkOne = True
                 if self.checkOne == True:
-                    if black_pixels_left > 1000:
+                    if black_pixels_left > black_threshold:
                         self.location[1] = self.location[1]+1
                         self.checkOne = False
 
-            cv2.putText(frame, text, (width - 400, 10), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 0), 1)
-            cv2.putText(frame, str(self.location), (width - 350, 40), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 0), 1)
-            cv2.putText(frame, text2, (width - 400, 100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 0), 1)
-            cv2.putText(frame, self.blue_line_location_str, (width - 350, 130), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0, 0, 0), 1)
+            cv2.putText(frame, text, (width - 400, 10), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, str(self.location), (width - 350, 40), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, text2, (width - 400, 100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, self.blue_line_location_str, (width - 350, 130), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
 
-            cv2.circle(frame, ((width-270)+self.location[1]*60, -30+self.location[0]*60), 6, (255,0,0), -1)
+            cv2.circle(frame, ((width-270)+self.location[1]*60, -30+self.location[0]*60), 6, (0,255,100), -1)
             if self.blue_line_location != '':
-                cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (255,255,0), -1)
+                cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
             
 
         return frame
@@ -352,6 +365,6 @@ class VideoStream:
 
 if __name__ == '__main__':
     videoFeed = 'lineVideo.mov'
-    video = VideoStream(videoFeed)
+    video = VideoStream(1)
     video.update()
     video.stop()
