@@ -1,0 +1,23 @@
+{
+    "admin_password": "whynick",
+    "ipHost": "192.168.88.2",
+    "ipHost-dev": "localhost",
+    "portHost": 5001,
+    "ipSend": "192.168.88.5",
+    "ipSend-dev": "localhost",
+    "portSend": 5000,
+    "flaskPort": 80,
+    "thrusterPorts": {
+        "fore-port-vert": 1,
+        "fore-star-vert": 2,
+        "aft-port-vert": 5,
+        "aft-star-vert": 0,
+        "fore-port-horz": 4,
+        "fore-star-horz": 3,
+        "aft-port-horz": 6,
+        "aft-star-horz": 7,
+        "fore-camera": 8,
+        "aft-camera": 9
+    },
+    "simulatorEnabled": true
+}
