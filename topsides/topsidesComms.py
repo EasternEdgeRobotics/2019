@@ -39,6 +39,8 @@ def sendData(inputData):
     s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
 
 
+keep = [0]
+
 # This function is constantly trying to receive data from the ROV
 def receiveData():
     global s
@@ -47,8 +49,10 @@ def receiveData():
         outputData = outputData.decode("utf-8")
         if (outputData == "exit"):
             break
-        print(outputData)
-        received.put(outputData)
+        #print(outputData, ' sssssss')
+        keep.append(outputData)
+        #print(keep[-1])
+        #received.put(outputData)
 
 
 def putMessage(msg):
@@ -62,8 +66,11 @@ t.start()
 
 if __name__ == "__main__":
     import time
+    #for i in range(0, 10):
+    while 1:
+        sendData('readSerialArd.py')
+        time.sleep(.5);
+        print(keep[-1])
     for i in range(0, 10):
-        sendData("getGyro.py")
-        time.sleep(2)
-    for i in range(0, 10):
-        print(received.get())
+        print('hello')   
+    
