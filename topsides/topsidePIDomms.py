@@ -14,8 +14,59 @@ from TopsidesGlobals import GLOBALS
 
 
 
-#The following line is for serial over GPIO
-port = '/dev/cu.usbmodem14201'
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
+portSend = GLOBALS['portSend']
+portHost = GLOBALS['portHost']
+
+received = queue.Queue()
+# Try opening a socket for communication
+try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+except socket.error:
+    print("Failed To Create Socket")
+    sys.exit()
+except Exception as e:
+    print("failed")
+# Bind the ip and port of topsides to the socket and loop coms
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind((ipHost, portHost))
+
+# Queue to hold send commands to be read by simulator
+simulator = queue.Queue()
+
+
+# This function sends data to the ROV
+def sendData(inputData):
+    global s
+    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+
+
+# This function is constantly trying to receive data from the ROV
+def receiveData():
+    global s
+    while True:
+        outputData, addr = s.recvfrom(1024)
+        outputData = outputData.decode("utf-8")
+        if (outputData == "exit"):
+            break
+        print(outputData)
+        received.put(outputData)
+
+
+def putMessage(msg):
+    sendData(msg)
+    simulator.put(msg, timeout=0.005)
+
+
+
+
 
 send = queue.Queue()
 received = queue.Queue()
@@ -24,6 +75,8 @@ depth = pid(); ## make a depth object of the pid class
 angular = pid();
 ## initialize depth pid constants
 
+#The following line is for serial over GPIO
+port = '/dev/cu.usbmodem14201'
 
 """  PID constants must be tuned to prevent oscillation"""
 def depth_PID_init():
@@ -83,45 +136,6 @@ def angular_PID(angle):
     return power;
 
 
-def startComms(input):
-    """
-    Comms start.
-
-    This function starts the comms and runs the comms loop.
-    While the loop is running it will check the send queue for
-    messages to send to the ROV. It can send messages back using recieved
-    """
-    # TODO: Change to raspi ip
-    ipSend = input[0]
-    portSend = GLOBALS['portSend']
-    ipHost = GLOBALS['ipHost']
-    portHost = GLOBALS['portHost']
-
-    # try opening a socket for communication
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    except socket.error:
-        # TODO: Change to ouput on gui
-        print("Failed To Create Socket")
-        sys.exit()
-    except Exception as e:
-        print("failed")
-
-    # bind the ip and port of topsides to the socket and loop coms
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((ipHost, portHost))
-    received.put("bound")
-    # TODO: change from getting data from user to getting data from queue
-    # send data to the raspi
-    inputData = input ##send.get()
-
-    s.sendto(inputData[1].encode('utf-8'), (ipSend, portSend))
-    # TODO: Change to saving to log file on error
-    # receive response from raspi and log if error
-    outputData, addr = s.recvfrom(1024)
-    outputData = outputData.decode("utf-8")
-    print(outputData, file=sys.stderr)
-    return outputData
 
 
 def run_angular_PID(yaw=None, pitch=None, roll=None):
@@ -188,4 +202,23 @@ def getAndSendVals():
         for x in range(len(setThruster)):
             startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
 
-getAndSendVals();
+
+# Setup threading for receiving data
+t = threading.Thread(target=receiveData)
+t.start()
+
+if __name__ == "__main__":
+    while 1:
+        sendData("readSerialArd.py")
+        cDepth = received.get()
+
+        power = 0.0
+
+        power = depth_PID(cDepth)
+        setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
+        print(power)
+
+
+        ## send to thrusters now
+        for x in range(len(setThruster)):
+            sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
