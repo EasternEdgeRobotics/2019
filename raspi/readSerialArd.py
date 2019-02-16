@@ -8,7 +8,9 @@ import time
 flag.set()
 
 #The following line is for serial over GPIO
-port = '/dev/ttyACMO'
+# port = '/dev/ttyACMO'
+
+port = "/dev/cu.usbmodem14201"
 
 
 ard = serial.Serial(port,115200,timeout=5)
@@ -21,7 +23,7 @@ while True:
   msg = str(msg)
 
   num = msg.find("Pressure")
-  
+
   pressure  = msg[num:num+14]
   pressure = pressure.split(":")
   pressure_value = float(pressure[1])

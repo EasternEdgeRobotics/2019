@@ -203,22 +203,66 @@ def getAndSendVals():
             startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
 
 
+
+def startComms(input):
+	    """
+	    Comms start.
+
+	    This function starts the comms and runs the comms loop.
+	    While the loop is running it will check the send queue for
+	    messages to send to the ROV. It can send messages back using recieved
+	    """
+	    # TODO: Change to raspi ip
+	    ipSend = input[0]
+	    portSend = GLOBALS['portSend']
+	    ipHost = GLOBALS['ipHost']
+	    portHost = GLOBALS['portHost']
+
+	    # try opening a socket for communication
+	    try:
+	        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	    except socket.error:
+	        # TODO: Change to ouput on gui
+	        print("Failed To Create Socket")
+	        sys.exit()
+	    except Exception as e:
+	        print("failed")
+
+	    # bind the ip and port of topsides to the socket and loop coms
+	    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	    s.bind((ipHost, portHost))
+	    received.put("bound")
+	    # TODO: change from getting data from user to getting data from queue
+	    # send data to the raspi
+	    inputData = input ##send.get()
+
+	    s.sendto(inputData[1].encode('utf-8'), (ipSend, portSend))
+	    # TODO: Change to saving to log file on error
+	    # receive response from raspi and log if error
+	    outputData, addr = s.recvfrom(1024)
+	    outputData = outputData.decode("utf-8")
+	    print(outputData, file=sys.stderr)
+	    return outputData
+
 # Setup threading for receiving data
 t = threading.Thread(target=receiveData)
 t.start()
 
 if __name__ == "__main__":
+
     while 1:
         sendData("readSerialArd.py")
         cDepth = received.get()
 
-        power = 0.0
+        print(cDepth);
 
-        power = depth_PID(cDepth)
-        setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
-        print(power)
-
-
-        ## send to thrusters now
-        for x in range(len(setThruster)):
-            sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
+        # power = 0.0
+        #
+        # power = depth_PID(cDepth)
+        # setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
+        # print(power)
+        #
+        #
+        # ## send to thrusters now
+        # for x in range(len(setThruster)):
+        #     sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
