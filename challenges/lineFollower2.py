@@ -12,6 +12,7 @@ from detectCracks import detectCracks
 class VideoStream:
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
+        # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
         print('Enter Initial Row')
         location_y = int(input())
         print('Enter Initial Column')
@@ -32,6 +33,12 @@ class VideoStream:
         self.blue_line_location = [0,0]
         self.blue_line_location_str = ''
 
+    def run_lineFollower():
+        videoFeed = 'lineVideo.mov'
+        video = VideoStream(videoFeed)
+        video.update()
+        video.stop()
+
     def update(self):
         while True: 
             # Read camera frames
@@ -40,14 +47,12 @@ class VideoStream:
                 self.video = cv2.VideoCapture(source)
                 # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
-            frame = frame[60:420,0:640]
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
             line_image, ver, hor = self.linesHough(mask, frame)
-            self.logic(frame, mask, mask_ne, ver, hor, mask_blue)
+            self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue)
             line_image = self.drawMap(line_image, mask_black)
             cv2.imshow("Frame", line_image)
-            cv2.imshow("Mask Black", mask_black)
 
             key = cv2.waitKey(25)
             if key == 27:
@@ -158,14 +163,15 @@ class VideoStream:
         # print('hor:', hor,'vert:', ver)
         return line_image, ver, hor
 
-    def logic(self, frame, mask, mask_ne, ver, hor, mask_blue):
+    def driveLogic(self, frame, mask, mask_ne, ver, hor, mask_blue):
         '''Function for finding moments of image mask'''
         height = frame.shape[0] # 480
         width = frame.shape[1]  # 640
         mid_height = height//2  # 240
         mid_width = width//2    # 320
-        height_start = 0        # 60
-        height_end = height    # 420
+        bounds = 40
+        size_l_bound = 60
+        size_h_bound = 120
 
         M = cv2.moments(mask)
         if M["m00"] != 0:
@@ -173,118 +179,106 @@ class VideoStream:
             cY = int(M["m01"] / M["m00"])
             cv2.circle(frame, (cX,cY), 6, (255,255,0), -1)
             cv2.line(frame, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
-            bounds = 40
 
-            size_l_bound = 60
-            size_h_bound = 120
-
-            # Horizontal line
             if ver == 0:
-                self.last_line = 'horizontal'
-                error_dir = ''
-                size_error = ''
-                error = abs(cY - mid_height)
-
-                # Line size conditionals
-                line_size = np.count_nonzero(mask_ne[0:height,0:1])
-                if line_size < size_l_bound:
-                    size_error = 'In'
-                elif line_size > size_h_bound:
-                    size_error = 'Out'
-                else:
-                    error_dir = 'None'
-
-                # Left/Right error conditionals
-                if cY > mid_height + bounds:
-                    error_dir = 'Up'
-                elif cY < mid_height - bounds:
-                    error_dir = 'Down'
-                else:
-                    error_dir = 'None'
-
-                print('Horizontal line','| Drive:', self.main_dir,'| Vertical error:', error, '| Correct:', error_dir, '| Line size:', line_size, '| Correct:', size_error)
-            # Vertical line
+                self.horizontal_line(size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne)
             elif hor == 0:
-                if self.main_dir == 'right':
-                    self.main_dir = 'down'
-                self.last_line = 'vertical'
-                error_dir = ''
-                size_error = ''
-                error = abs(cX - mid_width)
-            
-                # Line size conditionals
-                line_size = np.count_nonzero(mask_ne[79:80])
-                if line_size < size_l_bound:
-                    size_error = 'In'
-                elif line_size > size_h_bound:
-                    size_error = 'Out'
-                else:
-                    error_dir = 'None'
-
-                # Left/Right error conditionals
-                if cX > mid_width + bounds:
-                    error_dir = 'Left'
-                elif cX < mid_width - bounds:
-                    error_dir = 'Right'
-                else:
-                    error_dir = 'None'
-
-                print('Vertical Line','| Drive:', self.main_dir, '| Horizontal Error:', error, '| Correct:', error_dir, '| Line size:', line_size, '| Correct:', size_error)
-            # Corner            
+                self.vertical_line(size_l_bound, size_h_bound,cX, mid_width, bounds, mask_ne)         
             elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
-                corner_dir = ''
-                error = 0
-                print('self.lastline',self.last_line)
-                # Corner inlet: Horizontal, Determine corner outlet: Up or Down
-                if self.last_line == 'horizontal':
-                    top_roi = mask[height_start:height_start+1].any()
-                    bot_roi = mask[height_end-1:height_end].any()
-                    print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
-                    corner_dir = 'vertical'
-                    error = abs(cX - mid_width)
-                    if top_roi:
-                        self.main_dir = 'up'
-                    if bot_roi:
-                        self.main_dir = 'down'
-                # Corner inlet: Vertical, Determine corner outlet: Left or Right
-                elif self.last_line == 'vertical':
-                    left_roi = mask[0:height,0:1].any()
-                    right_roi = mask[0:height,639:640].any()
-                    print('left_roi',left_roi,'right_roi',right_roi)
-                    corner_dir = 'horizontal'
-                    error = abs(cY - mid_height)
-                    if left_roi:
-                        self.main_dir = 'left'
-                    if right_roi:
-                        self.main_dir = 'right'
-                elif self.last_line == 'corner':
-                    pass
-                # print('Corner from',self.last_line,'to',corner_dir,'| Drive:', self.main_dir,'| Error:', error)
-                print('Corner | Drive:', self.main_dir,'| Error:', error)
-                self.last_line = 'corner'
+                self.corner_line(mask, height, cX, mid_width, cY, mid_height)
             else:
                 print('.')
 
             # BLue line detection
-            left_roi_blue = mask_blue[height_start:height_end,0:10].any()
-            right_roi_blue = mask_blue[height_start:height_end,width-10:width].any()
-            top_roi_blue = mask_blue[height_start:height_start+10,0:width].any()
-            bot_roi_blue = mask_blue[height_end-10:height_end,0:width].any()
+            left_roi_blue, right_roi_blue, top_roi_blue, bot_roi_blue = mask_blue[0:height,0:10].any(), mask_blue[0:height,width-10:width].any(), mask_blue[0:10,0:width].any(), mask_blue[height-10:height,0:width].any()
             blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
             if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:
                 print('Blue boi')
-                detectCracks()
+                detectCracks(frame)
                 self.blue_boi = True
                 self.isBlueFound = True
 
+    def horizontal_line(self, size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne):
+        self.last_line = 'horizontal'
+        error_dir = ''
+        size_error = ''
+        error = abs(cY - mid_height)
+        # Line size conditionals
+        line_size = np.count_nonzero(mask_ne[0:height,0:1])
+        if line_size < size_l_bound:
+            size_error = 'In'
+        elif line_size > size_h_bound:
+            size_error = 'Out'
+        else:
+            error_dir = 'None'
+        # Left/Right error conditionals
+        if cY > mid_height + bounds:
+            error_dir = 'Up'
+        elif cY < mid_height - bounds:
+            error_dir = 'Down'
+        else:
+            error_dir = 'None'
+        print('Horizontal line | Drive: {} | Vertical error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
+
+    def vertical_line(self, size_l_bound, size_h_bound, cX, mid_width, bounds,mask_ne):
+        self.last_line = 'vertical'
+        error_dir = ''
+        size_error = ''
+        error = abs(cX - mid_width)
+        # Line size conditionals
+        line_size = np.count_nonzero(mask_ne[79:80])
+        if line_size < size_l_bound:
+            size_error = 'In'
+        elif line_size > size_h_bound:
+            size_error = 'Out'
+        else:
+            error_dir = 'None'
+        # Left/Right error conditionals
+        if cX > mid_width + bounds:
+            error_dir = 'Left'
+        elif cX < mid_width - bounds:
+            error_dir = 'Right'
+        else:
+            error_dir = 'None'
+        print('Vertical Line | Drive: {} | Horizontal Error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
+
+    def corner_line(self, mask, height, cX, mid_width, cY, mid_height):
+        corner_dir = ''
+        error = 0
+        # Corner inlet: Horizontal, Determine corner outlet: Up or Down
+        if self.last_line == 'horizontal':
+            top_roi = mask[0:1].any()
+            bot_roi = mask[height-1:height].any()
+            # print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
+            corner_dir = 'vertical'
+            error = abs(cX - mid_width)
+            if top_roi:
+                self.main_dir = 'up'
+            if bot_roi:
+                self.main_dir = 'down'
+        # Corner inlet: Vertical, Determine corner outlet: Left or Right
+        elif self.last_line == 'vertical':
+            left_roi = mask[0:height,0:1].any()
+            right_roi = mask[0:height,639:640].any()
+            print('left_roi',left_roi,'right_roi',right_roi)
+            corner_dir = 'horizontal'
+            error = abs(cY - mid_height)
+            if left_roi:
+                self.main_dir = 'left'
+            if right_roi:
+                self.main_dir = 'right'
+        elif self.last_line == 'corner':
+            pass
+        # print('Corner from',self.last_line,'to',corner_dir,'| Drive:', self.main_dir,'| Error:', error)
+        print('Corner | Drive: {} | Error: {}'.format(self.main_dir,error))
+        self.last_line = 'corner'
+
     def drawMap(self, frame, mask_black):
-        width = frame.shape[1]
-        x2_map = width -1
-        x1_map = width - 60
-        y1_map = 0
-        y2_map = 60
-        xrange = [1,2,3,4]
-        yrange = [1,2,3]
+        width, height = frame.shape[1], frame.shape[0]
+        mid_height, mid_width = height//2, width//2 
+        x1_map, x2_map = width-60, width
+        y1_map, y2_map = 0, 60
+        xrange, yrange = [1,2,3,4], [1,2,3]
 
         for i in yrange:
             for j in xrange:
@@ -297,25 +291,11 @@ class VideoStream:
             y2_map = y2_map + 60
             text = 'Current Square'
             text2 = 'Blue Line Location'
-
-            height = frame.shape[0]
-            width = frame.shape[1] 
-            mid_height = height//2 
-            mid_width = width//2 
-
-            start_height = 0
-            end_height = height
-
-            if self.blue_boi == True:
-                self.blue_line_location = self.location[:] # passes by value
-                self.blue_line_location_str = str(self.location)
-                self.blue_boi = False
                 
-
             black_pixels_up     = np.count_nonzero(mask_black[mid_height-50:mid_height-40, 0:width])
             black_pixels_down   = np.count_nonzero(mask_black[mid_height+40:mid_height+50, 0:width])
-            black_pixels_left   = np.count_nonzero(mask_black[start_height:end_height,     mid_width-50:mid_width-40])
-            black_pixels_right  = np.count_nonzero(mask_black[start_height:end_height,     mid_width+40:mid_width+50])
+            black_pixels_left   = np.count_nonzero(mask_black[0:height, mid_width-50:mid_width-40])
+            black_pixels_right  = np.count_nonzero(mask_black[0:height, mid_width+40:mid_width+50])
             black_threshold = 500
             
             if self.main_dir == 'down':
@@ -351,11 +331,14 @@ class VideoStream:
             cv2.putText(frame, str(self.location), (width - 350, 40), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
             cv2.putText(frame, text2, (width - 400, 100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
             cv2.putText(frame, self.blue_line_location_str, (width - 350, 130), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
-
             cv2.circle(frame, ((width-270)+self.location[1]*60, -30+self.location[0]*60), 6, (0,255,100), -1)
+
+            if self.blue_boi == True:
+                self.blue_line_location = self.location[:] # passes by value
+                self.blue_line_location_str = str(self.location)
+                self.blue_boi = False
             if self.blue_line_location != '':
                 cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
-            
 
         return frame
 
@@ -365,6 +348,6 @@ class VideoStream:
 
 if __name__ == '__main__':
     videoFeed = 'lineVideo.mov'
-    video = VideoStream(1)
+    video = VideoStream(videoFeed)
     video.update()
     video.stop()
