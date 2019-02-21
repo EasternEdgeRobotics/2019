@@ -50,7 +50,7 @@ class ControlHandler{
         this._toggledControls = {};
         this._previousToggledButtons = [{},{},{},{}];
         $(document).ready(function(){
-            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p id='assignGamepadsText'></p></div>");
+            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p class='panel' id='assignGamepadsText'></p></div>");
         });
 
         var self = this;
@@ -282,13 +282,13 @@ class ControlHandler{
             
         }else{
             if(this._notificationHandler != null)
-            this._notificationHandler.sendNotification("Required gamepads aren't connected for this profile!", "warning");
+            this._notificationHandler.localNotification("Required gamepads aren't connected for this profile!", "warning");
         }
     }
 
     finishedAssignGamepads(){
         if(this._notificationHandler != null)
-            this._notificationHandler.sendNotification("Gamepads successfully assigned for profile: " + this._profile.name, "good");
+            this._notificationHandler.localNotification("Gamepads successfully assigned for profile: " + this._profile.name, "success");
     }
 
 

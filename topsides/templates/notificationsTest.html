@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
 
 <head>
@@ -7,28 +7,25 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}" type="text/css" />
 
     <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/lib/socket.io.slim.js')}}" type="text/javascript"></script>
     <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
     <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
     <script>
-        var NOTIFICATIONHANDLER;
+        var NOTIFICATIONHANDLER = new NotificationHandler("testGood");
 
-        $(document).ready(function () {
-            NOTIFICATIONHANDLER = new NotificationHandler();
-            NOTIFICATIONHANDLER.setSnackbar("testGood");
-            NOTIFICATIONHANDLER.start();
-        });
-
-
-        function f() {
-            runPythonPOST("postNotification", null, function () {});
+        function f(type) {
+            runPythonPOST("notification/send", JSON.stringify({message: "This is a test notification. Hello World, how are you?", type: type}), function () {});
         }
     </script>
 </head>
 
 <body>
-    <div class="snackbar notification info" id="testGood"></div>
+    <div class="snackbar hidden" id="testGood"></div>
 
-    <button class="button" onclick="f();">Send Notification</button>
+    <button class="button" onclick="f('info');">Send Info</button>
+    <button class="button" onclick="f('success');">Send Success</button>
+    <button class="button" onclick="f('warning');">Send Warning</button>
+    <button class="button" onclick="f('danger');">Send Danger</button>
 </body>
 
 </html>
