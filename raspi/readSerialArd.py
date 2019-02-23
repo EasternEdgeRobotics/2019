@@ -1,14 +1,13 @@
 
-
 #!/usr/bin/python
 import serial
 import syslog
 import time
-
+import json
 flag.set()
 
 #The following line is for serial over GPIO
-port = '/dev/ttyACMO'
+port = '/dev/ttyACM0'
 
 
 ard = serial.Serial(port,115200,timeout=5)
@@ -16,22 +15,11 @@ time.sleep(2) # wait for Arduino
 
 while True:
   # Serial read section
-  msg = ard.read(ard.inWaiting()) # read all characters in buffer
+  msg = str(ard.readline()) # read all characters in buffer
+  #msg = msg.split(" ")
+  msg = msg.split(",")
+  print(msg[3])
 
-  msg = str(msg)
-
-  num = msg.find("Pressure")
-  
-  pressure  = msg[num:num+14]
-  pressure = pressure.split(":")
-  pressure_value = float(pressure[1])
-  ##print(pressure_value)
-
-  p_atm = (pressure_value*(1/1000))
-
-  depth = (p_atm*10)
-  send.put(str(depth))
-  print(depth, p_atm)
-  time.sleep(.075); ## .75
-
-raise Exception(str(depth));
+  send.put(msg[3])
+ 
+raise Exception('err');
