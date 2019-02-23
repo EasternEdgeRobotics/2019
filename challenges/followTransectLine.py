@@ -9,6 +9,11 @@ import sys
 # sys.path.append.("../topsides/")
 from detectCracks import detectCracks
 
+def putMessage(msg):
+    sendData(msg)
+    simulator.put(msg, timeout=0.005)
+
+
 class VideoStream:
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
@@ -33,11 +38,9 @@ class VideoStream:
         self.blue_line_location = [0,0]
         self.blue_line_location_str = ''
 
-    def run_lineFollower():
-        videoFeed = 'lineVideo.mov'
-        video = VideoStream(videoFeed)
-        video.update()
-        video.stop()
+        self.heave = 0
+        self.surge = 0
+        self.sway = 0
 
     def update(self):
         while True: 
@@ -48,15 +51,36 @@ class VideoStream:
                 # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
 
+            self.heave = 0
+            self.surge = 0
+            self.sway = 0
+
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
             line_image, ver, hor = self.linesHough(mask, frame)
             self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue)
             line_image = self.drawMap(line_image, mask_black)
             cv2.imshow("Frame", line_image)
 
-            key = cv2.waitKey(25)
-            if key == 27:
-                break
+
+            thrusterData = {
+                "fore-port-vert": -self.heave - self.pitch + self.roll,
+                "fore-star-vert": -self.heave - self.pitch - self.roll,
+                "aft-port-vert": -self.heave + self.pitch + self.roll,
+                "aft-star-vert": -self.heave + self.pitch - self.roll,
+
+                "fore-port-horz": -self.surge + self.yaw + self.sway,
+                "fore-star-horz": -self.surge - self.yaw - self.sway,
+                "aft-port-horz": +self.surge - self.yaw + self.sway,
+                "aft-star-horz": -self.surge - self.yaw + self.sway,
+            }
+            for control in thrusterData:
+                val = thrusterData[control]
+                putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+                print("good")
+
+                key = cv2.waitKey(25)
+                if key == 27:
+                    break
 
     def preprocess(self, orig_frame):
         # Blurs image using a gaussian filter kernal, (n,m) are width and height, must be + and odd #'s, 0 is border type
@@ -125,44 +149,6 @@ class VideoStream:
         weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
         return weighted_image, ver, hor
 
-    def linesLSD(self, frame):
-        grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        # hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        # # Define hsv bounds for red
-        # low_red1    = np.array([0,80,0])
-        # up_red1     = np.array([40,255,255])
-        # low_red2    = np.array([130,80,0])
-        # up_red2     = np.array([180,255,255])
-
-        # mask1 = cv2.inRange(hsv, low_red1, up_red1)
-        # mask2 = cv2.inRange(hsv, low_red2, up_red2)
-        # mask_ne = cv2.bitwise_or(mask1, mask2)
-        # kernel = np.ones((10,10),np.uint8)
-        # mask = cv2.erode(mask_ne,kernel,iterations = 1)
-
-        # grey = cv2.bitwise_and(hsv, mask)
-
-        lsd = cv2.createLineSegmentDetector(0)
-        lines = lsd.detect(grey)[0]
-        ver = 0
-        hor = 0
-        line_image = np.zeros_like(frame)
-        if lines is not None:
-            for l in lines:
-                if l is not None and len(l) is not 0:
-                    x0, y0, x1, y1 = l.flatten()
-                    cv2.line(line_image, (x0, y0), (x1, y1), (255, 255, 0), 3)
-                    ang = math.degrees(math.atan((y1-y0)/(x1-x0)))
-
-                    if abs(ang) > 45:
-                        ver = ver + 1
-                    else:
-                        hor = hor + 1
-
-        # print('hor:', hor,'vert:', ver)
-        return line_image, ver, hor
-
     def driveLogic(self, frame, mask, mask_ne, ver, hor, mask_blue):
         '''Function for finding moments of image mask'''
         height = frame.shape[0] # 480
@@ -181,7 +167,7 @@ class VideoStream:
             cv2.line(frame, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
 
             if ver == 0:
-                self.horizontal_line(size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne)
+                self.horizontal_line(size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height)
             elif hor == 0:
                 self.vertical_line(size_l_bound, size_h_bound,cX, mid_width, bounds, mask_ne)         
             elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
@@ -198,53 +184,78 @@ class VideoStream:
                 self.blue_boi = True
                 self.isBlueFound = True
 
-    def horizontal_line(self, size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne):
+    def horizontal_line(self, size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height):
         self.last_line = 'horizontal'
-        error_dir = ''
-        size_error = ''
         error = abs(cY - mid_height)
+
         # Line size conditionals
         line_size = np.count_nonzero(mask_ne[0:height,0:1])
         if line_size < size_l_bound:
+            self.surge = 0.2
             size_error = 'In'
         elif line_size > size_h_bound:
+            self.surge = -0.2
             size_error = 'Out'
         else:
-            error_dir = 'None'
+            self.surge = 0
+            size_error = 'None'
+            
         # Left/Right error conditionals
         if cY > mid_height + bounds:
+            self.heave = 0.2
             error_dir = 'Up'
         elif cY < mid_height - bounds:
+            self.heave = -0.2
             error_dir = 'Down'
         else:
+            self.heave = 0
             error_dir = 'None'
+
+        if self.main_dir = 'Left':
+            self.sway = -0.5
+        if self.main_dir = 'Right':
+            self.sway = 0.5
+        
         print('Horizontal line | Drive: {} | Vertical error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
 
     def vertical_line(self, size_l_bound, size_h_bound, cX, mid_width, bounds,mask_ne):
         self.last_line = 'vertical'
-        error_dir = ''
-        size_error = ''
         error = abs(cX - mid_width)
+
         # Line size conditionals
         line_size = np.count_nonzero(mask_ne[79:80])
         if line_size < size_l_bound:
+            self.surge = 0.2
             size_error = 'In'
         elif line_size > size_h_bound:
+            self.surge = -0.2
             size_error = 'Out'
         else:
-            error_dir = 'None'
+            self.surge = 0
+            size_error = 'None'
+
         # Left/Right error conditionals
         if cX > mid_width + bounds:
+            self.sway = -0.2
             error_dir = 'Left'
         elif cX < mid_width - bounds:
+            self.sway = 0.2
             error_dir = 'Right'
         else:
+            self.sway = 0
             error_dir = 'None'
+
+        if self.main_dir = 'Up':
+            self.heave = 0.5
+        if self.main_dir = 'Down':
+            self.heave = -0.5
+
         print('Vertical Line | Drive: {} | Horizontal Error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
 
     def corner_line(self, mask, height, cX, mid_width, cY, mid_height):
         corner_dir = ''
         error = 0
+
         # Corner inlet: Horizontal, Determine corner outlet: Up or Down
         if self.last_line == 'horizontal':
             top_roi = mask[0:1].any()
@@ -252,10 +263,12 @@ class VideoStream:
             # print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
             corner_dir = 'vertical'
             error = abs(cX - mid_width)
+
             if top_roi:
                 self.main_dir = 'up'
             if bot_roi:
                 self.main_dir = 'down'
+
         # Corner inlet: Vertical, Determine corner outlet: Left or Right
         elif self.last_line == 'vertical':
             left_roi = mask[0:height,0:1].any()
@@ -263,13 +276,16 @@ class VideoStream:
             print('left_roi',left_roi,'right_roi',right_roi)
             corner_dir = 'horizontal'
             error = abs(cY - mid_height)
+
             if left_roi:
                 self.main_dir = 'left'
             if right_roi:
                 self.main_dir = 'right'
+
         elif self.last_line == 'corner':
             pass
-        # print('Corner from',self.last_line,'to',corner_dir,'| Drive:', self.main_dir,'| Error:', error)
+
+
         print('Corner | Drive: {} | Error: {}'.format(self.main_dir,error))
         self.last_line = 'corner'
 
@@ -346,8 +362,11 @@ class VideoStream:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-if __name__ == '__main__':
+def run_lineFollower():
     videoFeed = 'lineVideo.mov'
     video = VideoStream(videoFeed)
     video.update()
     video.stop()
+
+if __name__ == '__main__':
+    run_lineFollower()
