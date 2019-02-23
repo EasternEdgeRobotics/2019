@@ -3,7 +3,7 @@
     "ipHost": "192.168.88.2",
     "ipHost-dev": "localhost",
     "portHost": 5001,
-    "ipSend": "192.168.88.5",
+    "ipSend": "192.168.88.4",
     "ipSend-dev": "localhost",
     "portSend": 5000,
     "flaskPort": 80,

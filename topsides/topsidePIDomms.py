@@ -81,9 +81,10 @@ angular = pid();
 
 """  PID constants must be tuned to prevent oscillation"""
 def depth_PID_init():
-    depth.kP = 0.875 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
-    depth.kI = 0.0674
-    depth.kD = 0.035
+    depth.kP = 0.295 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
+    depth.kI = 0.099
+    depth.kD = 0.185
+    depth.integral = 0.0
 
 ## .88.2
 
@@ -92,10 +93,10 @@ def depth_PID(cDepth):
     depth_PID_init() ## initialize PID constants
     depth.intError = 0.5 ## increases or decrease based on magnitude of oscillation
     depth.error = depth.target - abs(cDepth) ## Keep current depth at an absolute value
-
+    
     ## increase integral if the error does not zero out as power decreases
     if(abs(depth.error) < depth.intError):
-        depth.integral += 0.05
+        depth.integral += 0.5
     else:
         depth.integral = 0
 
@@ -105,25 +106,26 @@ def depth_PID(cDepth):
 
     power = (depth.error*depth.kP)+(depth.integral*depth.kI)+(depth.derivative*depth.kD)
 
-    #print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
+    print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
     return power;
 
 
 def angular_PID_init():
-    angular.KP = 0.0
-    angular.KI = 0.0
-    angular.kD = 0.0
+    angular.kP = 0.012 ## 0.009
+    angular.kI = 0.00073 ## 0.00063
+    angular.kD = 0.004 ## 0.004
+    angular.integral = 0.0
 
 def angular_PID(angle):
 
     angular_PID_init();
-    angular.intError = 20
+    angular.intError = 15
 
     angular.error = angular.target - abs(angle) ## Keep current depth at an absolute value
 
     ## increase integral if the error does not zero out as power decreases
     if(abs(angular.error) < angular.intError):
-        angular.integral += 5
+        angular.integral += 0.01
     else:
         angular.integral = 0
 
@@ -131,203 +133,105 @@ def angular_PID(angle):
     angular.derivative = angular.error - angular.last_error
     angular.last_error = angular.error
 
-    power = (angular.error*angular.kP)+(angular.integral*angular.kI)+(angular.derivative*angular.kD)
-
-    print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
+    power = (angular.error*angular.kP) + (angular.integral*angular.kI) + (angular.derivative*angular.kD)
+    if(angle > 180):
+        power*=-1
+    print('Power = ',power, "Error = ",angular.error, "Current D = ",angle, "target = ", angular.target)
     return power;
 
-
-
-
-def run_angular_PID(yaw=None, pitch=None, roll=None):
-
-    if(yaw != None):
-        angular.target = yaw
-        ## run rov now
-
-        while True:
-            c_yaw = float(startComms(["192.168.88.4","getGyro.py"]));
-            power = angular_PID(c_yaw);
-
-            print('power: '+power)
-
-            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
-            for x in range(len(setThruster)):
-                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-
-    elif(pitch != None):
-        angular.target = pitch
-        ## run rov now
-
-        while True:
-            c_pitch = float(startComms(["192.168.88.4","getGyro.py"]));
-            power = angular_PID(c_pitch);
-
-            print('power: '+power)
-
-            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
-            for x in range(len(setThruster)):
-                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-
-    elif(roll != None):
-
-        angular.target = roll
-        ## run rov now
-
-        while True:
-            c_roll = float(startComms(["192.168.88.4","getGyro.py"]));
-            power = angular_PID(c_roll);
-
-            print('power: '+power)
-
-            setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0] ## wrong ports right now
-            for x in range(len(setThruster)):
-                startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-
-
-def getAndSendVals():
-    depth.target = float(input("Input target: "))
-    cDepth = float(startComms(["192.168.88.4","readSerialArd.py"]));
-    while True:
-        ## get pressure sensor value
-        cDepth = float(startComms(["192.168.88.4","readSerialArd.py"]));
-
-        power = 0.0
-
-        power = depth_PID(cDepth)
-        setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
-        print(power)
-
-
-        ## send to thrusters now
-        for x in range(len(setThruster)):
-            startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-
-
-
-def startComms(input):
-	    """
-	    Comms start.
-
-	    This function starts the comms and runs the comms loop.
-	    While the loop is running it will check the send queue for
-	    messages to send to the ROV. It can send messages back using recieved
-	    """
-	    # TODO: Change to raspi ip
-	    ipSend = input[0]
-	    portSend = GLOBALS['portSend']
-	    ipHost = GLOBALS['ipHost']
-	    portHost = GLOBALS['portHost']
-
-	    # try opening a socket for communication
-	    try:
-	        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	    except socket.error:
-	        # TODO: Change to ouput on gui
-	        print("Failed To Create Socket")
-	        sys.exit()
-	    except Exception as e:
-	        print("failed")
-
-	    # bind the ip and port of topsides to the socket and loop coms
-	    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-	    s.bind((ipHost, portHost))
-	    received.put("bound")
-	    # TODO: change from getting data from user to getting data from queue
-	    # send data to the raspi
-	    inputData = input ##send.get()
-
-	    s.sendto(inputData[1].encode('utf-8'), (ipSend, portSend))
-	    # TODO: Change to saving to log file on error
-	    # receive response from raspi and log if error
-	    outputData, addr = s.recvfrom(1024)
-	    outputData = outputData.decode("utf-8")
-	    print(outputData, file=sys.stderr)
-	    return outputData
 
 # Setup threading for receiving data
 t = threading.Thread(target=receiveData)
 t.start()
 
-<<<<<<< HEAD
-if __name__ == "__main__":
 
-    while 1:
-        sendData("readSerialArd.py")
-        cDepth = received.get()
-
-        print(cDepth);
-
-        # power = 0.0
-        #
-        # power = depth_PID(cDepth)
-        # setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
-        # print(power)
-        #
-        #
-        # ## send to thrusters now
-        # for x in range(len(setThruster)):
-        #     sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-=======
 #if __name__ == "__main__":
-#    import time
-#    #for i in range(0, 10):
+#    depth.target = float(input("Input Depth: "))
 #    while 1:
- #       sendData('readSerialArd.py')
-  #      time.sleep(.5);
-   #     try:        
-    #        cDepth = keep[-1]
-     #   except:
-      #      continue;
-       # power = 0.0
+#        sendDataB('readSerialArd.py')
+#       # time.sleep(.5);
+#        try:        
+#            cDepth = float(keep[-1])/100
+#            power = 0.0
 
-        #power = depth_PID(cDepth)
-        #setThruster = [-power,-power,-power,0.0,0.0,-power,0.0,0.0]
-        #print(power)
+#            power = -depth_PID(cDepth)
+#            setThruster = [power,power,power,0.0,0.0,power,0.0,0.0]
+#            ports = [1,2,5,0]
+            
+#            if(power > 1.5):
+#                power = 0.2
+#            elif(power < -1.5):
+#                power = -0.2
+#            #print(power,"  ", depth.target-cDepth)
+
+#            #for x in ports:
+#                #startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
+#            #    putMessage("fControl.py " + str(x) + " " + str(power))
+#            #    print("Good")
+        
+#            thrusterData = {
+#                "fore-port-vert": -power,
+#                "fore-star-vert": -power,
+#                "aft-port-vert": power,
+#                "aft-star-vert": power,
+#            }
+#            for control in thrusterData:
+#                val = thrusterData[control]
+#                putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+#            print("good")
+                       
+#        except(Exception):
+#            print('error')
+#            continue;
+       
 
 
-        ## send to thrusters now
-        #for x in range(len(setThruster)):
-        #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
+#        ## send to thrusters now
+#        #for x in range(len(setThruster)):
+#        #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
 
 
 if __name__ == "__main__":
-    depth.target = float(input("Input Depth: "))
+    angular.target = float(input("Input Target Angle: "))
     while 1:
         sendDataB('readSerialArd.py')
-        time.sleep(.5);
+       # time.sleep(.5);
         try:        
-            cDepth = float(keep[-1])
+            cAngle = float(keep[-1])
             power = 0.0
 
-            power = -depth_PID(cDepth)
-            setThruster = [power,power,power,0.0,0.0,power,0.0,0.0]
-            ports = [1,2,5,0]
-            
-            if(power > 1.0):
-                power = 0.1
-            elif(power < -1.0):
-                power = -0.1
-            print(power)
+            power = angular_PID(cAngle)
+          
+            if(power > 0.3):
+                power = 0.10
+            elif(power < -0.3):
+                power = -0.10
+            #print(power,"  ", depth.target-cDepth)
 
             #for x in ports:
                 #startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
             #    putMessage("fControl.py " + str(x) + " " + str(power))
             #    print("Good")
         
-            thrusterData = {
-                "fore-port-vert": -power,
-                "fore-star-vert": -power,
-                "aft-port-vert": power,
-                "aft-star-vert": power,
+            thrusterData = {  #x - axis
+                "fore-port-horz": power,
+                "fore-star-horz": power,
+                "aft-port-horz": power,
+                "aft-star-horz": -power,
             }
+#            thrusterData = {
+#                "fore-port-vert": power,
+#                "fore-star-vert": -power,
+#                "aft-port-vert": -power,
+#                "aft-star-vert": power,
+#            }
             for control in thrusterData:
                 val = thrusterData[control]
                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
             print("good")
                        
         except(Exception):
-            print('error')
+            print(Exception)
             continue;
        
 
@@ -335,4 +239,3 @@ if __name__ == "__main__":
         ## send to thrusters now
         #for x in range(len(setThruster)):
         #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
->>>>>>> 80bee60b4717ca4c5c56b6665d1b200fbab6816c
