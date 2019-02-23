@@ -49,10 +49,8 @@ def receiveData():
         outputData = outputData.decode("utf-8")
         if (outputData == "exit"):
             break
-        #print(outputData, ' sssssss')
-        keep.append(outputData)
-        #print(keep[-1])
-        #received.put(outputData)
+        print(outputData)
+        received.put(outputData)
 
 
 def putMessage(msg):
@@ -66,11 +64,9 @@ t.start()
 
 if __name__ == "__main__":
     import time
-    #for i in range(0, 10):
-    while 1:
+    for x in range(0,100):
         sendData('readSerialArd.py')
-        time.sleep(.5);
-        print(keep[-1])
-    for i in range(0, 10):
-        print('hello')   
+        time.sleep(1);
+    for x in range(0,10):
+        print(received.get())
     
