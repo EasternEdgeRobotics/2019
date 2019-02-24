@@ -81,14 +81,14 @@ def sendControlValues():
 
         # Handling Movement Axes Controls
         thrusterData = {
-            "fore-port-vert": -heave - pitch + roll,
-            "fore-star-vert": -heave - pitch - roll,
-            "aft-port-vert": -heave + pitch + roll,
-            "aft-star-vert": -heave + pitch - roll,
+            "fore-port-vert": +heave - pitch - roll,
+            "fore-star-vert": +heave - pitch + roll,
+            "aft-port-vert": -heave - pitch + roll,
+            "aft-star-vert": -heave - pitch - roll,
 
             "fore-port-horz": -surge + yaw + sway,
-            "fore-star-horz": -surge - yaw - sway,
-            "aft-port-horz": +surge - yaw + sway,
+            "fore-star-horz": +surge + yaw + sway,
+            "aft-port-horz": -surge + yaw - sway,
             "aft-star-horz": -surge - yaw + sway,
 
             "fore-camera": rotateCam1,

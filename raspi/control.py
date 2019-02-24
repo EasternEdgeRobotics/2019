@@ -1,4 +1,5 @@
 """Module to control the thrusters and servos using the maestro library."""
+from RaspiGlobals import GLOBALS
 
 # Motor Controller limits measured in maestro units
 # Values should be adjusted so that the center, stops the thrusters;
@@ -30,7 +31,7 @@ class Thruster:
         self.maestro.setAccel(ch, 0)
         self.maestro.setSpeed(ch, RESPONSE)
         # Thruster min, max and center values
-        if ((ch == 8) or (ch == 11)):
+        if ((ch == GLOBALS['fore-camera-r']) or (ch == GLOBALS['aft-camera-r'])):
             # Change range values for the camera servos
             self.min_s = 2200
             self.max_s = 10000
