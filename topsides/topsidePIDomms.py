@@ -111,21 +111,34 @@ def depth_PID(cDepth):
 
 
 def angular_PID_init():
-    angular.kP = 0.012 ## 0.009
-    angular.kI = 0.00073 ## 0.00063
-    angular.kD = 0.004 ## 0.004
+    angular.kP = 0.0099 ## 0.0082
+    angular.kI = 0.000043 ## 0.000043
+    angular.kD = 0.005 ## 0.003
     angular.integral = 0.0
+
+def chechFourthFirstQuad(angle_1, angle_2):
+    if(angle_1 > 260 and angle_2 < 100):
+        return True
+    elif(angle_2 > 260 and angle_1 < 100):
+        return True
+    return False
 
 def angular_PID(angle):
 
     angular_PID_init();
     angular.intError = 15
-
-    angular.error = angular.target - abs(angle) ## Keep current depth at an absolute value
+    
+    if(chechFourthFirstQuad(angle, angular.target)):
+        if(angle > 260):
+            angular.error = (angle-360) - angular.target
+        else:
+            angular.error = angle + (360 - angular.target)
+    else:
+        angular.error = angular.target - abs(angle) ## Keep current depth at an absolute value
 
     ## increase integral if the error does not zero out as power decreases
     if(abs(angular.error) < angular.intError):
-        angular.integral += 0.01
+        angular.integral += 0.03
     else:
         angular.integral = 0
 
@@ -139,6 +152,29 @@ def angular_PID(angle):
     print('Power = ',power, "Error = ",angular.error, "Current D = ",angle, "target = ", angular.target)
     return power;
 
+
+def pitch(angle):
+
+    angular_PID_init();
+    angular.intError = 15
+
+    angular.error = angular.target - angle ## Keep current depth at an absolute value
+
+    ## increase integral if the error does not zero out as power decreases
+    if(abs(angular.error) < angular.intError):
+        angular.integral += 0.05
+    else:
+        angular.integral = 0
+
+    angular.integral = 0 if angular.error == 0 else angular.integral
+    angular.derivative = angular.error - angular.last_error
+    angular.last_error = angular.error
+
+    power = (angular.error*angular.kP) + (angular.integral*angular.kI) + (angular.derivative*angular.kD)
+    if(angle > 180):
+        power*=-1
+    print('Power = ',power, "Error = ",angular.error, "Current D = ",angle, "target = ", angular.target)
+    return power;
 
 # Setup threading for receiving data
 t = threading.Thread(target=receiveData)
@@ -190,7 +226,8 @@ t.start()
 #        #for x in range(len(setThruster)):
 #        #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
 
-
+angular.target = -10
+pitch(-2)
 if __name__ == "__main__":
     angular.target = float(input("Input Target Angle: "))
     while 1:
@@ -200,12 +237,12 @@ if __name__ == "__main__":
             cAngle = float(keep[-1])
             power = 0.0
 
-            power = angular_PID(cAngle)
+            power = -pitch(cAngle)
           
-            if(power > 0.3):
-                power = 0.10
-            elif(power < -0.3):
-                power = -0.10
+            if(power > 0.6):
+                power = 0.3
+            elif(power < -0.6):
+                power = -0.3
             #print(power,"  ", depth.target-cDepth)
 
             #for x in ports:
@@ -213,18 +250,18 @@ if __name__ == "__main__":
             #    putMessage("fControl.py " + str(x) + " " + str(power))
             #    print("Good")
         
-            thrusterData = {  #x - axis
-                "fore-port-horz": power,
-                "fore-star-horz": power,
-                "aft-port-horz": power,
-                "aft-star-horz": -power,
-            }
-#            thrusterData = {
-#                "fore-port-vert": power,
-#                "fore-star-vert": -power,
-#                "aft-port-vert": -power,
-#                "aft-star-vert": power,
+#            thrusterData = {  #x - axis
+#                "fore-port-horz": power,
+#                "fore-star-horz": power,
+#                "aft-port-horz": power,
+#                "aft-star-horz": -power,
 #            }
+            thrusterData = {
+                "fore-port-vert": power,
+                "fore-star-vert": power,  # -
+                "aft-port-vert": power,  # -
+                "aft-star-vert": power,
+            }
             for control in thrusterData:
                 val = thrusterData[control]
                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
