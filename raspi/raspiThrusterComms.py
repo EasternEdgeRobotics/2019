@@ -17,7 +17,6 @@ portHost = GLOBALS['portHost']
 #try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(3)
 except socket.error:
     # TODO: Change to message sent back to gui
     print("Failed To Create Socket")
@@ -45,6 +44,7 @@ def receiveData():
             data, addr = s.recvfrom(1024)
             data = data.decode("utf-8")
         except socket.timeout as e:
+            #stop the motors on a timeout
             for i in range(0, 8):
                 sys.argv.append(i)
                 sys.argv.append(0)
@@ -55,9 +55,15 @@ def receiveData():
                     #print(response)           
                 del sys.argv[1:]
             continue
+        #check for comms control messages
         if data == "exit":
             send.put("exit")
             break
+        elif data == "register":
+            ipSend = addr[0]
+            print(ipSend)
+            s.sendto(("thrusterPi").encode('utf-8'), (ipSend, GLOBALS['portSend']))
+            continue
         print(data)
         # identify the file name and arguements
         nextSpace = data.find(".py") + 3

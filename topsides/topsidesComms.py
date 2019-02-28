@@ -10,6 +10,8 @@ received = queue.Queue()
 # try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 except socket.error:
     print("Failed To Create Socket")
     sys.exit()
@@ -18,6 +20,20 @@ except Exception as e:
 # bind the ip and port of topsides to the socket and loop coms
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((GLOBALS['ipHost'], GLOBALS['portHost']))
+s.sendto(("register").encode('utf-8'), ('255.255.255.255', GLOBALS['portSend']))
+s.sendto(("register").encode('utf-8'), ('255.255.255.255', GLOBALS['portSend'] + 4))
+data, addr = s.recvfrom(1024)
+data = data.decode("utf-8")
+if data == "sensorPi":
+    print("Sensor Pi: " + str(addr))
+elif data == "thrusterPi":
+    print("Thruster Pi: " + str(addr))
+data, addr = s.recvfrom(1024)
+data = data.decode("utf-8")
+if data == "sensorPi":
+    print("Sensor Pi: " + str(addr))
+elif data == "thrusterPi":
+    print("Thruster Pi: " + str(addr))
 
 #queue to hold send commands to be read by simulator
 simulator = queue.Queue()
