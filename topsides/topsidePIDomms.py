@@ -74,26 +74,59 @@ def putMessage(msg):
     sendData(msg)
     simulator.put(msg, timeout=0.005)
 
-depth = pid(); ## make a depth object of the pid class
-angular = pid();
-## initialize depth pid constants
 
+def chechFourthFirstQuad(angle_1, angle_2):
+    if(angle_1 > 260 and angle_2 < 100):
+        return True
+    elif(angle_2 > 260 and angle_1 < 100):
+        return True
+    return False
 
-"""  PID constants must be tuned to prevent oscillation"""
+""" Create objects for each component """
+
+depth = pid()
+angular = pid()
+pitch = pid()
+yaw = pid()
+row = pid()
+
+""" initialize the different PID components """
+
 def depth_PID_init():
     depth.kP = 0.295 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
     depth.kI = 0.099
     depth.kD = 0.185
     depth.integral = 0.0
 
-## .88.2
+def yaw_PID_init():
+    yaw.kP = 0.0099 ## 0.0082
+    yaw.kI = 0.000043 ## 0.000043
+    yaw.kD = 0.005 ## 0.003
+    yaw.integral = 0.0
 
-def depth_PID(cDepth):
+def row_PID_init():
+    row.kP = 0.0099 ## 0.0082
+    row.kI = 0.000043 ## 0.000043
+    row.kD = 0.005 ## 0.003
+    row.integral = 0.0
+
+def pitch_PID_init():
+    pitch.kP = 0.0099 ## 0.0082
+    pitch.kI = 0.000043 ## 0.000043
+    pitch.kD = 0.005 ## 0.003
+    pitch.integral = 0.0
+
+""" Calculate the different power required for each component
+    Note that each of these algorithm have differences based on which component is being used
+    errors are Calculated differently
+""""
+
+def runDepthPID(cDepth):
 
     depth_PID_init() ## initialize PID constants
     depth.intError = 0.5 ## increases or decrease based on magnitude of oscillation
     depth.error = depth.target - abs(cDepth) ## Keep current depth at an absolute value
-    
+
     ## increase integral if the error does not zero out as power decreases
     if(abs(depth.error) < depth.intError):
         depth.integral += 0.5
@@ -110,169 +143,178 @@ def depth_PID(cDepth):
     return power;
 
 
-def angular_PID_init():
-    angular.kP = 0.0099 ## 0.0082
-    angular.kI = 0.000043 ## 0.000043
-    angular.kD = 0.005 ## 0.003
-    angular.integral = 0.0
 
-def chechFourthFirstQuad(angle_1, angle_2):
-    if(angle_1 > 260 and angle_2 < 100):
-        return True
-    elif(angle_2 > 260 and angle_1 < 100):
-        return True
-    return False
+def runYawPID(angle):
 
-def angular_PID(angle):
+    yaw_PID_init();
+    yaw.intError = 15
 
-    angular_PID_init();
-    angular.intError = 15
-    
-    if(chechFourthFirstQuad(angle, angular.target)):
+    if(chechFourthFirstQuad(angle, yaw.target)):
         if(angle > 260):
-            angular.error = (angle-360) - angular.target
+            yaw.error = (angle-360) - yaw.target
         else:
-            angular.error = angle + (360 - angular.target)
+            yaw.error = angle + (360 - yaw.target)
     else:
-        angular.error = angular.target - abs(angle) ## Keep current depth at an absolute value
+        yaw.error = yaw.target - abs(angle) ## Keep current depth at an absolute value
 
     ## increase integral if the error does not zero out as power decreases
-    if(abs(angular.error) < angular.intError):
-        angular.integral += 0.03
+    if(abs(yaw.error) < yaw.intError):
+        yaw.integral += 0.03
     else:
-        angular.integral = 0
+        yaw.integral = 0
 
-    angular.integral = 0 if angular.error == 0 else angular.integral
-    angular.derivative = angular.error - angular.last_error
-    angular.last_error = angular.error
+    yaw.integral = 0 if yaw.error == 0 else yaw.integral
+    yaw.derivative = yaw.error - yaw.last_error
+    yaw.last_error = yaw.error
 
-    power = (angular.error*angular.kP) + (angular.integral*angular.kI) + (angular.derivative*angular.kD)
+    power = (yaw.error*yaw.kP) + (yaw.integral*yaw.kI) + (yaw.derivative*yaw.kD)
     if(angle > 180):
         power*=-1
-    print('Power = ',power, "Error = ",angular.error, "Current D = ",angle, "target = ", angular.target)
+    print('Power = ',power, "Error = ",yaw.error, "Current yaw = ",angle, "target = ", yaw.target)
+    return power
+
+
+def runRowPID(angle):
+
+    row_PID_init();
+    row.intError = 15
+
+    if(chechFourthFirstQuad(angle, row.target)):
+        if(angle > 260):
+            row.error = (angle-360) - row.target
+        else:
+            row.error = angle + (360 - row.target)
+    else:
+        row.error = row.target - abs(angle)
+
+    if(abs(row.error) < row.intError):
+        row.integral += 0.03
+    else:
+        row.integral = 0
+
+    row.integral = 0 if row.error == 0 else row.integral
+    row.derivative = row.error - row.last_error
+    row.last_error = row.error
+
+    power = (row.error*row.kP) + (row.integral*row.kI) + (row.derivative*row.kD)
+    if(angle > 180):
+        power*=-1
+    print('Power = ',power, "Error = ",row.error, "Current Row = ",angle, "target = ", row.target)
+    return power
+
+
+
+
+
+def runPitchPID(angle):
+
+    pitch_PID_init();
+    pitch.intError = 15
+
+    pitch.error = pitch.target - angle
+
+    if(abs(pitch.error) < pitch.intError):
+        pitch.integral += 0.05
+    else:
+        pitch.integral = 0
+
+    pitch.integral = 0 if pitch.error == 0 else pitch.integral
+    pitch.derivative = pitch.error - pitch.last_error
+    pitch.last_error = pitch.error
+
+    power = (pitch.error*pitch.kP) + (pitch.integral*pitch.kI) + (pitch.derivative*pitch.kD)
+    if(angle > 180):
+        power*=-1
+    print('Power = ',power, "Error = ",pitch.error, "Current D = ",angle, "target = ", pitch.target)
     return power;
 
 
-def pitch(angle):
-
-    angular_PID_init();
-    angular.intError = 15
-
-    angular.error = angular.target - angle ## Keep current depth at an absolute value
-
-    ## increase integral if the error does not zero out as power decreases
-    if(abs(angular.error) < angular.intError):
-        angular.integral += 0.05
-    else:
-        angular.integral = 0
-
-    angular.integral = 0 if angular.error == 0 else angular.integral
-    angular.derivative = angular.error - angular.last_error
-    angular.last_error = angular.error
-
-    power = (angular.error*angular.kP) + (angular.integral*angular.kI) + (angular.derivative*angular.kD)
-    if(angle > 180):
-        power*=-1
-    print('Power = ',power, "Error = ",angular.error, "Current D = ",angle, "target = ", angular.target)
-    return power;
 
 # Setup threading for receiving data
 t = threading.Thread(target=receiveData)
 t.start()
 
 
-#if __name__ == "__main__":
-#    depth.target = float(input("Input Depth: "))
-#    while 1:
-#        sendDataB('readSerialArd.py')
-#       # time.sleep(.5);
-#        try:        
-#            cDepth = float(keep[-1])/100
-#            power = 0.0
+""" Select the different thruster vectors for each component """"
 
-#            power = -depth_PID(cDepth)
-#            setThruster = [power,power,power,0.0,0.0,power,0.0,0.0]
-#            ports = [1,2,5,0]
-            
-#            if(power > 1.5):
-#                power = 0.2
-#            elif(power < -1.5):
-#                power = -0.2
-#            #print(power,"  ", depth.target-cDepth)
+def selectThrusters(choice, power):
+    if choice == 1:
+        return {
+           "fore-port-vert": -power,
+           "fore-star-vert": -power,
+           "aft-port-vert": power,
+           "aft-star-vert": power
+           }
+    elif choice == 2:
+        return {
+           "fore-port-horz": power,
+           "fore-star-horz": power,
+           "aft-port-horz": power,
+           "aft-star-horz": -power
+           }
 
-#            #for x in ports:
-#                #startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-#            #    putMessage("fControl.py " + str(x) + " " + str(power))
-#            #    print("Good")
-        
-#            thrusterData = {
-#                "fore-port-vert": -power,
-#                "fore-star-vert": -power,
-#                "aft-port-vert": power,
-#                "aft-star-vert": power,
-#            }
-#            for control in thrusterData:
-#                val = thrusterData[control]
-#                putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-#            print("good")
-                       
-#        except(Exception):
-#            print('error')
-#            continue;
-       
+    elif choice == 3:
+        return {
+            "fore-port-vert": power,
+            "fore-star-vert": -power,
+            "aft-port-vert": -power,
+            "aft-star-vert": power
+        }
+
+    elif choice == 4:
+        return {
+            "fore-port-vert": power,
+            "fore-star-vert": power,
+            "aft-port-vert": power,
+            "aft-star-vert": power
+        }
 
 
-#        ## send to thrusters now
-#        #for x in range(len(setThruster)):
-#        #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-
-angular.target = -10
-pitch(-2)
 if __name__ == "__main__":
-    angular.target = float(input("Input Target Angle: "))
-    while 1:
+
+    run = False
+    choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Row : 3 \n Pitch : 4"))
+    thrusterData = {}
+
+    if choice == 1:
+        depth.target = float(input("Input Target Depth: "))
+    elif choice == 2:
+        yaw.target = float(input("Input Target Yaw angle: "))
+    elif choice == 3:
+        row.target = float(input("Input Target Row angle: "))
+    elif choice == 4:
+        pitch.target = float(input("Input Target Pitch angle: "))
+
+    if (choice >= 1) && (choice <= 4):
+        run = True
+        
+    while run:
         sendDataB('readSerialArd.py')
-       # time.sleep(.5);
-        try:        
-            cAngle = float(keep[-1])
+        try:
+
             power = 0.0
 
-            power = -pitch(cAngle)
-          
-            if(power > 0.6):
-                power = 0.3
-            elif(power < -0.6):
-                power = -0.3
-            #print(power,"  ", depth.target-cDepth)
+            if choice == 1:
+                power = runDepthPID(float(keep[-1]))
+            elif choice == 2:
+                power = runYawPID(float(keep[-1]))
+            elif choice == 3:
+                power = runRowPID(float(keep[-1]))
+            elif choice == 4:
+                power = -runPitchPID(float(keep[-1]))
 
-            #for x in ports:
-                #startComms(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
-            #    putMessage("fControl.py " + str(x) + " " + str(power))
-            #    print("Good")
-        
-#            thrusterData = {  #x - axis
-#                "fore-port-horz": power,
-#                "fore-star-horz": power,
-#                "aft-port-horz": power,
-#                "aft-star-horz": -power,
-#            }
-            thrusterData = {
-                "fore-port-vert": power,
-                "fore-star-vert": power,  # -
-                "aft-port-vert": power,  # -
-                "aft-star-vert": power,
-            }
+            if(power > 1.0):
+                power = 0.3
+            elif(power < -1.0):
+                power = -0.3
+
+            thrusterData = selectThrusters(choice, power)
+
             for control in thrusterData:
                 val = thrusterData[control]
                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
             print("good")
-                       
+
         except(Exception):
             print(Exception)
             continue;
-       
-
-
-        ## send to thrusters now
-        #for x in range(len(setThruster)):
-        #    sendData(["192.168.88.5","fControl.py " + str(x) + " " + str(setThruster[x])])
