@@ -2,19 +2,24 @@ import cv2
 import numpy as np
 import math
 
-import sys
-# sys.path.append("../raspi/")
-# import fControl
-
 # sys.path.append.("../topsides/")
 from detectCracks import detectCracks
 
-def putMessage(msg):
-    sendData(msg)
-    simulator.put(msg, timeout=0.005)
+# Queue to hold send commands to be read by simulator
+simulator = queue.Queue()
 
+def sendData(inputData):
+    global s
+    s.sendto(inputData.encode('utf-8'), ("192.168.88.5", portSend))
+
+def run_lineFollower():
+    videoFeed = 'lineVideo.mov'
+    video = VideoStream(videoFeed)
+    video.update()
+    video.stop()
 
 class VideoStream:
+
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
         # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
@@ -37,6 +42,7 @@ class VideoStream:
         self.isBlueFound = False
         self.blue_line_location = [0,0]
         self.blue_line_location_str = ''
+        self.crack_length = ''
 
         self.heave = 0
         self.surge = 0
@@ -57,30 +63,15 @@ class VideoStream:
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
             line_image, ver, hor = self.linesHough(mask, frame)
-            self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue)
-            line_image = self.drawMap(line_image, mask_black)
-            cv2.imshow("Frame", line_image)
+            line_image = self.drive_logic(frame, mask, mask_ne, ver, hor, mask_blue, mask_black, line_image)
+            line_image = self.draw_map(line_image)
+            MotorControl.update_motor_signal(self.heave, self.surge, self.sway, self.pitch, self.roll, self.yaw)
 
+            cv2.imshow("Front Camera", line_image)
 
-            thrusterData = {
-                "fore-port-vert": -self.heave - self.pitch + self.roll,
-                "fore-star-vert": -self.heave - self.pitch - self.roll,
-                "aft-port-vert": -self.heave + self.pitch + self.roll,
-                "aft-star-vert": -self.heave + self.pitch - self.roll,
-
-                "fore-port-horz": -self.surge + self.yaw + self.sway,
-                "fore-star-horz": -self.surge - self.yaw - self.sway,
-                "aft-port-horz": +self.surge - self.yaw + self.sway,
-                "aft-star-horz": -self.surge - self.yaw + self.sway,
-            }
-            for control in thrusterData:
-                val = thrusterData[control]
-                putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-                print("good")
-
-                key = cv2.waitKey(25)
-                if key == 27:
-                    break
+            key = cv2.waitKey(25)
+            if key == 27:
+                break
 
     def preprocess(self, orig_frame):
         # Blurs image using a gaussian filter kernal, (n,m) are width and height, must be + and odd #'s, 0 is border type
@@ -103,28 +94,27 @@ class VideoStream:
         low_black    = np.array([0,0,0])
         up_black     = np.array([180,255,80])
 
-        # Threshold the hsv image to get only red colors
+        # Threshold the hsv image for red
         mask1 = cv2.inRange(hsv, low_red1, up_red1)
         mask2 = cv2.inRange(hsv, low_red2, up_red2)
         mask_ne = cv2.bitwise_or(mask1, mask2)
         mask_inv = cv2.bitwise_not(mask_ne)
 
-        # Threshold the hsv image to get only blue colors
+        # Threshold the hsv image for blue
         mask_blue = cv2.inRange(hsv, low_blue, up_blue)
 
+        # Threshold the hsv image for black
         mask_black = cv2.inRange(hsv, low_black, up_black)
-        mask_black = cv2.bitwise_and(mask_black,mask_black,mask = mask_inv)
-
+        mask_black = cv2.bitwise_and(mask_black, mask_black, mask=mask_inv)
 
         # kernel = np.ones((10,10),np.uint8)
         kernel = np.ones((25,25),np.uint8)
         mask = cv2.erode(mask_ne,kernel,iterations = 1)
 
         kernel_blue = np.ones((10,10),np.uint8)
-
         mask_blue = cv2.erode(mask_blue,kernel_blue,iterations = 1)
 
-        # Apply Canny edge detection algorithm to get a binary output of edges
+        # Canny edge detection to get a binary output of edges
         edges = cv2.Canny(mask, 75, 150)
 
         return edges, mask, mask_ne, mask_blue, mask_black
@@ -149,150 +139,166 @@ class VideoStream:
         weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
         return weighted_image, ver, hor
 
-    def driveLogic(self, frame, mask, mask_ne, ver, hor, mask_blue):
-        '''Function for finding moments of image mask'''
-        height = frame.shape[0] # 480
-        width = frame.shape[1]  # 640
-        mid_height = height//2  # 240
-        mid_width = width//2    # 320
-        bounds = 40
+    def drive_logic(self, frame, mask, mask_ne, ver, hor, mask_blue, mask_black, line_image):
+        self.height = frame.shape[0] # 480
+        self.width = frame.shape[1]  # 640
+
+        self.mid_height = self.height//2  # 240
+        self.mid_width = self.width//2    # 320
+        
+        # Transverse error bounds
+        error_bounds = 40
+
+        # Bounds for line width
         size_l_bound = 60
         size_h_bound = 120
 
-        M = cv2.moments(mask)
-        if M["m00"] != 0:
-            cX = int(M["m10"] / M["m00"])
-            cY = int(M["m01"] / M["m00"])
-            cv2.circle(frame, (cX,cY), 6, (255,255,0), -1)
-            cv2.line(frame, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
+        line_image M, cX, cY = self.image_moments(line_image, mask)
 
+        if M["m00"] != 0:
+            # Red line direction detection
             if ver == 0:
-                self.horizontal_line(size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height)
+                self.horizontal_line(size_l_bound, size_h_bound, cY, error_bounds, mask_ne)
             elif hor == 0:
-                self.vertical_line(size_l_bound, size_h_bound,cX, mid_width, bounds, mask_ne)         
+                self.vertical_line(size_l_bound, size_h_bound,cX, error_bounds, mask_ne)         
             elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
-                self.corner_line(mask, height, cX, mid_width, cY, mid_height)
+                self.corner_line(mask, cX, cY)
             else:
                 print('.')
 
             # BLue line detection
-            left_roi_blue, right_roi_blue, top_roi_blue, bot_roi_blue = mask_blue[0:height,0:10].any(), mask_blue[0:height,width-10:width].any(), mask_blue[0:10,0:width].any(), mask_blue[height-10:height,0:width].any()
-            blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
-            if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:
-                print('Blue boi')
-                detectCracks(frame)
-                self.blue_boi = True
-                self.isBlueFound = True
+            self.blue_crack_detection(frame, mask_blue)
 
-    def horizontal_line(self, size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height):
+            # Black line detection
+            self.black_line_detection(mask_black)
+
+        return line_image
+    
+    def image_moments(self, line_image, mask):
+        M = cv2.moments(mask)
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+        cv2.circle(line_image, (cX,cY), 6, (255,255,0), -1)
+        cv2.line(line_image, (cX, cY), (self.mid_width, self.mid_height), (255, 255, 0), 3)
+
+        return line_image M, cX, cY
+
+    def horizontal_line(self, size_l_bound, size_h_bound, cY, bounds, mask_ne):
         self.last_line = 'horizontal'
-        error = abs(cY - mid_height)
+        error = abs(cY - self.mid_height)
+        transv_speed = 0.1
+        drive_speed = 0.2
 
         # Line size conditionals
-        line_size = np.count_nonzero(mask_ne[0:height,0:1])
+        line_size = np.count_nonzero(mask_ne[0:self.height, 0:1])
         if line_size < size_l_bound:
-            self.surge = 0.2
+            self.surge = transv_speed
             size_error = 'In'
         elif line_size > size_h_bound:
-            self.surge = -0.2
+            self.surge = -transv_speed
             size_error = 'Out'
         else:
             self.surge = 0
             size_error = 'None'
             
         # Left/Right error conditionals
-        if cY > mid_height + bounds:
-            self.heave = 0.2
+        if cY > self.mid_height + bounds:
+            self.heave = transv_speed
             error_dir = 'Up'
-        elif cY < mid_height - bounds:
-            self.heave = -0.2
+        elif cY < self.mid_height - bounds:
+            self.heave = -transv_speed
             error_dir = 'Down'
         else:
             self.heave = 0
             error_dir = 'None'
 
         if self.main_dir = 'Left':
-            self.sway = -0.5
+            self.sway = -drive_speed
         if self.main_dir = 'Right':
-            self.sway = 0.5
+            self.sway = drive_speed
         
         print('Horizontal line | Drive: {} | Vertical error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
 
-    def vertical_line(self, size_l_bound, size_h_bound, cX, mid_width, bounds,mask_ne):
+    def vertical_line(self, size_l_bound, size_h_bound, cX, bounds, mask_ne):
         self.last_line = 'vertical'
-        error = abs(cX - mid_width)
+        error = abs(cX - self.mid_width)
+        transv_speed = 0.1
+        drive_speed = 0.2
 
         # Line size conditionals
         line_size = np.count_nonzero(mask_ne[79:80])
         if line_size < size_l_bound:
-            self.surge = 0.2
+            self.surge = transv_speed
             size_error = 'In'
         elif line_size > size_h_bound:
-            self.surge = -0.2
+            self.surge = -transv_speed
             size_error = 'Out'
         else:
             self.surge = 0
             size_error = 'None'
 
         # Left/Right error conditionals
-        if cX > mid_width + bounds:
-            self.sway = -0.2
+        if cX > self.mid_width + bounds:
+            self.sway = -transv_speed
             error_dir = 'Left'
-        elif cX < mid_width - bounds:
-            self.sway = 0.2
+        elif cX < self.mid_width - bounds:
+            self.sway = transv_speed
             error_dir = 'Right'
         else:
             self.sway = 0
             error_dir = 'None'
 
         if self.main_dir = 'Up':
-            self.heave = 0.5
+            self.heave = drive_speed
         if self.main_dir = 'Down':
-            self.heave = -0.5
+            self.heave = -drive_speed
 
         print('Vertical Line | Drive: {} | Horizontal Error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
 
-    def corner_line(self, mask, height, cX, mid_width, cY, mid_height):
+    def corner_line(self, mask, cX, cY):
         corner_dir = ''
         error = 0
+        transv_speed = 0.1
+        drive_speed = 0.2
 
         # Corner inlet: Horizontal, Determine corner outlet: Up or Down
         if self.last_line == 'horizontal':
-            top_roi = mask[0:1].any()
-            bot_roi = mask[height-1:height].any()
+            top_roi = mask[0 : 1].any()
+            bot_roi = mask[self.height-1 : self.height].any()
             # print('top_roi',top_roi,'bot_roi',bot_roi, 'np.count_nonzero bot', np.count_nonzero(mask[419:420]))
             corner_dir = 'vertical'
-            error = abs(cX - mid_width)
+            error = abs(cX - self.mid_width)
 
             if top_roi:
                 self.main_dir = 'up'
+                self.heave = drive_speed
             if bot_roi:
                 self.main_dir = 'down'
+                self.heave = -drive_speed
 
         # Corner inlet: Vertical, Determine corner outlet: Left or Right
         elif self.last_line == 'vertical':
-            left_roi = mask[0:height,0:1].any()
-            right_roi = mask[0:height,639:640].any()
+            left_roi = mask[0 : self.height, 0 : 1].any()
+            right_roi = mask[0 : self.height, self.width-1 : self.width].any()
             print('left_roi',left_roi,'right_roi',right_roi)
             corner_dir = 'horizontal'
-            error = abs(cY - mid_height)
+            error = abs(cY - self.mid_height)
 
             if left_roi:
                 self.main_dir = 'left'
+                self.sway = -drive_speed
             if right_roi:
                 self.main_dir = 'right'
+                self.sway = drive_speed
 
         elif self.last_line == 'corner':
             pass
 
-
         print('Corner | Drive: {} | Error: {}'.format(self.main_dir,error))
         self.last_line = 'corner'
 
-    def drawMap(self, frame, mask_black):
-        width, height = frame.shape[1], frame.shape[0]
-        mid_height, mid_width = height//2, width//2 
-        x1_map, x2_map = width-60, width
+    def draw_map(self, frame):
+        x1_map, x2_map = self.width-60, self.width
         y1_map, y2_map = 0, 60
         xrange, yrange = [1,2,3,4], [1,2,3]
 
@@ -307,66 +313,97 @@ class VideoStream:
             y2_map = y2_map + 60
             text = 'Current Square'
             text2 = 'Blue Line Location'
-                
-            black_pixels_up     = np.count_nonzero(mask_black[mid_height-50:mid_height-40, 0:width])
-            black_pixels_down   = np.count_nonzero(mask_black[mid_height+40:mid_height+50, 0:width])
-            black_pixels_left   = np.count_nonzero(mask_black[0:height, mid_width-50:mid_width-40])
-            black_pixels_right  = np.count_nonzero(mask_black[0:height, mid_width+40:mid_width+50])
+
+            cv2.putText(frame, text, (self.width - 400, 10), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, str(self.location), (self.width - 350, 40), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, text2, (self.width - 400, 100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.putText(frame, self.blue_line_location_str, (self.width - 350, 130), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
+            cv2.circle(frame,  ((self.width-270)+self.location[1]*60, -30+self.location[0]*60), 6, (0,255,100), -1)
+
+            if self.blue_boi:
+                self.blue_line_location = self.location[:] # passes by value
+                self.blue_line_location_str = str(self.location)
+                self.blue_boi = False
+            if self.blue_line_location != '':
+                cv2.putText(frame, self.crack_length[0:3]+'cm', ((self.width-300)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), cv2.FONT_HERSHEY_SIMPLEX,0.5, (255,0,0), 1)
+                # cv2.circle(frame, ((self.width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
+
+        return frame
+
+    def blue_crack_detection(self, frame, mask_blue):
+        left_roi_blue = mask_blue[0:self.height,0:10].any()
+        right_roi_blue = mask_blue[0:self.height,self.width-10:self.width].any()
+        top_roi_blue = mask_blue[0:10,0:self.width].any()
+        bot_roi_blue = mask_blue[self.height-10:self.height,0:self.width].any()
+        blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
+
+        if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:
+            print('Blue boi')
+            self.crack_length = detectCracks(frame)
+            self.blue_boi = True
+            self.isBlueFound = True
+
+    def black_line_detection(self,mask_black):              
+            black_pixels_up     = np.count_nonzero(mask_black[self.mid_height-50:self.mid_height-40, 0:self.width])
+            black_pixels_down   = np.count_nonzero(mask_black[self.mid_height+40:self.mid_height+50, 0:self.width])
+            black_pixels_left   = np.count_nonzero(mask_black[0:self.height, self.mid_width-50:self.mid_width-40])
+            black_pixels_right  = np.count_nonzero(mask_black[0:self.height, self.mid_width+40:self.mid_width+50])
             black_threshold = 500
             
             if self.main_dir == 'down':
                 if black_pixels_down > black_threshold:
                     self.checkOne = True
-                if self.checkOne == True:
+                if self.checkOne:
                     if black_pixels_up > black_threshold:
                         self.location[0] = self.location[0]+1
                         self.checkOne = False
             if self.main_dir == 'up':
                 if black_pixels_up > black_threshold:
                     self.checkOne = True
-                if self.checkOne == True:
+                if self.checkOne:
                     if black_pixels_down > black_threshold:
                         self.location[0] = self.location[0]-1
                         self.checkOne = False
             if self.main_dir == 'left':
                 if black_pixels_left > black_threshold:
                     self.checkOne = True
-                if self.checkOne == True:
+                if self.checkOne:
                     if black_pixels_right > black_threshold:
                         self.location[1] = self.location[1]-1
                         self.checkOne = False
             if self.main_dir == 'right':
                 if black_pixels_right > black_threshold:
                     self.checkOne = True
-                if self.checkOne == True:
+                if self.checkOne:
                     if black_pixels_left > black_threshold:
                         self.location[1] = self.location[1]+1
                         self.checkOne = False
-
-            cv2.putText(frame, text, (width - 400, 10), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
-            cv2.putText(frame, str(self.location), (width - 350, 40), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
-            cv2.putText(frame, text2, (width - 400, 100), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
-            cv2.putText(frame, self.blue_line_location_str, (width - 350, 130), cv2.FONT_HERSHEY_SIMPLEX,0.5, (0,255,100), 1)
-            cv2.circle(frame, ((width-270)+self.location[1]*60, -30+self.location[0]*60), 6, (0,255,100), -1)
-
-            if self.blue_boi == True:
-                self.blue_line_location = self.location[:] # passes by value
-                self.blue_line_location_str = str(self.location)
-                self.blue_boi = False
-            if self.blue_line_location != '':
-                cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
-
-        return frame
 
     def stop():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-def run_lineFollower():
-    videoFeed = 'lineVideo.mov'
-    video = VideoStream(videoFeed)
-    video.update()
-    video.stop()
+
+class MotorControl:
+    
+    def update_motor_signal(heave, surge, sway, pitch, roll, yaw):
+        thrusterData = {
+                "fore-port-vert": -heave - pitch + roll,
+                "fore-star-vert": -heave - pitch - roll,
+                "aft-port-vert": -heave + pitch + roll,
+                "aft-star-vert": -heave + pitch - roll,
+
+                "fore-port-horz": -surge + yaw + sway,
+                "fore-star-horz": -surge - yaw - sway,
+                "aft-port-horz": +surge - yaw + sway,
+                "aft-star-horz": -surge - yaw + sway,
+            }
+
+        for control in thrusterData:
+            val = thrusterData[control]
+            sendData("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+            print("good")
+
 
 if __name__ == '__main__':
     run_lineFollower()

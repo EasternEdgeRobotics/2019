@@ -68,6 +68,8 @@ def detectCracks(frame):
         k = cv.waitKey(5) & 0xFF
         if k == 27:
             break
+    
+    return str(length)
 
 def sort(elem):
     return elem[1]
@@ -82,4 +84,4 @@ def pythagC(a, b):
     return c
 
 if __name__ == '__main__':
-    detectCracks()
+    length = detectCracks()

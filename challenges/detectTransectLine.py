@@ -11,8 +11,8 @@ from detectCracks import detectCracks
 
 class VideoStream:
     def __init__(self, source):
-        # self.video = cv2.VideoCapture(source)
-        self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+        self.video = cv2.VideoCapture(source)
+        # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
         print('Enter Initial Row')
         location_y = int(input())
         print('Enter Initial Column')
@@ -32,19 +32,20 @@ class VideoStream:
         self.isBlueFound = False
         self.blue_line_location = [0,0]
         self.blue_line_location_str = ''
+        self.crack_length = ''
 
     def update(self):
         while True: 
             # Read camera frames
             ret, frame = self.video.read()
             if not ret:
-                # self.video = cv2.VideoCapture(source)
-                self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+                self.video = cv2.VideoCapture(source)
+                # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
             line_image, ver, hor = self.linesHough(mask, frame)
-            self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue)
+            line_image = self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue, line_image)
             line_image = self.drawMap(line_image, mask_black)
             cv2.imshow("Frame", line_image)
 
@@ -157,7 +158,7 @@ class VideoStream:
         # print('hor:', hor,'vert:', ver)
         return line_image, ver, hor
 
-    def driveLogic(self, frame, mask, mask_ne, ver, hor, mask_blue):
+    def driveLogic(self, frame, mask, mask_ne, ver, hor, mask_blue, line_image):
         '''Function for finding moments of image mask'''
         height = frame.shape[0] # 480
         width = frame.shape[1]  # 640
@@ -171,8 +172,8 @@ class VideoStream:
         if M["m00"] != 0:
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
-            cv2.circle(frame, (cX,cY), 6, (255,255,0), -1)
-            cv2.line(frame, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
+            cv2.circle(line_image, (cX,cY), 6, (255,255,0), -1)
+            cv2.line(line_image, (cX, cY), (mid_width, mid_height), (255, 255, 0), 3)
 
             if ver == 0:
                 self.horizontal_line(size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height)
@@ -188,9 +189,11 @@ class VideoStream:
             blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
             if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:
                 print('Blue boi')
-                detectCracks(frame)
+                self.crack_length = detectCracks(frame)
                 self.blue_boi = True
                 self.isBlueFound = True
+
+        return line_image
 
     def horizontal_line(self, size_l_bound, size_h_bound, cY, mid_height, bounds, mask_ne, height):
         self.last_line = 'horizontal'
@@ -270,7 +273,7 @@ class VideoStream:
             pass
 
         # print('Corner from',self.last_line,'to',corner_dir,'| Drive:', self.main_dir,'| Error:', error)
-        print('Corner | Drive: {} | Error: {}'.format(self.main_dir,error))
+        print('Corner | Drive: {} | Error: {} | '.format(self.main_dir,error))
         self.last_line = 'corner'
 
     def drawMap(self, frame, mask_black):
@@ -338,7 +341,8 @@ class VideoStream:
                 self.blue_line_location_str = str(self.location)
                 self.blue_boi = False
             if self.blue_line_location != '':
-                cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
+                cv2.putText(frame, self.crack_length[0:3]+'cm', ((width-295)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), cv2.FONT_HERSHEY_SIMPLEX,0.5, (255,0,0), 1)
+                # cv2.circle(frame, ((width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
 
         return frame
 
