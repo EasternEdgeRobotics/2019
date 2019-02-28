@@ -5,15 +5,11 @@ import queue
 import threading
 from TopsidesGlobals import GLOBALS
 
-# Change IP addresses for a production or development environment
-if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
-    ipSend = GLOBALS['ipSend-dev']
-    ipHost = GLOBALS['ipHost-dev']
-else:
-    ipSend = GLOBALS['ipSend']
-    ipHost = GLOBALS['ipHost']
-
-portSend = GLOBALS['portSend']
+ipSendThruster = '255.255.255.255'
+portSendThruster = GLOBALS['portSendThruster']
+ipSendSensor = '255.255.255.255'
+portSendSensor = GLOBALS['portSendSensor']
+ipHost = '0.0.0.0'
 portHost = GLOBALS['portHost']
 
 received = queue.Queue()
@@ -29,21 +25,25 @@ except Exception as e:
     print("failed")
 # Bind the ip and port of topsides to the socket and loop coms
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((GLOBALS['ipHost'], GLOBALS['portHost']))
-s.sendto(("register").encode('utf-8'), ('255.255.255.255', GLOBALS['portSend']))
-s.sendto(("register").encode('utf-8'), ('255.255.255.255', GLOBALS['portSend'] + 4))
+s.bind((ipHost, portHost))
+s.sendto(("register").encode('utf-8'), (ipSendThruster, portSendThruster))
+s.sendto(("register").encode('utf-8'), (ipSendSensor, portSendSensor))
 data, addr = s.recvfrom(1024)
 data = data.decode("utf-8")
 if data == "sensorPi":
     print("Sensor Pi: " + str(addr))
+    ipSendSensor = addr
 elif data == "thrusterPi":
     print("Thruster Pi: " + str(addr))
+    ipSendThruster = addr
 data, addr = s.recvfrom(1024)
 data = data.decode("utf-8")
 if data == "sensorPi":
     print("Sensor Pi: " + str(addr))
+    ipSendSensor = addr
 elif data == "thrusterPi":
     print("Thruster Pi: " + str(addr))
+    ipSendThruster = addr
 
 # Queue to hold send commands to be read by simulator
 simulator = queue.Queue()
