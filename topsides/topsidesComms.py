@@ -1,13 +1,23 @@
-"""Communicate from server to raspberry pi"""
+"""Communicate from server to raspberry pi."""
 import socket
 import sys
 import queue
-import time
 import threading
 from TopsidesGlobals import GLOBALS
 
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
+portSend = GLOBALS['portSend']
+portHost = GLOBALS['portHost']
+
 received = queue.Queue()
-# try opening a socket for communication
+# Try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -17,7 +27,7 @@ except socket.error:
     sys.exit()
 except Exception as e:
     print("failed")
-# bind the ip and port of topsides to the socket and loop coms
+# Bind the ip and port of topsides to the socket and loop coms
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((GLOBALS['ipHost'], GLOBALS['portHost']))
 s.sendto(("register").encode('utf-8'), ('255.255.255.255', GLOBALS['portSend']))
@@ -35,15 +45,17 @@ if data == "sensorPi":
 elif data == "thrusterPi":
     print("Thruster Pi: " + str(addr))
 
-#queue to hold send commands to be read by simulator
+# Queue to hold send commands to be read by simulator
 simulator = queue.Queue()
 
-#this function sends data to the ROV
+
+# This function sends data to the ROV
 def sendData(inputData):
     global s
-    s.sendto(inputData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
-        
-#this function is constantly trying to receive data from the ROV
+    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+
+
+# This function is constantly trying to receive data from the ROV
 def receiveData():
     global s
     while True:
@@ -54,9 +66,11 @@ def receiveData():
         print(outputData)
         received.put(outputData)
 
+
 def putMessage(msg):
     sendData(msg)
     simulator.put(msg, timeout=0.005)
+
 
 # Setup threading for receiving data
 t = threading.Thread(target=receiveData)

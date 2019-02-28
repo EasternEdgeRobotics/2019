@@ -6,9 +6,8 @@ __pycache__/
 # Test files
 raspi/add.py
 raspi/print.py
-# JSON
-topsides/json/controlProfiles.json
-# Visual Studio Code
+# Visual Studio
 .vscode/
-raspi/json/Raspi.json
-topsides/json/Topsides.json
+.vs/
+#Themes
+**/themes/loaded

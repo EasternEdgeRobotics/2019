@@ -1,11 +1,10 @@
 <body>
     <link href="static/css/dashboard/information.css" rel="stylesheet" type='text/css' />
     <script>
-        
         var graphs = [];
         var intervals = [];
 
-        $dash.pageLoad(function(){
+        $dash.pageLoad(function () {
             initGraphs();
             $(".grid").masonry({
                 itemSelector: ".grid-item",
@@ -13,38 +12,37 @@
                 percentPosition: true
             });
 
-            setTimeout(function(){
+            setTimeout(function () {
                 $(".grid-item.init").toggleClass("init", false);
             }, 1000);
         });
 
-        $dash.pageClose(function(){
-            intervals.forEach(function(inte){
+        $dash.pageClose(function () {
+            intervals.forEach(function (inte) {
                 clearInterval(inte);
             });
         });
 
-        function initGraphs(){
+        function initGraphs() {
             //graphs.push(new Graph("pi1Ping", "piGraph2"));
             //graphs.push(new Graph("pi1Ping", "piGraph3"));
             graphs.push(new Graph("pi1Ping", "piGraph1"));
 
-            intervals.push(setInterval(function(){
-                graphs.forEach(function(g){
+            intervals.push(setInterval(function () {
+                graphs.forEach(function (g) {
                     var n = Math.random() * 3 + 20;
                     g.addData(n);
                     $(".data-indicator[value-type='ping']").html(Math.floor(n));
                 });
             }, 50));
         }
-
     </script>
 
     <div class="grid">
         <div class="grid-sizer"></div>
         <div class="grid-item col-lg-4 col-md-6">
-            <div class="item-content">
-                <canvas id="piGraph1" data-type='ping' data-ip="192.168.88.4"></canvas>
+            <div class="item-content panel panel-graph no-padding">
+                <canvas class="graph graph-primary" id="piGraph1" data-type='ping' data-ip="192.168.88.4"></canvas>
                 <h1>Raspberry Pi 1</h1>
                 <p>192.168.88.4</p>
                 <h1 value-type='ping' class="data-indicator">20</h1>

@@ -1,3 +1,4 @@
+"""Topsides Globals."""
 import json
 
 GLOBALS = {}
@@ -29,7 +30,7 @@ def updateTopsidesGlobals(newData):
 
         GLOBALS = data
 
-        file.seek(0)        
+        file.seek(0)
         json.dump(data, file, indent=4)
         file.truncate()
 
@@ -45,6 +46,6 @@ def updateRaspiGlobals(newData):
 
         RASPI_GLOBALS = data
 
-        file.seek(0)        
+        file.seek(0)
         json.dump(data, file, indent=4)
         file.truncate()

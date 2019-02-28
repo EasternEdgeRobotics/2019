@@ -1,0 +1,55 @@
+<!--
+
+    This is a page that is loaded inside the ifrome on the dashboard theme page
+    This is used as a preview for themes
+
+
+-->
+
+
+<html style="overflow: hidden;">
+<body theme='{{theme}}' style="overflow: visible;">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap/bootstrap.min.css')}}" type="text/css"  />
+    <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}" type="text/css"  />
+    <link href="/static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
+    
+    <style>
+        body{
+            margin: -5px;
+        }
+        body *{
+            margin: 5px;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="/static/css/themes/loaded/{{theme}}.css">
+    <div id="pageBody" style="padding: 30px; height: 100%;">
+    <div class="panel row">
+        <div class="col-md-5">
+            <h1>Header</h1>
+            <p>This is a theme preview, if you like what you see maybe try selecting it.</p>
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-danger">Danger</button>
+            <button class="btn btn-info">Info</button>
+            <button class="btn btn-link">Link</button>
+            <button class="btn btn-success">Success</button>
+             </br>
+            <input type="text" value="Text Input" placeholder="Placeholder Text"/>
+            <select><option value="1">Option One</option><option value="2">Option Two</option></select>
+            <div class="eer-logo background-full" style="background-image: url('/static/res/img/eer-logo.png')"></div>
+        </div>
+        <div class="col-md-5">
+            <!-- Nav buttons -->
+            <div class="row">
+                <div style="max-width: 250px;" class="btn-nav col-6 row"><div class="background"></div><svg viewBox="0 0 25 25" class="nav-svg col-lg-5 col-md-12 col-5 icon"><path xmlns="http://www.w3.org/2000/svg" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path><svg></svg></svg><div class="text col-5 justify-content-center align-self-center"><p>Information</p></div></div>
+                <div style="max-width: 250px" class="btn-nav col-6 active row"><div class="background"></div><svg viewBox="0 0 25 25" class="nav-svg col-lg-5 col-md-12 col-5 icon"><path xmlns="http://www.w3.org/2000/svg" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"></path><svg></svg></svg><div class="text col-5 justify-content-center align-self-center"><p>Information</p></div></div>
+            </div>
+                <!-- Profile panel -->
+            <div class="item-content panel" style="max-width: 300px;"><p class="date-modified">2019-01-22</p><h2 class="name">Troake</h2><h4 class="gamepad-count">1</h4><div class="btn-container"><button class="btn btn-primary">Edit</button><button class="btn btn-danger">Delete</button></div></div>
+            
+        </div>
+    </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,18 @@
 {
-    "ipHost": "localhost",
+    "ipHost": "192.168.88.5",
+    "ipHost-dev": "localhost",
     "portHost": 5000,
-    "ipSend": "localhost",
-    "portSend": 5001
+    "ipSend": "192.168.88.2",
+    "ipSend-dev": "localhost",
+    "portSend": 5001,
+    "fore-port-vert-r": 10,
+    "fore-star-vert-r": 15,
+    "aft-port-vert-r": 6,
+    "aft-star-vert-r": 16,
+    "fore-port-horz-r": 14,
+    "fore-star-horz-r": 9,
+    "aft-port-horz-r": 7,
+    "aft-star-horz-r": 17,
+    "fore-camera-r": 8,
+    "aft-camera-r": 11
 }

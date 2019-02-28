@@ -1,8 +1,8 @@
-.grid{
+.grid {
     margin: 0 auto;
 }
 
-.grid-item{
+.grid-item {
     /*border: 2px solid red;
     border-radius: 15px;*/
     min-height: 200px;
@@ -16,68 +16,64 @@
 
 }
 
-.grid-item.init{
+.grid-item.init {
     transition-property: left, top;
     transition-duration: 0.5s;
 }
 
-.item-content{
+.item-content {
     position: relative;
-    background-color: white;
-    border-radius: 15px;
-    overflow: hidden;
     min-height: 170px;
-    box-shadow: 0px 0px 20px rgb(0,0,0,0.3);
+    box-shadow: 0px 0px 20px rgb(0, 0, 0, 0.3);
     padding: 20px 20px;
-   /* text-align: center;*/
+    /* text-align: center;*/
 }
 
-    .center{
-        text-align: center;
-        justify-content: center;
-    }
+.center {
+    text-align: center;
+    justify-content: center;
+}
 
-    .item-content .date-modified{
-        position: absolute;
-        top: -2px;
-        right: 10px;
-        font-size: 18px;
-    }
+.item-content .date-modified {
+    position: absolute;
+    top: -2px;
+    right: 10px;
+    font-size: 18px;
+}
 
-    .item-content .date-modified:before{
-        content: 'Modified: ';
-        font-size: 12px;
-    }
+.item-content .date-modified:before {
+    content: 'Modified: ';
+    font-size: 12px;
+}
 
-    .item-content .btn-container{
-        text-align: center;
-        margin-top: 10px;
-    }
+.item-content .btn-container {
+    text-align: center;
+    margin-top: 10px;
+}
 
-    .item-content .gamepad-count:after{
-        content: ' gamepads';
-        font-size: 16px;
-    }
+.item-content .gamepad-count:after {
+    content: ' gamepads';
+    font-size: 16px;
+}
 
-#profileCount:after{
+#profileCount:after {
     content: ' profiles';
     font-size: 22px;
 }
 
-#fileSize:after{
+#fileSize:after {
     content: ' kb';
     font-size: 22px;
 }
 
 
-/**
+/*
 
 EDIT PAGE
 
-
 */
 
-#popupAddGamepad{
+#popupAddGamepad {
     position: absolute;
     z-index: 3;
     background-color: white;
@@ -85,83 +81,87 @@ EDIT PAGE
     width: 300px;
     padding: 20px;
     border-radius: 15px;
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
-    #popupAddGamepad div{
-        border-radius: 15px;
-        margin: 5px 0px;
-        border: 1px solid rgb(50,50,50);
-        padding: 15px;
-        box-shadow: 0px 0px 15px rgba(0,0,0,0.8);
-        cursor: pointer;
-        transition: 0.3s;
-    }
+#popupAddGamepad div {
+    border-radius: 15px;
+    margin: 5px 0px;
+    border: 1px solid rgb(50, 50, 50);
+    padding: 15px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.8);
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-    #popupAddGamepad div:hover{
-        background-color: rgb(250,250,255);
-        transform: scale(1.05);
-    }
+#popupAddGamepad div:hover {
+    background-color: rgb(250, 250, 255);
+    transform: scale(1.05);
+}
 
-.overflow{
+.overflow {
     overflow: visible;
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
-#gamepadCount:after{
+#gamepadCount:after {
     content: ' gamepads';
     font-size: 14px;
 }
 
-.relative{
+.relative {
     position: relative;
 }
 
-.panel{
+.panel {
     margin: 10px 0;
     transition: 0.5s;
 }
 
-.vertical-center{
+.vertical-center {
     display: flex;
     align-items: center;
 }
 
-.gamepad-id{
+.gamepad-id {
     position: absolute;
     top: 5px;
     right: 10px;
     font-size: 12px;
 }
 
-.panel.init{
+.panel.init {
     position: absolute;
     top: 0px;
     left: 0px;
 }
 
-.panel-gamepad .item-content{
+.panel-gamepad .item-content {
     padding-top: 30px;
 }
 
 
-    .panel-gamepad .row{
-        margin-bottom: 20px;
-    }
+.panel-gamepad .row {
+    margin-bottom: 20px;
+}
 
-    .panel-gamepad .control-group{
-        display: inline-block;
-        width: 40%;
-        white-space: nowrap;
+.panel-gamepad .control-group {
+    display: inline-block;
+    width: 40%;
+    white-space: nowrap;
+}
+
+    .panel-gamepad .control-group.axes{
+        width: 100%;
     }
 
     .panel-gamepad select{
-        width: 70px;
+        width: 100px;
     }
 
-.center .btn{
+.center .btn {
     margin: 5px;
 }

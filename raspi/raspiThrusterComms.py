@@ -8,38 +8,44 @@ from RaspiGlobals import GLOBALS
 send = queue.Queue()
 t = []
 
-# TODO: Change to topsides ip
-ipSend = GLOBALS['ipSend']
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
 portSend = GLOBALS['portSend']
-ipHost = GLOBALS['ipHost']
 portHost = GLOBALS['portHost']
 
-#try opening a socket for communication
+# Try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 except socket.error:
     # TODO: Change to message sent back to gui
     print("Failed To Create Socket")
     sys.exit()
-# bind the ip and port of the raspi to the socket and loop coms
+# Bind the ip and port of the raspi to the socket and loop coms
 s.bind((ipHost, portHost))
 
-#this function sends data to topsides
+
 def sendData():
+    """Send data to topsides."""
     global s, send
     sendData = send.get()
     while sendData != "exit":
-        s.sendto(sendData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+        s.sendto(sendData.encode('utf-8'), (ipSend, portSend))
         print("sent response: " + sendData + " to " + str(ipSend) + " " + str(portSend))
         sendData = send.get()
-    s.sendto(sendData.encode('utf-8'), (GLOBALS['ipSend'], GLOBALS['portSend']))
+    s.sendto(sendData.encode('utf-8'), (ipSend, portSend))
     print("sent response: " + sendData + " to " + str(ipSend) + " " + str(portSend))
 
-#this function receives data from topsides
+
 def receiveData():
+    """Receive data from topsides."""
     global t
     while True:
-        # receive the data from topsides
         try:
             data, addr = s.recvfrom(1024)
             data = data.decode("utf-8")
@@ -52,7 +58,7 @@ def receiveData():
                     exec(open("fControl.py").read())
                 except Exception as e:
                     response = str(e)
-                    #print(response)           
+                    # print(response)
                 del sys.argv[1:]
             continue
         #check for comms control messages
@@ -65,7 +71,7 @@ def receiveData():
             s.sendto(("thrusterPi").encode('utf-8'), (ipSend, GLOBALS['portSend']))
             continue
         print(data)
-        # identify the file name and arguements
+        # Identify the file name and arguments
         nextSpace = data.find(".py") + 3
         file = data[0:nextSpace]
         lastSpace = nextSpace + 1
@@ -85,12 +91,14 @@ def receiveData():
         del sys.argv[1:]
         t = [i for i in t if i.isAlive()]
 
+
 def executeData(file, flag):
     try:
-        exec(open(file).read(), {"send":send, "flag":flag})
+        exec(open(file).read(), {"send": send, "flag": flag})
     except Exception as e:
         send.put(str(e))
         flag.set()
+
 
 # Setup threading for receiving data
 t.append(threading.Thread(target=sendData))

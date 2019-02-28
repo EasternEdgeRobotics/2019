@@ -75,6 +75,16 @@ function setQueryParameter(name, value){
     history.pushState(null, '', newurl);
 }
 
+$(document).ready(function(){
+    runPythonGET("themes", null, function(themes){
+        $("head").append(themes.responseText);
+    });
+
+    runPythonGET("themes/get", null, function(data){
+        $("body").attr("theme", data.theme);
+    });
+});
+
  /*
 
 
@@ -102,7 +112,7 @@ function setQueryParameter(name, value){
      *      2. Create a div inside of the previous div with the class [modal-content]
      *      3. Create an element to use as a trigger to open the modal (ex: button)
      *          - give that element the [modal-trigger] class
-     *          - set the atrribute [modal-id] of that element to the id of the div in step 1.
+     *          - set the attribute [modal-id] of that element to the id of the div in step 1.
      *  
      */
 $(document).ready(function(){
@@ -115,7 +125,7 @@ function modalPrep(){
         var modalID = $(this).attr("modal-id");
         $("#"+modalID).toggleClass("visible", true);
     });
-    $(".modal, .modal-close").click(function(){ //click event to close modals (whenblack overlay is clicked.
+    $(".modal, .modal-close").click(function(){ //click event to close modals (when black overlay is clicked.
         $(this).toggleClass("visible", false);
         $(this).parents(".modal").toggleClass("visible", false);
     });
@@ -124,6 +134,19 @@ function modalPrep(){
         e.stopPropagation();
     });
 }
+
+
+
+
+
+/**
+ * 
+ *  @deprecated
+ * - Troake
+ *  
+ * 
+ */
+
 
 
 /**
@@ -139,15 +162,16 @@ function modalPrep(){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+/*
 $(document).ready(function(){
-    $(".snackbar").html("<div class='snack'></div>");
+    //$(".snackbar").html("<div class='snack'></div>");
 });
-
+*/
 
 /**openSnackbar
  * 
  *  opens a snackbar of an id with a message for an amount of time (ms)
- */
+ *//*
 function openSnackbar(id, message, time=3000, requireExit = false){
     $('.snackbar').toggleClass('visible', false);
     $.each($('.snackbar'), function (i, obj) {
@@ -161,15 +185,15 @@ function openSnackbar(id, message, time=3000, requireExit = false){
             }
         }
     });
-}
-
+}*/
+/*
 function closeSnackbar(id){
     $.each($('.snackbar'), function (i, obj) {
         if($(obj).attr('id') == id){
             $(obj).toggleClass('visible', false);
         }
     });
-}
+}*/
 
 
 /**
@@ -185,9 +209,10 @@ function closeSnackbar(id){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+/*
 $(document).ready(function() {
         var note = new NotificationHandler();
         note.setSnackbar('notification');
         note.start();
     }
-);
+);*/

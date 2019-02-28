@@ -50,7 +50,7 @@ class ControlHandler{
         this._toggledControls = {};
         this._previousToggledButtons = [{},{},{},{}];
         $(document).ready(function(){
-            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p id='assignGamepadsText'></p></div>");
+            $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p class='panel' id='assignGamepadsText'></p></div>");
         });
 
         var self = this;
@@ -260,8 +260,8 @@ class ControlHandler{
      * @description assigns each gamepad a profile index step by step. AKA pilot can choose which physical
      *              gamepad is mapped to which mapped gamepad from the profile builder.
      * 
-     *              Each profile gamepad is done sequentially but still asyncronously. Basically It begins an interval of the 
-     *              funciton assignGamepadStep each time a gamepad is assigned
+     *              Each profile gamepad is done sequentially but still asynchronously. Basically It begins an interval of the 
+     *              function assignGamepadStep each time a gamepad is assigned
      * 
      * 
      */
@@ -282,13 +282,13 @@ class ControlHandler{
             
         }else{
             if(this._notificationHandler != null)
-            this._notificationHandler.sendNotification("Required gamepads aren't connected for this profile!", "warning");
+            this._notificationHandler.localNotification("Required gamepads aren't connected for this profile!", "warning");
         }
     }
 
     finishedAssignGamepads(){
         if(this._notificationHandler != null)
-            this._notificationHandler.sendNotification("Gamepads successfully assigned for profile: " + this._profile.name, "good");
+            this._notificationHandler.localNotification("Gamepads successfully assigned for profile: " + this._profile.name, "success");
     }
 
 
