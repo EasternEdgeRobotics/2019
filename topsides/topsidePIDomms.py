@@ -85,7 +85,6 @@ def chechFourthFirstQuad(angle_1, angle_2):
 """ Create objects for each component """
 
 depth = pid()
-angular = pid()
 pitch = pid()
 yaw = pid()
 row = pid()
@@ -119,7 +118,7 @@ def pitch_PID_init():
 """ Calculate the different power required for each component
     Note that each of these algorithm have differences based on which component is being used
     errors are Calculated differently
-""""
+"""
 
 def runDepthPID(cDepth):
 
@@ -235,7 +234,7 @@ t = threading.Thread(target=receiveData)
 t.start()
 
 
-""" Select the different thruster vectors for each component """"
+""" Select the different thruster vectors for each component """
 
 def selectThrusters(choice, power):
     if choice == 1:
@@ -285,9 +284,9 @@ if __name__ == "__main__":
     elif choice == 4:
         pitch.target = float(input("Input Target Pitch angle: "))
 
-    if (choice >= 1) && (choice <= 4):
+    if (choice >= 1) and (choice <= 4):
         run = True
-        
+
     while run:
         sendDataB('readSerialArd.py')
         try:
@@ -295,7 +294,7 @@ if __name__ == "__main__":
             power = 0.0
 
             if choice == 1:
-                power = runDepthPID(float(keep[-1]))
+                power = -runDepthPID(float(keep[-1]))
             elif choice == 2:
                 power = runYawPID(float(keep[-1]))
             elif choice == 3:
