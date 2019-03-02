@@ -267,22 +267,17 @@ def selectThrusters(choice, power):
         }
 
 
-def parseSensorVals(sensor):
+def parseSensorVals():
     vals = keep[-1].split(',')
-    if sensor == 'depth':
-        return vals[1]
-    elif sensor == 'gyro_x':
-        return vals[2]
-    elif sensor == 'gyro_y':
-        return vals[3]
-    elif sensor == 'gyro_z':
-        return vals[4]
-    elif sensor == 'accel_x':
-        return vals[5]
-    elif sensor == 'accel_y':
-        return vals[6]
-    elif sensor == 'accel_z':
-        return vals[7]
+    return {
+        'depth' : vals[1],
+        'gyro_x' : vals[2],
+        'gyro_y' : vals[3],
+        'gyro_z' : vals[4],
+        'accel_x' : vals[5],
+        'accel_y' : vals[6],
+        'accel_z' : vals[7]
+    }
 
 
 if __name__ == "__main__":
@@ -308,19 +303,20 @@ if __name__ == "__main__":
         try:
 
             power = 0.0
+            sensorVals = parseSensorVals()
 
             if choice == 1:
                 print('Running Depth')
-                power = -runDepthPID(float(parseSensorVals('depth')))
+                power = -runDepthPID(float(sensorVals['depth']))
             elif choice == 2:
                 print('Running Yaw')
-                power = runYawPID(float(parseSensorVals('gyro_x')))
+                power = runYawPID(float(sensorVals['gyro_x']))
             elif choice == 3:
                 print('Running Row')
-                power = runRowPID(float(parseSensorVals('gyro_y')))
+                power = runRowPID(float(sensorVals['gyro_y']))
             elif choice == 4:
                 print('Running Pitch')
-                power = -runPitchPID(float(parseSensorVals('gyro_z')))
+                power = -runPitchPID(float(sensorVals['gyro_z']))
 
             if(power > 1.0):
                 power = 0.3

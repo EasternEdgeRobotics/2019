@@ -15,11 +15,6 @@ time.sleep(2) # wait for Arduino
 
 while True:
   # Serial read section
-  msg = str(ard.readline()) # read all characters in buffer
-  #msg = msg.split(" ")
-  msg = msg.split(",")
-  print(msg[3])
+  send.put(str(ard.readline())) # send vals to topsides
 
-  send.put(msg[3])
- 
 raise Exception('err');
