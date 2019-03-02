@@ -5,9 +5,6 @@ import math
 # sys.path.append.("../topsides/")
 from detectCracks import detectCracks
 
-# Queue to hold send commands to be read by simulator
-simulator = queue.Queue()
-
 def sendData(inputData):
     global s
     s.sendto(inputData.encode('utf-8'), ("192.168.88.5", portSend))
@@ -22,19 +19,15 @@ class VideoStream:
 
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
-        # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-        print('Enter Initial Row')
-        location_y = int(input())
-        print('Enter Initial Column')
-        location_x = int(input())
-        self.location = [location_y, location_x]
-        print('Enter Initial Direction')
-        dir = input()
-        print('Initial direction chosen:', dir)
+        # video = cv2.VideoCapture('udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+
+        dir = self.program_start()
+
         direction =   { 'w':'up',
-                        'a':'left',
-                        's':'down',
-                        'd':'right'}
+                'a':'left',
+                's':'down',
+                'd':'right'}
+
         self.last_line = ''
         self.main_dir = direction[dir]
         self.checkOne = False
@@ -48,13 +41,51 @@ class VideoStream:
         self.surge = 0
         self.sway = 0
 
+    def program_start(self):
+        '''Initialize starting position and direction'''
+
+        while True:
+            print('Enter Initial Row', end = ' ')
+            location_y = input()
+            if location_y.isdigit() != True or int(location_y) > 3:
+                print('\nNot a valid number!!!\n')
+                continue
+            else:
+                location_y = int(location_y)
+
+            print('Enter Initial Column', end = ' ')
+            location_x = input()
+            if location_x.isdigit() != True or int(location_x) > 5:
+                print('\nNot a valid number!!!\n')
+                continue
+            else:
+                location_x = int(location_x)
+            self.location = [location_y, location_x]
+            starting_locations = [[0,1],[1,0],[0,4],[1,5],[3,5]]
+
+            if self.location in starting_locations:
+                print('Initial Position Chosen: {}'.format(self.location))
+                break
+            else:
+                print('\nNot a valid starting position!!!\n ')
+                continue
+
+        print('Enter Initial Direction', end = ' ')
+        dir = input()
+        print('Initial Direction Chosen:', dir)
+
+        return dir
+
     def update(self):
         while True: 
             # Read camera frames
             ret, frame = self.video.read()
+            frame_height = frame.shape[0] # 480
+            frame_width = frame.shape[1]  # 640
+            frame = cv2.resize(frame, (frame_width//2,frame_height//2))
             if not ret:
                 self.video = cv2.VideoCapture(source)
-                # video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+                # video = cv2.VideoCapture('udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
 
             self.heave = 0
@@ -62,7 +93,7 @@ class VideoStream:
             self.sway = 0
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
-            line_image, ver, hor = self.linesHough(mask, frame)
+            line_image, ver, hor = self.hough_line_detection(mask, frame)
             line_image = self.drive_logic(frame, mask, mask_ne, ver, hor, mask_blue, mask_black, line_image)
             line_image = self.draw_map(line_image)
             MotorControl.update_motor_signal(self.heave, self.surge, self.sway, self.pitch, self.roll, self.yaw)
@@ -74,6 +105,11 @@ class VideoStream:
                 break
 
     def preprocess(self, orig_frame):
+        self.height = frame.shape[0] # 480
+        self.width = frame.shape[1]  # 640
+
+        self.mid_height = self.height//2  # 240
+        self.mid_width = self.width//2    # 320
         # Blurs image using a gaussian filter kernal, (n,m) are width and height, must be + and odd #'s, 0 is border type
         frame = cv2.GaussianBlur(orig_frame, (5, 5), 0)
 
@@ -81,18 +117,18 @@ class VideoStream:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # Define hsv bounds for red
-        low_red1    = np.array([0,80,0])
-        up_red1     = np.array([40,255,255])
-        low_red2    = np.array([130,80,0])
-        up_red2     = np.array([180,255,255])
+        low_red1 = np.array([0,80,0])
+        up_red1 = np.array([40,255,255])
+        low_red2 = np.array([130,80,0])
+        up_red2 = np.array([180,255,255])
 
         # Define hsv bounds for blue
-        low_blue    = np.array([110,50,50])
-        up_blue     = np.array([130,255,255])
+        low_blue = np.array([110,50,50])
+        up_blue = np.array([130,255,255])
 
         # Define hsv bounds for black
-        low_black    = np.array([0,0,0])
-        up_black     = np.array([180,255,80])
+        low_black = np.array([0,0,0])
+        up_black = np.array([180,255,80])
 
         # Threshold the hsv image for red
         mask1 = cv2.inRange(hsv, low_red1, up_red1)
@@ -111,7 +147,7 @@ class VideoStream:
         kernel = np.ones((25,25),np.uint8)
         mask = cv2.erode(mask_ne,kernel,iterations = 1)
 
-        kernel_blue = np.ones((10,10),np.uint8)
+        kernel_blue = np.ones((3,3),np.uint8)
         mask_blue = cv2.erode(mask_blue,kernel_blue,iterations = 1)
 
         # Canny edge detection to get a binary output of edges
@@ -119,7 +155,7 @@ class VideoStream:
 
         return edges, mask, mask_ne, mask_blue, mask_black
 
-    def linesHough(self, mask, frame):
+    def hough_line_detection(self, mask, frame):
         lines = cv2.HoughLinesP(mask, 1, np.pi/180, 100, np.array([]), minLineLength = 100, maxLineGap=10)
         ver = 0
         hor = 0
@@ -139,13 +175,7 @@ class VideoStream:
         weighted_image = cv2.addWeighted(frame, 0.8, line_image, 0.5, 1)
         return weighted_image, ver, hor
 
-    def drive_logic(self, frame, mask, mask_ne, ver, hor, mask_blue, mask_black, line_image):
-        self.height = frame.shape[0] # 480
-        self.width = frame.shape[1]  # 640
-
-        self.mid_height = self.height//2  # 240
-        self.mid_width = self.width//2    # 320
-        
+    def drive_logic(self, frame, mask, mask_ne, ver, hor, mask_blue, mask_black, line_image):        
         # Transverse error bounds
         error_bounds = 40
 
@@ -153,35 +183,33 @@ class VideoStream:
         size_l_bound = 60
         size_h_bound = 120
 
-        line_image M, cX, cY = self.image_moments(line_image, mask)
-
+        M = cv2.moments(mask)
         if M["m00"] != 0:
-            # Red line direction detection
-            if ver == 0:
-                self.horizontal_line(size_l_bound, size_h_bound, cY, error_bounds, mask_ne)
-            elif hor == 0:
-                self.vertical_line(size_l_bound, size_h_bound,cX, error_bounds, mask_ne)         
-            elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
-                self.corner_line(mask, cX, cY)
-            else:
-                print('.')
+            cX = int(M["m10"] / M["m00"])
+            cY = int(M["m01"] / M["m00"])
+            cv2.circle(line_image, (cX,cY), 6, (255,255,0), -1)
+            cv2.line(line_image, (cX, cY), (self.mid_width, self.mid_height), (255, 255, 0), 3)
 
-            # BLue line detection
-            self.blue_crack_detection(frame, mask_blue)
-
-            # Black line detection
-            self.black_line_detection(mask_black)
+            self.line_detection(frame, size_l_bound, size_h_bound, cX, cY, ver, hor, error_bounds, mask, mask_ne, mask_blue, mask_black)
 
         return line_image
     
-    def image_moments(self, line_image, mask):
-        M = cv2.moments(mask)
-        cX = int(M["m10"] / M["m00"])
-        cY = int(M["m01"] / M["m00"])
-        cv2.circle(line_image, (cX,cY), 6, (255,255,0), -1)
-        cv2.line(line_image, (cX, cY), (self.mid_width, self.mid_height), (255, 255, 0), 3)
+    def line_detection(self, frame, size_l_bound, size_h_bound, cX, cY, ver, hor, error_bounds, mask, mask_ne, mask_blue, mask_black):
+        # Red line direction detection
+        if ver == 0:
+            self.horizontal_line(size_l_bound, size_h_bound, cY, error_bounds, mask_ne)
+        elif hor == 0:
+            self.vertical_line(size_l_bound, size_h_bound,cX, error_bounds, mask_ne)         
+        elif hor > 10 and ver > 10 and self.location[0] > 0 and self.location[1] > 0:
+            self.corner_line(mask, cX, cY)
+        else:
+            print('.')
 
-        return line_image M, cX, cY
+        # BLue line detection
+        self.blue_crack_detection(frame, mask_blue)
+
+        # Black line detection
+        self.black_line_detection(mask_black)
 
     def horizontal_line(self, size_l_bound, size_h_bound, cY, bounds, mask_ne):
         self.last_line = 'horizontal'
@@ -212,9 +240,9 @@ class VideoStream:
             self.heave = 0
             error_dir = 'None'
 
-        if self.main_dir = 'Left':
+        if self.main_dir == 'Left':
             self.sway = -drive_speed
-        if self.main_dir = 'Right':
+        if self.main_dir == 'Right':
             self.sway = drive_speed
         
         print('Horizontal line | Drive: {} | Vertical error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
@@ -248,9 +276,9 @@ class VideoStream:
             self.sway = 0
             error_dir = 'None'
 
-        if self.main_dir = 'Up':
+        if self.main_dir == 'Up':
             self.heave = drive_speed
-        if self.main_dir = 'Down':
+        if self.main_dir == 'Down':
             self.heave = -drive_speed
 
         print('Vertical Line | Drive: {} | Horizontal Error: {} | Correct: {} | Line size: {} | Correct: {}'.format(self.main_dir, error, error_dir, line_size, size_error))
@@ -326,15 +354,14 @@ class VideoStream:
                 self.blue_boi = False
             if self.blue_line_location != '':
                 cv2.putText(frame, self.crack_length[0:3]+'cm', ((self.width-300)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), cv2.FONT_HERSHEY_SIMPLEX,0.5, (255,0,0), 1)
-                # cv2.circle(frame, ((self.width-270)+self.blue_line_location[1]*60, -30+self.blue_line_location[0]*60), 6, (2550,0), -1)
 
         return frame
 
     def blue_crack_detection(self, frame, mask_blue):
-        left_roi_blue = mask_blue[0:self.height,0:10].any()
-        right_roi_blue = mask_blue[0:self.height,self.width-10:self.width].any()
-        top_roi_blue = mask_blue[0:10,0:self.width].any()
-        bot_roi_blue = mask_blue[self.height-10:self.height,0:self.width].any()
+        left_roi_blue = mask_blue[0:self.height, 0:10].any()
+        right_roi_blue = mask_blue[0:self.height, self.width-10:self.width].any()
+        top_roi_blue = mask_blue[0:10, 0:self.width].any()
+        bot_roi_blue = mask_blue[self.height-10:self.height, 0:self.width].any()
         blue_pixels = np.count_nonzero(mask_blue[180:320,100:540])  
 
         if left_roi_blue != True and right_roi_blue != True and top_roi_blue != True and bot_roi_blue != True and blue_pixels > 1000 and self.isBlueFound == False:

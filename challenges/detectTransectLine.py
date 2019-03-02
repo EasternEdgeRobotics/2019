@@ -13,14 +13,9 @@ class VideoStream:
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
         # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
-        print('Enter Initial Row')
-        location_y = int(input())
-        print('Enter Initial Column')
-        location_x = int(input())
-        self.location = [location_y, location_x]
-        print('Enter Initial Direction')
-        dir = input()
-        print('Initial direction chosen:', dir)
+        
+        dir = self.program_start()
+
         direction =   { 'w':'up',
                         'a':'left',
                         's':'down',
@@ -34,10 +29,48 @@ class VideoStream:
         self.blue_line_location_str = ''
         self.crack_length = ''
 
+    def program_start(self):
+        '''Initialize starting position and direction'''
+
+        while True:
+            print('Enter Initial Row', end = ' ')
+            location_y = input()
+            if location_y.isdigit() != True or int(location_y) > 3:
+                print('\nNot a valid number!!!\n')
+                continue
+            else:
+                location_y = int(location_y)
+
+            print('Enter Initial Column', end = ' ')
+            location_x = input()
+            if location_x.isdigit() != True or int(location_x) > 5:
+                print('\nNot a valid number!!!\n')
+                continue
+            else:
+                location_x = int(location_x)
+            self.location = [location_y, location_x]
+            starting_locations = [[0,1],[1,0],[0,4],[1,5],[3,5]]
+
+            if self.location in starting_locations:
+                print('Initial Position Chosen: {}'.format(self.location))
+                break
+            else:
+                print('\nNot a valid starting position!!!\n ')
+                continue
+
+        print('Enter Initial Direction', end = ' ')
+        dir = input()
+        print('Initial Direction Chosen:', dir)
+
+        return dir
+
     def update(self):
         while True: 
             # Read camera frames
             ret, frame = self.video.read()
+            frame_height = frame.shape[0] # 480
+            frame_width = frame.shape[1]  # 640
+            frame = cv2.resize(frame, (frame_width//2,frame_height//2))
             if not ret:
                 self.video = cv2.VideoCapture(source)
                 # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
@@ -47,7 +80,11 @@ class VideoStream:
             line_image, ver, hor = self.linesHough(mask, frame)
             line_image = self.driveLogic(frame, mask, mask_ne, ver, hor, mask_blue, line_image)
             line_image = self.drawMap(line_image, mask_black)
+
+            # weighted_image = cv2.addWeighted(line_image, 1, mask_black, 0.75, 1)
+
             cv2.imshow("Frame", line_image)
+            cv2.moveWindow("Frame", 0, 1)
 
             key = cv2.waitKey(25)
             if key == 27:
@@ -61,18 +98,18 @@ class VideoStream:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # Define hsv bounds for red
-        low_red1    = np.array([0,80,0])
-        up_red1     = np.array([40,255,255])
-        low_red2    = np.array([130,80,0])
-        up_red2     = np.array([180,255,255])
+        low_red1 = np.array([0,80,0])
+        up_red1 = np.array([40,255,255])
+        low_red2 = np.array([130,80,0])
+        up_red2 = np.array([180,255,255])
 
         # Define hsv bounds for blue
-        low_blue    = np.array([110,50,50])
-        up_blue     = np.array([130,255,255])
+        low_blue = np.array([110,50,50])
+        up_blue = np.array([130,255,255])
 
         # Define hsv bounds for black
-        low_black    = np.array([0,0,0])
-        up_black     = np.array([180,255,80])
+        low_black = np.array([0,0,0])
+        up_black = np.array([180,255,80])
 
         # Threshold the hsv image to get only red colors
         mask1 = cv2.inRange(hsv, low_red1, up_red1)
@@ -86,7 +123,6 @@ class VideoStream:
         mask_black = cv2.inRange(hsv, low_black, up_black)
         mask_black = cv2.bitwise_and(mask_black,mask_black,mask = mask_inv)
 
-
         # kernel = np.ones((10,10),np.uint8)
         kernel = np.ones((25,25),np.uint8)
         mask = cv2.erode(mask_ne,kernel,iterations = 1)
@@ -94,6 +130,7 @@ class VideoStream:
         kernel_blue = np.ones((10,10),np.uint8)
 
         mask_blue = cv2.erode(mask_blue,kernel_blue,iterations = 1)
+        # mask_blue = cv2.morphologyEx(mask_blue, cv2.MORPH_OPEN, kernel_blue)
 
         # Apply Canny edge detection algorithm to get a binary output of edges
         edges = cv2.Canny(mask, 75, 150)
