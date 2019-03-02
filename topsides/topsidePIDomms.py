@@ -10,7 +10,6 @@ import threading
 sys.path.append('../raspi/libraries')
 import maestro
 from pidh import pid
-
 from TopsidesGlobals import GLOBALS
 #import topsidesComms
 
@@ -98,21 +97,21 @@ def depth_PID_init():
     depth.integral = 0.0
 
 def yaw_PID_init():
-    yaw.kP = 0.0099 ## 0.0082
-    yaw.kI = 0.000043 ## 0.000043
-    yaw.kD = 0.005 ## 0.003
+    yaw.kP = 0.0099
+    yaw.kI = 0.000043
+    yaw.kD = 0.005
     yaw.integral = 0.0
 
 def row_PID_init():
-    row.kP = 0.0099 ## 0.0082
-    row.kI = 0.000043 ## 0.000043
-    row.kD = 0.005 ## 0.003
+    row.kP = 0.0099
+    row.kI = 0.000043
+    row.kD = 0.005
     row.integral = 0.0
 
 def pitch_PID_init():
-    pitch.kP = 0.0099 ## 0.0082
-    pitch.kI = 0.000043 ## 0.000043
-    pitch.kD = 0.005 ## 0.003
+    pitch.kP = 0.0099
+    pitch.kI = 0.000043
+    pitch.kD = 0.005
     pitch.integral = 0.0
 
 """ Calculate the different power required for each component
@@ -154,9 +153,8 @@ def runYawPID(angle):
         else:
             yaw.error = angle + (360 - yaw.target)
     else:
-        yaw.error = yaw.target - abs(angle) ## Keep current depth at an absolute value
+        yaw.error = yaw.target - abs(angle)
 
-    ## increase integral if the error does not zero out as power decreases
     if(abs(yaw.error) < yaw.intError):
         yaw.integral += 0.03
     else:
@@ -269,10 +267,28 @@ def selectThrusters(choice, power):
         }
 
 
+def parseSensorVals(sensor):
+    vals = keep[-1].split(',')
+    if sensor == 'depth':
+        return vals[1]
+    elif sensor == 'gyro_x':
+        return vals[2]
+    elif sensor == 'gyro_y':
+        return vals[3]
+    elif sensor == 'gyro_z':
+        return vals[4]
+    elif sensor == 'accel_x':
+        return vals[5]
+    elif sensor == 'accel_y':
+        return vals[6]
+    elif sensor == 'accel_z':
+        return vals[7]
+
+
 if __name__ == "__main__":
 
     run = False
-    choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Row : 3 \n Pitch : 4"))
+    choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Row : 3 \n Pitch : 4 \nPick One: "))
     thrusterData = {}
 
     if choice == 1:
@@ -294,13 +310,17 @@ if __name__ == "__main__":
             power = 0.0
 
             if choice == 1:
-                power = -runDepthPID(float(keep[-1]))
+                print('Running Depth')
+                power = -runDepthPID(float(parseSensorVals('depth')))
             elif choice == 2:
-                power = runYawPID(float(keep[-1]))
+                print('Running Yaw')
+                power = runYawPID(float(parseSensorVals('gyro_x')))
             elif choice == 3:
-                power = runRowPID(float(keep[-1]))
+                print('Running Row')
+                power = runRowPID(float(parseSensorVals('gyro_y')))
             elif choice == 4:
-                power = -runPitchPID(float(keep[-1]))
+                print('Running Pitch')
+                power = -runPitchPID(float(parseSensorVals('gyro_z')))
 
             if(power > 1.0):
                 power = 0.3
