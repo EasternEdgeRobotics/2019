@@ -40,13 +40,16 @@
                 fill: false
             }).run(function(){
                 var g = this;
-                this.interval = setInterval(function () {
-                    var n = Math.random() * 3 + 20;
-                    g.addData(n, "", 0);
-                    $(".data-indicator[value-type='ping']").html(Math.floor(n));
-                }, 50);
+
+                var socket = io.connect("/bot/telemetry");
+                socket.on("data", function(data){
+                    console.log(data.raspi1.ping);
+                    g.addData(data.raspi1.ping, "", 0);
+                    $(".data-indicator[value-type='ping']").html(data.raspi1.ping);
+                });
+
             }).delete(function(){
-                clearInterval(this.interval);
+                //clearInterval(this.interval);
             });
 
             graphs.push(g);
