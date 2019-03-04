@@ -18,23 +18,45 @@
         });
 
         $dash.pageClose(function () {
-            intervals.forEach(function (inte) {
+            /*intervals.forEach(function (inte) {
                 clearInterval(inte);
+            });*/
+            graphs.forEach(function(graph){
+                graph.delete();
             });
         });
 
         function initGraphs() {
-            //graphs.push(new Graph("pi1Ping", "piGraph2"));
-            //graphs.push(new Graph("pi1Ping", "piGraph3"));
-            graphs.push(new Graph("pi1Ping", "piGraph1"));
+            //graphs.push(new Graph("pi1Ping", "piGraph1"));
+            var d = [];
+            var l = [];
+            for(var i = 0 ; i < 100 ; i++){d.push(null);l.push("");}
+            var g = new Graph("pi1Ping", "piGraph1", "#ffffff", 100, l).line({
+                label: "",
+                data: d,
+                pointRadius: 0,
+                borderColor: "#ffffff",
+                borderWidth: 5,
+                fill: false
+            }).run(function(){
+                var g = this;
+                this.interval = setInterval(function () {
+                    var n = Math.random() * 3 + 20;
+                    g.addData(n, "", 0);
+                    $(".data-indicator[value-type='ping']").html(Math.floor(n));
+                }, 50);
+            }).delete(function(){
+                clearInterval(this.interval);
+            });
 
-            intervals.push(setInterval(function () {
+            graphs.push(g);
+            /*intervals.push(setInterval(function () {
                 graphs.forEach(function (g) {
                     var n = Math.random() * 3 + 20;
                     g.addData(n);
                     $(".data-indicator[value-type='ping']").html(Math.floor(n));
                 });
-            }, 50));
+            }, 50));*/
         }
     </script>
 
@@ -43,10 +65,12 @@
         <div class="grid-item col-lg-4 col-md-6">
             <div class="item-content panel panel-graph no-padding">
                 <canvas class="graph graph-primary" id="piGraph1" data-type='ping' data-ip="192.168.88.4"></canvas>
-                <h1>Raspberry Pi 1</h1>
-                <p>192.168.88.4</p>
-                <h1 value-type='ping' class="data-indicator">20</h1>
-                <h1 value-type="temp" class="data-indicator">32</h1>
+                <div class="p-3">
+                    <h1>Raspberry Pi 1</h1>
+                    <p>192.168.88.4</p>
+                    <h1 value-type='ping' class="data-indicator">20</h1>
+                    <h1 value-type="temp" class="data-indicator">32</h1>
+                </div>
             </div>
         </div>
     </div>

@@ -1,19 +1,18 @@
-var GRAPH_MAX_DATA = 200;
-
 class Graph{
-    constructor(id, canvasID, color = "#ffffff"){
-        var numOfLines = 1;
+    constructor(id, canvasID, color = "#ffffff", max = 100, labels = []){
         let ctx = document.getElementById(canvasID).getContext("2d");
-        
+
         this.color = color;
         this._id = id;
         this._data = [];
+        this._max = max;
+        this._function = function(){};
         this._chart = new Chart(ctx,
         {
             type: 'line',
             data: {
-                labels: [],
-                datasets:[]
+                labels: labels,
+                datasets: []
             },
             options:{
                 scales: {
@@ -40,7 +39,9 @@ class Graph{
                         }
                     }]
                 },
-                animation: false,
+                animation:{
+                    duration: 0
+                },
                 // responsive: true,
                 maintainAspectRatio: false,
                 legend: {
@@ -53,7 +54,7 @@ class Graph{
             
         });
 
-        for(let i = 0 ; i < numOfLines ; i++){
+        /*for(let i = 0 ; i < numOfLines ; i++){
             this._chart.data.datasets.push({
                 label: "",
                 data: [],
@@ -63,21 +64,52 @@ class Graph{
                 fill: false
             });
             this._chart.update();
-        }
+        }*/
     }
 
     get id(){
         return this._id;
     }
 
-    addData(num){
-        if(this._chart.data.datasets[0].data.length >= GRAPH_MAX_DATA){
-            this._chart.data.datasets[0].data.shift();
+    line(lineObj){
+        this._chart.data.datasets.push(lineObj);
+
+        this._chart.update();
+        return this;
+    }
+
+    maxPoints(max){
+        if(max == undefined)
+            return this._max;
+        this._max = max;
+        return this;
+    }
+
+    run(f){
+        if(f instanceof Function){
+            this._function = f;
+            this._function();
+        }
+        return this;
+    }
+
+    delete(f){
+        if(f instanceof Function){
+            this._delete = f;
+        }else if(f == undefined && this._delete instanceof Function){
+            this._delete();
+        }
+        return this;
+    }
+
+    addData(num, label, graph){
+        if(this._chart.data.datasets[graph].data.length >= this._max){
+            this._chart.data.datasets[graph].data.shift();
             this._chart.data.labels.shift();
         }
-        this._chart.data.datasets[0].data.push(num);
-        this._chart.data.labels.push("");
-        
+        this._chart.data.datasets[graph].data.push(num);
+        this._chart.data.labels.push(label);
+
         this._chart.update();
     }
 }
