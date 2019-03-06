@@ -59,5 +59,5 @@ def emitTelemetryData():
 
 @bot_api.route("/bot/test")
 def test():
-    updateTelemetryData({"raspi1": {"ping": random.randint(20,40)}, "pressure": random.randint(80, 120)})
+    updateTelemetryData({"raspi1": {"ping": random.randint(20,40), "temp": random.randint(15, 20)}, "pressure": random.randint(80, 120)})
     return ""

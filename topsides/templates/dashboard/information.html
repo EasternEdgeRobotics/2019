@@ -37,11 +37,20 @@
                 borderColor: "#ffffff",
                 borderWidth: 5,
                 fill: false
+            }).line({
+                label: "Temp",
+                data: [],
+                pointRadius: 0,
+                borderColor: '#ff0000',
+                borderWidth: 5,
+                fill: false
             }).run(function(){
                 var g = this;
                 socket.on("data", function(data){                    
                     g.addData(data.raspi1.ping, "", 0);
+                    g.addData(data.raspi1.temp, "", 1);
                     $(".data-indicator[value-type='ping']").html(data.raspi1.ping);
+                    $(".data-indicator[value-type='temp']").html(data.raspi1.temp);
                 });
             }).delete(function(){
                 //clearInterval(this.interval);

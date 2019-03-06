@@ -23,11 +23,12 @@ class Graph{
                         ticks: {
                             beginAtZero:true,
                             min: 0,
-                            fontColor: color
+                            fontColor: color,
+                            fontSize: 18
                         },
                         gridLines: {
                             //display: false,
-                            color: color,
+                            color: color
                         },
                         scaleLabel:{
                             display: false
@@ -52,6 +53,14 @@ class Graph{
                 },
                 tooltips: {
                     enabled: false
+                },
+                layout:{
+                    padding:{
+                        top: 25,
+                        right: 0,
+                        left: 0,
+                        bottom: 0
+                    }
                 }
             }
             
