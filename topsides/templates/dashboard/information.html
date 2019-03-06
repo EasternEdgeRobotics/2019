@@ -3,6 +3,9 @@
     <script>
         var graphs = [];
         var intervals = [];
+        var socket = io.connect("/bot/telemetry");
+
+        //setInterval(function(){runPythonGET("/bot/test", null, function(){})}, 20);
 
         $dash.pageLoad(function () {
             initGraphs();
@@ -18,48 +21,48 @@
         });
 
         $dash.pageClose(function () {
-            /*intervals.forEach(function (inte) {
-                clearInterval(inte);
-            });*/
-            graphs.forEach(function(graph){
-                graph.delete();
+            graphs.forEach(function(g){
+                g.delete();
             });
         });
 
         function initGraphs() {
-            //graphs.push(new Graph("pi1Ping", "piGraph1"));
-            var d = [];
-            var l = [];
-            for(var i = 0 ; i < 100 ; i++){d.push(null);l.push("");}
-            var g = new Graph("pi1Ping", "piGraph1", "#ffffff", 100, l).line({
-                label: "",
-                data: d,
+            //setting initial blank data
+
+
+            graphPi1Ping = new Graph("piGraph1", "#ffffff", 100).line({
+                label: "Ping",
+                data: [],
                 pointRadius: 0,
                 borderColor: "#ffffff",
                 borderWidth: 5,
                 fill: false
             }).run(function(){
                 var g = this;
-
-                var socket = io.connect("/bot/telemetry");
-                socket.on("data", function(data){
-                    console.log(data.raspi1.ping);
+                socket.on("data", function(data){                    
                     g.addData(data.raspi1.ping, "", 0);
                     $(".data-indicator[value-type='ping']").html(data.raspi1.ping);
                 });
-
             }).delete(function(){
                 //clearInterval(this.interval);
             });
 
-            graphs.push(g);
-            /*intervals.push(setInterval(function () {
-                graphs.forEach(function (g) {
-                    var n = Math.random() * 3 + 20;
-                    g.addData(n);
-                    $(".data-indicator[value-type='ping']").html(Math.floor(n));
+            graphPressure = new Graph("depth", "#ffffff", 100).line({
+                label: "Pressure",
+                data: [],
+                pointRadius: 0,
+                borderColor: "#ffffff",
+                borderWidth: 5,
+                fill: false
+            }).run(function(){
+                var a = this;
+                socket.on("data", function(data){
+                    a.addData(data.pressure, "", 0);
+                    $(".panel.pressure .data-indicator[value-type='kPa']").html(data.pressure);
                 });
-            }, 50));*/
+            }).delete(function(){
+                
+            });
         }
     </script>
 
@@ -73,6 +76,15 @@
                     <p>192.168.88.4</p>
                     <h1 value-type='ping' class="data-indicator">20</h1>
                     <h1 value-type="temp" class="data-indicator">32</h1>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item col-lg-4 col-md-6">
+            <div class="item-content panel pressure panel-graph no-padding">
+                <canvas class="graph graph-primary" id="depth"></canvas>
+                <div class="p-3">
+                    <h1>Depth</h1>
+                    <h1 value-type="kPa" class="data-indicator">N/A</h1>
                 </div>
             </div>
         </div>

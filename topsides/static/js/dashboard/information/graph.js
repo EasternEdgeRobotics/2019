@@ -1,9 +1,12 @@
 class Graph{
-    constructor(id, canvasID, color = "#ffffff", max = 100, labels = []){
+    constructor(canvasID, color = "#ffffff", max = 100, labels = []){
         let ctx = document.getElementById(canvasID).getContext("2d");
 
+        if(labels.length <= 0)
+            for(var i = 0 ; i < 100 ; i++)labels.push("");
+
+
         this.color = color;
-        this._id = id;
         this._data = [];
         this._max = max;
         this._function = function(){};
@@ -19,7 +22,7 @@ class Graph{
                     yAxes: [{
                         ticks: {
                             beginAtZero:true,
-                            max: 50,
+                            min: 0,
                             fontColor: color
                         },
                         gridLines: {
@@ -53,25 +56,14 @@ class Graph{
             }
             
         });
-
-        /*for(let i = 0 ; i < numOfLines ; i++){
-            this._chart.data.datasets.push({
-                label: "",
-                data: [],
-                pointRadius: 0,
-                borderColor: this.color,
-                borderWidth: 5,
-                fill: false
-            });
-            this._chart.update();
-        }*/
-    }
-
-    get id(){
-        return this._id;
     }
 
     line(lineObj){
+        if(lineObj.data == null)
+            lineObj.data = [];
+        if(lineObj.data.length <= 0)
+            for(var i = 0 ; i < 100 ; i++)lineObj.data.push(null);
+
         this._chart.data.datasets.push(lineObj);
 
         this._chart.update();
