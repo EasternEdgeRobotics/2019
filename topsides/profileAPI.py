@@ -1,6 +1,7 @@
 """Loads and deletes control profiles."""
 from flask import Blueprint, render_template, request
 import json
+from adminAPI import protected
 
 profile_api = Blueprint('profile_api', __name__)
 
@@ -37,6 +38,7 @@ def getProfiles():
 
 
 @profile_api.route("/deleteProfile", methods=["POST"])
+@protected
 def deleteProfile():
     """
     Deletes the requested profile from memory.

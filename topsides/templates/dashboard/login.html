@@ -1,0 +1,52 @@
+<script>
+
+    var KEY = "";
+
+    var urlParms = new URLSearchParams(window.location.search);
+    if(urlParms.has("key")){
+        runPythonGET("adminpage?key=" + urlParms.get("key"), null, function(data2){
+            if(data2.status == 200){
+                $("#page").html(data2.responseText);
+                $("#login").html("");
+                $("#login").css("display", "none");
+            }
+        });
+    }
+
+    function tryPassword(pass){
+        runPythonPOST("authAdminLogin?pass=" + pass, null, function(data){
+            if(data.status == 200){
+                window.location = '/'
+            }
+        });
+    }
+
+    function trypasswordbutton_click(){
+        tryPassword($("#pass").val());
+    }
+</script>
+
+
+<style>
+    #login{
+        max-width: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        min-height: 200px;
+    }
+
+    .page-login-container{
+        height: 90%;
+    }
+    
+</style>
+
+
+<div class="col-12 d-flex justify-content-center align-items-center page-login-container">
+    <div class="panel" id="login">
+        <input id="pass" type="text" placeholder="password" style="margin-bottom: 20px;"/>
+        <button class="btn btn-primary" onclick="trypasswordbutton_click();">Submit</button>
+    </div>
+</div>

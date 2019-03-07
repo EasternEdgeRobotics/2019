@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, jsonify, request
 import json
 import profileAPI
+import adminAPI
 
 dashboard_api = Blueprint("dashboard_api", __name__)
 
@@ -32,12 +33,13 @@ def getMenuJSON():
     except Exception as e:
         return "Error loading JSON", 500
 
-
 @dashboard_api.route("/dashboard/editProfile")
+@adminAPI.protected
 def editProfileMenu():
     profile = profileAPI.getProfileByID(request.args.get("id"))
     return render_template("dashboard/dashboard-profiles-edit.html", profile=profile)
 
 @dashboard_api.route("/dashboard/ext")
+@adminAPI.protected
 def loadExternalPgae():
     return render_template("dashboard/dashboard-external.html") + render_template(request.args.get("name"))

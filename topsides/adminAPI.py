@@ -1,5 +1,5 @@
 """Admin API."""
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, make_response
 import random
 import string
 import datetime
@@ -12,6 +12,23 @@ topsidesComms = None
 
 activeKey = None
 activeKeyExpiry = None
+
+
+def protected(func):
+    global activeKey, activeKeyExpiry
+
+    def wrap(*args, **kwargs):
+        if("eer_auth_key" in request.cookies):
+            if(request.cookies.get("eer_auth_key") == activeKey):
+                if(datetime.datetime.now() <= activeKeyExpiry):
+                    return func()
+        return loadNotAuthorized()
+    wrap.__name__ = func.__name__
+    return wrap
+
+def loadNotAuthorized():
+    return "<p>Not Authorized! Log in to access!</p>", 401
+        
 
 
 def adminAPI(comms):
@@ -32,8 +49,10 @@ def attemptLogin():
     if(password == GLOBALS["admin_password"]):
         key = "".join(random.choice(string.ascii_lowercase+string.digits) for i in range(0,50))
         activeKey = key
+        res = make_response("authorized")
+        res.set_cookie("eer_auth_key", key)
         activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(minutes=10)
-        return key
+        return res
     else:
         return "Invalid Password!", 401
 
