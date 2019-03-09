@@ -12,7 +12,7 @@ from detectCracks import detectCracks
 class VideoStream:
     def __init__(self, source):
         self.video = cv2.VideoCapture(source)
-        # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+        #self.video = cv2.VideoCapture('udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
         
         dir = self.program_start()
 
@@ -73,7 +73,7 @@ class VideoStream:
             frame = cv2.resize(frame, (frame_width//2,frame_height//2))
             if not ret:
                 self.video = cv2.VideoCapture(source)
-                # self.video = cv2.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
+                #self.video = cv2.VideoCapture('udpsrc port=5002 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
                 continue
 
             edges, mask, mask_ne, mask_blue, mask_black = self.preprocess(frame)
