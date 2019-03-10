@@ -2,39 +2,56 @@
 from flask import Blueprint, render_template, request, make_response
 import random
 import string
+import json
 import datetime
-from TopsidesGlobals import GLOBALS, RASPI_GLOBALS
-import TopsidesGlobals
+from functools import update_wrapper
 
 admin_api = Blueprint("admin_api", __name__)
 
 topsidesComms = None
 
-activeKey = None
-activeKeyExpiry = None
+#{"key": {expire, permissions}}
+activeKeys = {}
+accounts = {}
 
-
-def protected(func):
-    global activeKey, activeKeyExpiry
-
-    def wrap(*args, **kwargs):
-        if("eer_auth_key" in request.cookies):
-            if(request.cookies.get("eer_auth_key") == activeKey):
-                if(datetime.datetime.now() <= activeKeyExpiry):
-                    return func()
-        return loadNotAuthorized()
-    wrap.__name__ = func.__name__
-    return wrap
-
-def loadNotAuthorized():
-    return "<p>Not Authorized! Log in to access!</p>", 401
-        
 
 
 def adminAPI(comms):
-    global topsidesComms
+    global topsidesComms, accounts
     topsidesComms = comms
+
+    try:
+        with open("json/accounts.json") as file:
+            accounts = json.load(file)
+    except Exception as ex:
+        print("Error loading Accounts JSON:  " + str(ex))
+
     return admin_api
+
+def protected(permissions=["ADMIN"]):
+    def decorator(func):
+        global activeKeys
+        def wrap(*args, **kwargs):
+            name = func.__name__
+            if("eer_auth_key" in request.cookies):
+                key = request.cookies.get("eer_auth_key")
+                if(key in activeKeys):
+                    print(activeKeys[key])
+                    if(datetime.datetime.now() <= activeKeys[key]['expire']):
+                        for perm in permissions:
+                            if(perm not in activeKeys[key]['permissions']):
+                                return loadNotAuthorized()
+                        return func()
+                    del activeKeys[key]
+            return loadAdminLoginPage()
+        wrap.__name__ = func.__name__
+        return wrap
+    return decorator
+
+def loadNotAuthorized():
+    return "<p>Not Authorized! Log in to access!</p>", 401
+    #return loadAdminLoginPage()
+
 
 
 @admin_api.route("/adminlogin")
@@ -44,17 +61,20 @@ def loadAdminLoginPage():
 
 @admin_api.route("/authAdminLogin", methods=["POST", "GET"])
 def attemptLogin():
-    global activeKey, activeKeyExpiry
+    global activeKeys, accounts
     password = request.args.get("pass")
-    if(password == GLOBALS["admin_password"]):
-        key = "".join(random.choice(string.ascii_lowercase+string.digits) for i in range(0,50))
-        activeKey = key
-        res = make_response("authorized")
-        res.set_cookie("eer_auth_key", key)
-        activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(minutes=10)
-        return res
-    else:
-        return "Invalid Password!", 401
+    username = request.args.get("user")
+    if(username in accounts):
+        if(password == accounts[username]["password"]):
+            key = "".join(random.choice(string.ascii_lowercase+string.digits) for i in range(0,50))
+            activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(minutes=1)
+            activeKeys[key] = {"expire": activeKeyExpiry, "permissions": accounts[username]["permissions"]}
+
+            res = make_response("authorized")
+            res.set_cookie("eer_auth_key", key)
+            print(activeKeys)
+            return res
+    return "Invalid Username or Password!", 401
 
 
 @admin_api.route("/adminpage", methods=["GET"])
@@ -74,7 +94,7 @@ def getAdminPage():
         print(e)    
     return "Unauthorized", 401
 
-
+"""
 @admin_api.route("/updateTopsidesGlobal", methods=["POST"])
 def updateTopsides():
     data = request.json
@@ -94,3 +114,4 @@ def updateRaspi():
     except(Exception):
         return "Error Saving Raspi.json!", 500
 
+"""

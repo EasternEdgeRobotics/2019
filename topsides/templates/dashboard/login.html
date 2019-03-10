@@ -14,7 +14,7 @@
     }
 
     function tryPassword(pass){
-        runPythonPOST("authAdminLogin?pass=" + pass, null, function(data){
+        runPythonPOST("authAdminLogin?user=admin&pass=" + pass, null, function(data){
             if(data.status == 200){
                 window.location = '/'
             }
