@@ -19,11 +19,6 @@
             "name": "Themes",
             "file_name": "dashboard/themes.html",
             "icon_url": "static/res/icons/baseline-insert_photo-24px.svg"
-        },
-        {
-            "name": "Login",
-            "file_name": "dashboard/login.html",
-            "icon_url": "static/res/icons/baseline-dns-24px.svg"
         }
     ],
 

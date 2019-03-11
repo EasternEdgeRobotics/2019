@@ -36,7 +36,6 @@ def protected(permissions=["ADMIN"]):
             if("eer_auth_key" in request.cookies):
                 key = request.cookies.get("eer_auth_key")
                 if(key in activeKeys):
-                    print(activeKeys[key])
                     if(datetime.datetime.now() <= activeKeys[key]['expire']):
                         for perm in permissions:
                             if(perm not in activeKeys[key]['permissions']):
@@ -53,13 +52,11 @@ def loadNotAuthorized():
     #return loadAdminLoginPage()
 
 
-
-@admin_api.route("/adminlogin")
 def loadAdminLoginPage():
-    return render_template("adminLogin.html")
+    return render_template("dashboard/login.html")
 
 
-@admin_api.route("/authAdminLogin", methods=["POST", "GET"])
+@admin_api.route("/auth/login", methods=["POST", "GET"])
 def attemptLogin():
     global activeKeys, accounts
     password = request.args.get("pass")
@@ -67,16 +64,38 @@ def attemptLogin():
     if(username in accounts):
         if(password == accounts[username]["password"]):
             key = "".join(random.choice(string.ascii_lowercase+string.digits) for i in range(0,50))
-            activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(minutes=1)
-            activeKeys[key] = {"expire": activeKeyExpiry, "permissions": accounts[username]["permissions"]}
+            activeKeyExpiry = datetime.datetime.now() + datetime.timedelta(hours=5)
+            activeKeys[key] = {"expire": activeKeyExpiry, "permissions": accounts[username]["permissions"], "username": username}
 
             res = make_response("authorized")
             res.set_cookie("eer_auth_key", key)
-            print(activeKeys)
             return res
     return "Invalid Username or Password!", 401
 
+@admin_api.route("/auth/check", methods=["GET"])
+def isAuth():
+    global activeKeys
+    key = request.cookies.get("eer_auth_key")
+    if(key in activeKeys):
+        if(datetime.datetime.now() <= activeKeys[key]['expire']):
+            return activeKeys[key]["username"]
+        else:
+            del activeKeys[key]
+    return "No Auth", 401
 
+@admin_api.route("/auth/logout", methods=["POST", "GET"])
+def logout():
+    global activeKeys
+    key = request.cookies.get("eer_auth_key")
+    if(key in activeKeys):
+        del activeKeys[key]
+
+    res = make_response("logged out")
+    res.set_cookie("eer_auth_key", "")
+    return res
+
+
+"""
 @admin_api.route("/adminpage", methods=["GET"])
 def getAdminPage():
     global activeKey, activeKeyExpiry
@@ -93,7 +112,7 @@ def getAdminPage():
     except Exception as e:
         print(e)    
     return "Unauthorized", 401
-
+"""
 """
 @admin_api.route("/updateTopsidesGlobal", methods=["POST"])
 def updateTopsides():
