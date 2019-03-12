@@ -1,37 +1,26 @@
 <script>
 
-    var KEY = "";
-
-    var urlParms = new URLSearchParams(window.location.search);
-    if(urlParms.has("key")){
-        runPythonGET("adminpage?key=" + urlParms.get("key"), null, function(data2){
-            if(data2.status == 200){
-                $("#page").html(data2.responseText);
-                $("#login").html("");
-                $("#login").css("display", "none");
-            }
+    $(document).ready(function(){
+        $("form").submit(function(){
+            $.ajax({
+                type: 'GET',
+                url: "/auth/login",
+                data: {
+                    user: $("#user").val(),
+                    pass: $("#pass").val()
+                },
+                success: function(){
+                    if(location.href.indexOf("login") != -1)
+                        location.href = "/";
+                    else
+                        location.href = location.href;
+                },
+                error: function(){
+                    $("#incorrect").toggleClass("visible", true);
+                }
+            });
+            return false;
         });
-    }
-
-    $("form").submit(function(){
-        $.ajax({
-            type: 'GET',
-            url: "/auth/login",
-            data: {
-                user: $("#user").val(),
-                pass: $("#pass").val()
-            },
-            success: function(){
-                if(location.href.indexOf("login.html") != -1)
-                    location.href = "/";
-                else
-                    location.href = location.href;
-            },
-            error: function(){
-                $("#incorrect").toggleClass("visible", true);
-            }
-        });
-        return false;
     });
 </script>
 

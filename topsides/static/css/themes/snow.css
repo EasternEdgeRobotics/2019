@@ -127,7 +127,7 @@ body[theme='@theme'] .snackbar[type='danger']{
                                                         
 */
 
-body[theme='@theme'] #pageBody{
+body[theme='@theme'] .page-body{
     background-color: #f2f2f2;
 }
 

@@ -16,7 +16,11 @@ body[theme='@theme'] h5{}
 
 body[theme='@theme'] h6{}
 
+
+
 body[theme='@theme'] input[type="text"]{}
+
+body[theme='@theme'] input[type="password"]{}
 
 body[theme='@theme'] select{}
 
@@ -88,7 +92,7 @@ body[theme='@theme'] .snackbar[type='danger']{}
                                                         
 */
 
-body[theme='@theme'] #pageBody{}
+body[theme='@theme'] .page-body{}
 
 body[theme='@theme'] .sidebar{}
 

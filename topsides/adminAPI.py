@@ -1,5 +1,5 @@
 """Admin API."""
-from flask import Blueprint, render_template, request, make_response
+from flask import Blueprint, render_template, request, make_response, redirect
 import random
 import string
 import json
@@ -28,7 +28,7 @@ def adminAPI(comms):
 
     return admin_api
 
-def protected(permissions=["ADMIN"]):
+def protected(permissions=["ADMIN"], redirectB=False):
     def decorator(func):
         global activeKeys
         def wrap(*args, **kwargs):
@@ -42,6 +42,8 @@ def protected(permissions=["ADMIN"]):
                                 return loadNotAuthorized()
                         return func()
                     del activeKeys[key]
+            if(redirectB == True):
+                return redirect("/?page=login", code=302)
             return loadAdminLoginPage()
         wrap.__name__ = func.__name__
         return wrap
@@ -51,7 +53,9 @@ def loadNotAuthorized():
     return "<p>Not Authorized! Log in to access!</p>", 401
     #return loadAdminLoginPage()
 
-
+"""
+loads the page for logining into admin
+"""
 def loadAdminLoginPage():
     return render_template("dashboard/login.html")
 

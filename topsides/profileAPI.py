@@ -13,16 +13,15 @@ def afterRequest(response):
     response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
     return response
 
-
-@profile_api.route("/editprofile")
+@protected(permissions=["PROFILE"])
 def editProfilePage():
     """
     Return page for control profile edit.
 
     :return: rendered controlProfileEdit.html web page
     """
-    profiles = loadProfiles()
-    return render_template("controlProfileEdit.html", profiles=profiles)
+    profile = getProfileByID(request.args.get("id"))
+    return render_template("dashboard/dashboard-profiles-edit.html", profile=profile)
 
 
 @profile_api.route("/getProfiles", methods=["GET"])
@@ -38,7 +37,7 @@ def getProfiles():
 
 
 @profile_api.route("/deleteProfile", methods=["POST"])
-@protected
+@protected(permissions=["PROFILE"])
 def deleteProfile():
     """
     Deletes the requested profile from memory.
