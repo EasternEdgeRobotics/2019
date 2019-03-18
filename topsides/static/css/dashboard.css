@@ -25,6 +25,8 @@ html {
 
 #nav {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .btn-nav {

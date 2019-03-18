@@ -3,6 +3,9 @@
     <script>
         var graphs = [];
         var intervals = [];
+        var socket = io.connect("/bot/telemetry");
+
+        //setInterval(function(){runPythonGET("/bot/test", null, function(){})}, 20);
 
         $dash.pageLoad(function () {
             initGraphs();
@@ -18,23 +21,57 @@
         });
 
         $dash.pageClose(function () {
-            intervals.forEach(function (inte) {
-                clearInterval(inte);
+            graphs.forEach(function(g){
+                g.delete();
             });
         });
 
         function initGraphs() {
-            //graphs.push(new Graph("pi1Ping", "piGraph2"));
-            //graphs.push(new Graph("pi1Ping", "piGraph3"));
-            graphs.push(new Graph("pi1Ping", "piGraph1"));
+            //setting initial blank data
 
-            intervals.push(setInterval(function () {
-                graphs.forEach(function (g) {
-                    var n = Math.random() * 3 + 20;
-                    g.addData(n);
-                    $(".data-indicator[value-type='ping']").html(Math.floor(n));
+
+            graphPi1Ping = new Graph("piGraph1", "#ffffff", 100).line({
+                label: "Ping",
+                data: [],
+                pointRadius: 0,
+                borderColor: "#ffffff",
+                borderWidth: 5,
+                fill: false
+            }).line({
+                label: "Temp",
+                data: [],
+                pointRadius: 0,
+                borderColor: '#ff0000',
+                borderWidth: 5,
+                fill: false
+            }).run(function(){
+                var g = this;
+                socket.on("data", function(data){                    
+                    g.addData(data.raspi1.ping, "", 0);
+                    g.addData(data.raspi1.temp, "", 1);
+                    $(".data-indicator[value-type='ping']").html(data.raspi1.ping);
+                    $(".data-indicator[value-type='temp']").html(data.raspi1.temp);
                 });
-            }, 50));
+            }).delete(function(){
+                //clearInterval(this.interval);
+            });
+
+            graphPressure = new Graph("depth", "#ffffff", 100).line({
+                label: "Pressure",
+                data: [],
+                pointRadius: 0,
+                borderColor: "#ffffff",
+                borderWidth: 5,
+                fill: false
+            }).run(function(){
+                var a = this;
+                socket.on("data", function(data){
+                    a.addData(data.pressure, "", 0);
+                    $(".panel.pressure .data-indicator[value-type='kPa']").html(data.pressure);
+                });
+            }).delete(function(){
+                
+            });
         }
     </script>
 
@@ -43,10 +80,21 @@
         <div class="grid-item col-lg-4 col-md-6">
             <div class="item-content panel panel-graph no-padding">
                 <canvas class="graph graph-primary" id="piGraph1" data-type='ping' data-ip="192.168.88.4"></canvas>
-                <h1>Raspberry Pi 1</h1>
-                <p>192.168.88.4</p>
-                <h1 value-type='ping' class="data-indicator">20</h1>
-                <h1 value-type="temp" class="data-indicator">32</h1>
+                <div class="p-3">
+                    <h1>Raspberry Pi 1</h1>
+                    <p>192.168.88.4</p>
+                    <h1 value-type='ping' class="data-indicator">20</h1>
+                    <h1 value-type="temp" class="data-indicator">32</h1>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item col-lg-4 col-md-6">
+            <div class="item-content panel pressure panel-graph no-padding">
+                <canvas class="graph graph-primary" id="depth"></canvas>
+                <div class="p-3">
+                    <h1>Depth</h1>
+                    <h1 value-type="kPa" class="data-indicator">N/A</h1>
+                </div>
             </div>
         </div>
     </div>
