@@ -3,6 +3,22 @@ from flask import Blueprint, render_template, jsonify, request
 
 gui_api = Blueprint("gui_api", __name__)
 
+topsidesComms = None
+
+
+def guiAPI(comms):
+    global topsidesComms
+    topsidesComms = comms
+    return gui_api
+
+
+@gui_api.after_request
+def afterRequest(response):
+    response.headers.add('Access-Control-Allow-Origin', "*")
+    response.headers.add('Access-Control-Allow-Headers', "Content-Type,Authorization")
+    response.headers.add('Access-Control-Allow-Methods', "GET,POST,PUT,DELETE,OPTIONS")
+    return response
+
 
 @gui_api.route("/gui")
 def returnGuiPage():
@@ -29,3 +45,19 @@ def getSliderValues():
     print(data['slider'])
     print(data['value'])
     return jsonify("")
+
+
+@gui_api.route('/ledtoggle', methods=['POST'])
+def getLedValues():
+    """
+    Turns the led lights on or off.
+
+    Input: {value: int}
+
+    POST method
+    """
+    data = request.json
+    neededValue = data['value']
+    # TODO: Change to a file on the raspberry pi to toggle the lights
+    topsidesComms.putMessage("led.py " + " " + str(neededValue))
+    return "good"

@@ -8,7 +8,7 @@ from controlAPI import controlAPI
 import notificationAPI
 import botAPI
 from devAPI import devAPI
-from guiAPI import gui_api
+from guiAPI import guiAPI
 import dashboardAPI
 import themeAPI
 from adminAPI import adminAPI
@@ -31,7 +31,7 @@ app.register_blueprint(controlAPI(topsidesComms))
 app.register_blueprint(notificationAPI.notificationAPI())
 app.register_blueprint(devAPI(topsidesComms))
 app.register_blueprint(adminAPI(topsidesComms))
-app.register_blueprint(gui_api)
+app.register_blueprint(guiAPI(topsidesComms))
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
 app.register_blueprint(themeAPI.themeAPI())

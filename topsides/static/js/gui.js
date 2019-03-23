@@ -16,6 +16,18 @@ function getNewSliderValues(inputAttribute, inputValue) {
 }
 
 /**
+*  Toggles the two LEDs on and off.
+* 
+*  @param {int} valueLed
+*   on (100) or off (0) for led
+*/
+function toggleLed(valueLed) {
+ runPythonPOST("ledtoggle", JSON.stringify({ value: valueLed }), function() {
+ });
+}
+
+
+/**
  *  Gets the values from the preset button for the server and front end display.
  *
  *  @param {string} inputAttribute

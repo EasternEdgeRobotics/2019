@@ -60,6 +60,16 @@
         getPresetValue(inputAttribute, inputValue);
       });
 
+      // Handle LED toggle
+      var ledButtonOn = $('#ledon');
+      ledButtonOn.click(function() {
+        toggleLed(100);
+      });
+      var ledButtonOff = $('#ledoff');
+      ledButtonOff.click(function() {
+        toggleLed(0);
+      });
+
       // Handle present button slider enter in input
       $('#presetValue').keypress(function (e) {
         var key = e.which;
@@ -140,6 +150,14 @@
           <div class="card-body">
             <select class="profile-select"></select>
             <button type="button" class="btn btn-primary" onclick="controlHandler.setGamepads();">Map Gamepads</button>
+          </div>
+        </div>
+
+        <div class="card mr-5 my-3 text-center">
+          <h5 class="card-header">LED Toggle</h5>
+          <div class="card-body">
+            <button type="button" class="btn btn-primary" id="ledon">On</button>
+            <button type="button" class="btn btn-primary" id="ledoff">Off</button>
           </div>
         </div>
       </div>
