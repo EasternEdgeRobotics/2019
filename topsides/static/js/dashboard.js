@@ -25,12 +25,12 @@ $(document).ready(function(){
     });
 
     runPythonGET("auth/check", null, function(data){
-        $.get("static/res/icons/baseline-dns-24px.svg", function(data1){
+        $.get("static/res/icons/baseline-account_circle-24px.svg", function(data1){
             var svg = $(data1).find("svg").attr("class", "nav-svg col-5 icon");
             if(data.status != 200){
                 var button = $("<div data-page='login' class='btn-nav row auth login' style='order:9999'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>Login</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
             }else{
-                var button = $("<div data-page='' class='btn-nav row auth logout' style='order:9999'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>Logout</p></div></div>").click(function(){runPythonGET("/auth/logout", null, function(){window.location = window.location;})}).appendTo("#nav");
+                var button = $("<div data-page='' class='btn-nav row auth logout' style='order:9999'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-3 icon'>" + svg.html() + "<svg><div class='text col-9 justify-content-center align-self-center'><p style='font-size:1.2em;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;' class='font-weight-bold text-captitalize'>" + data.responseText + "</p><p style='font-size:0.8em;'>LOGOUT</p></div></div>").click(function(){runPythonGET("/auth/logout", null, function(){window.location = window.location;})}).appendTo("#nav");
             }
         });
     });
