@@ -58,6 +58,5 @@ def getLedValues():
     """
     data = request.json
     neededValue = data['value']
-    # TODO: Change to a file on the raspberry pi to toggle the lights
-    topsidesComms.putMessage("led.py " + " " + str(neededValue))
-    return "good"
+    topsidesComms.putMessage("led.py " + str(neededValue))
+    return jsonify("")
