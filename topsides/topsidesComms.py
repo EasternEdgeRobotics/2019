@@ -65,8 +65,5 @@ t.start()
 if __name__ == "__main__":
     import time
     for x in range(0,100):
-        sendData('readSerialArd.py')
+        sendData(input())
         time.sleep(1);
-    for x in range(0,10):
-        print(received.get())
-    

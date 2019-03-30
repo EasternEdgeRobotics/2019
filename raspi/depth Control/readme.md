@@ -1,4 +1,0 @@
- - Things to do:
--Read pressure sensor values from topsides
--Setup Comms for readings from topsides to rov
--Write a PID contol loop for the readings

@@ -56,17 +56,16 @@ def sendDataB(inputData):
 keep = [0]
 
 # This function is constantly trying to receive data from the ROV
-def receiveData():
+def receiveData(flag):
     global s
     while True:
         outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
         if (outputData == "exit"):
             break
-        #print(outputData, ' sssssss')
-        keep.append(outputData)
-        #print(keep[-1])
-        #received.put(outputData)
+        received.put(outputData)
+        if flag.is_set():
+            break
 
 
 def putMessage(msg):
@@ -86,14 +85,14 @@ def chechFourthFirstQuad(angle_1, angle_2):
 depth = pid()
 pitch = pid()
 yaw = pid()
-row = pid()
+roll = pid()
 
 """ initialize the different PID components """
 
 def depth_PID_init():
-    depth.kP = 0.295 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
+    depth.kP = 1.25 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
     depth.kI = 0.099
-    depth.kD = 0.185
+    depth.kD = 0.285
     depth.integral = 0.0
 
 def yaw_PID_init():
@@ -102,16 +101,16 @@ def yaw_PID_init():
     yaw.kD = 0.005
     yaw.integral = 0.0
 
-def row_PID_init():
-    row.kP = 0.0099
-    row.kI = 0.000043
-    row.kD = 0.005
-    row.integral = 0.0
+def roll_PID_init():
+    roll.kP = 0.013
+    roll.kI = 0.09
+    roll.kD = 0.0057
+    roll.integral = 0.0
 
 def pitch_PID_init():
-    pitch.kP = 0.0099
-    pitch.kI = 0.000043
-    pitch.kD = 0.005
+    pitch.kP = 0.011
+    pitch.kI = 0.075
+    pitch.kD = 0.0399
     pitch.integral = 0.0
 
 """ Calculate the different power required for each component
@@ -127,7 +126,7 @@ def runDepthPID(cDepth):
 
     ## increase integral if the error does not zero out as power decreases
     if(abs(depth.error) < depth.intError):
-        depth.integral += 0.5
+        depth.integral += 0.03
     else:
         depth.integral = 0
 
@@ -136,6 +135,11 @@ def runDepthPID(cDepth):
     depth.last_error = depth.error
 
     power = (depth.error*depth.kP)+(depth.integral*depth.kI)+(depth.derivative*depth.kD)
+
+    if(power > 0.6):
+        power = 0.3
+    elif(power < -0.6):
+        power = -0.3
 
     print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
     return power;
@@ -171,39 +175,49 @@ def runYawPID(angle):
     return power
 
 
-def runRowPID(angle):
+def runRollPID(angle):
 
-    row_PID_init();
-    row.intError = 15
+    if(angle < -75):
+        angle = -75
+    elif(angle > 75):
+        angle = 75
 
-    if(chechFourthFirstQuad(angle, row.target)):
-        if(angle > 260):
-            row.error = (angle-360) - row.target
-        else:
-            row.error = angle + (360 - row.target)
+    roll_PID_init();
+    roll.intError = 15
+
+
+    roll.error = roll.target - angle
+
+    if(abs(roll.error) < roll.intError):
+        roll.integral += 0.05
     else:
-        row.error = row.target - abs(angle)
+        roll.integral = 0
 
-    if(abs(row.error) < row.intError):
-        row.integral += 0.03
-    else:
-        row.integral = 0
+    roll.integral = 0 if roll.error == 0 else roll.integral
+    roll.derivative = roll.error - roll.last_error
+    roll.last_error = roll.error
 
-    row.integral = 0 if row.error == 0 else row.integral
-    row.derivative = row.error - row.last_error
-    row.last_error = row.error
-
-    power = (row.error*row.kP) + (row.integral*row.kI) + (row.derivative*row.kD)
+    power = (roll.error*roll.kP) + (roll.integral*roll.kI) + (roll.derivative*roll.kD)
     if(angle > 180):
         power*=-1
-    print('Power = ',power, "Error = ",row.error, "Current Row = ",angle, "target = ", row.target)
+
+    if(power > 0.6):
+        power = 0.3
+    elif(power < -0.6):
+        power = -0.3
+
+    print('Power = ', power, " Error = ", roll.error, " Current Roll = ", angle, " Target Roll= ", roll.target)
     return power
 
 
 
 
-
 def runPitchPID(angle):
+
+    if(angle < -75):
+        angle = -75
+    elif(angle > 75):
+        angle = 75
 
     pitch_PID_init();
     pitch.intError = 15
@@ -220,116 +234,187 @@ def runPitchPID(angle):
     pitch.last_error = pitch.error
 
     power = (pitch.error*pitch.kP) + (pitch.integral*pitch.kI) + (pitch.derivative*pitch.kD)
-    if(angle > 180):
-        power*=-1
-    print('Power = ',power, "Error = ",pitch.error, "Current D = ",angle, "target = ", pitch.target)
+
+    if(power > 0.6):
+        power = 0.3
+    elif(power < -0.6):
+        power = -0.3
+
+    print('Power = ',power, "Error = ",pitch.error, "Current Pitch = ",angle, "target = ", pitch.target)
     return power;
 
+def getRollAngle():
+    decoded_bytes = received.get()
+    data = decoded_bytes.split(",")
+    return data[3]
 
+def getYawAngle():
+    decoded_bytes = received.get()
+    data = decoded_bytes.split(",")
+    return data[2]
+
+def getPitchAngle():
+    decoded_bytes = received.get()
+    data = decoded_bytes.split(",")
+    return data[4]
+
+def getDepth():
+    decoded_bytes = received.get()
+    data = decoded_bytes.split(",")
+    return data[0]
+
+#
+# if __name__ == "__main__":
+#
+#     run = False
+#     choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Roll : 3 \n Pitch : 4 \nPick One: "))
+#     thrusterData = {}
+#
+#     if choice == 1:
+#         depth.target = float(input("Input Target Depth: "))
+#     elif choice == 2:
+#         yaw.target = float(input("Input Target Yaw angle: "))
+#     elif choice == 3:
+#         roll.target = float(input("Input Target Roll angle: "))
+#     elif choice == 4:
+#         pitch.target = float(input("Input Target Pitch angle: "))
+#
+#     if (choice >= 1) and (choice <= 4):
+#         run = True
+#
+#     while run:
+#         sendDataB('readSerialArd.py')
+#         try:
+#
+#             power = 0.0
+#             sensorVals = parseSensorVals()
+#
+#             if choice == 1:
+#                 print('Running Depth')
+#                 power = -runDepthPID(float(sensorVals['depth']))
+#             elif choice == 2:
+#                 print('Running Yaw')
+#                 power = runYawPID(float(sensorVals['gyro_x']))
+#             elif choice == 3:
+#                 print('Running Roll')
+#                 power = runRollPID(float(sensorVals['gyro_y']))
+#             elif choice == 4:
+#                 print('Running Pitch')
+#                 power = -runPitchPID(float(sensorVals['gyro_z']))
+#
+#             rollPitchControl = {
+#                 "fore-port-vert": -runPitchPID(float(sensorVals['gyro_z']))-runRollPID(float(sensorVals['gyro_y'])),
+#                 "fore-star-vert": -runPitchPID(float(sensorVals['gyro_z']))+runRollPID(float(sensorVals['gyro_y'])),
+#                 "aft-port-vert": runPitchPID(float(sensorVals['gyro_z']))-runRollPID(float(sensorVals['gyro_y'])),
+#                 "aft-star-vert": runPitchPID(float(sensorVals['gyro_z']))+runRollPID(float(sensorVals['gyro_y']))
+#             }
+#
+#             if(power > 1.0):
+#                 power = 0.3
+#             elif(power < -1.0):
+#                 power = -0.3
+#
+#             thrusterData = selectThrusters(choice, power)
+#
+#             for control in thrusterData:
+#                 val = thrusterData[control]
+#                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+#             print("good")
+#
+#         except(Exception):
+#             print(Exception)
+#             continue;
 
 # Setup threading for receiving data
-t = threading.Thread(target=receiveData)
+flag = threading.Event()
+t = threading.Thread(target=receiveData, args=(flag,))
 t.start()
 
 
-""" Select the different thruster vectors for each component """
-
-def selectThrusters(choice, power):
-    if choice == 1:
-        return {
-           "fore-port-vert": -power,
-           "fore-star-vert": -power,
-           "aft-port-vert": power,
-           "aft-star-vert": power
-           }
-    elif choice == 2:
-        return {
-           "fore-port-horz": power,
-           "fore-star-horz": power,
-           "aft-port-horz": power,
-           "aft-star-horz": -power
-           }
-
-    elif choice == 3:
-        return {
-            "fore-port-vert": power,
-            "fore-star-vert": -power,
-            "aft-port-vert": -power,
-            "aft-star-vert": power
-        }
-
-    elif choice == 4:
-        return {
-            "fore-port-vert": power,
-            "fore-star-vert": power,
-            "aft-port-vert": power,
-            "aft-star-vert": power
-        }
-
-
-def parseSensorVals():
-    vals = keep[-1].split(',')
-    return {
-        'depth' : vals[1],
-        'gyro_x' : vals[2],
-        'gyro_y' : vals[3],
-        'gyro_z' : vals[4],
-        'accel_x' : vals[5],
-        'accel_y' : vals[6],
-        'accel_z' : vals[7]
-    }
-
-
+## run pitch and roll together
 if __name__ == "__main__":
+    sendDataB('readSerialArd.py')
+    # roll.target = float(input("Target Roll: "))
+    # yaw.target = float(input("Target Yaw: "))
+    #pitch.target = float(input("Target Pitch: "))
+    try:
+        while True:
+            try:
+                cPitch = getPitchAngle()
+                cRoll = getRollAngle()
+                cDepth = float(getDepth())/100
+            except (IndexError,ValueError):
+                continue
 
-    run = False
-    choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Row : 3 \n Pitch : 4 \nPick One: "))
-    thrusterData = {}
+            # print(cAngle)
 
-    if choice == 1:
-        depth.target = float(input("Input Target Depth: "))
-    elif choice == 2:
-        yaw.target = float(input("Input Target Yaw angle: "))
-    elif choice == 3:
-        row.target = float(input("Input Target Row angle: "))
-    elif choice == 4:
-        pitch.target = float(input("Input Target Pitch angle: "))
+            #power = -runRollPID(float(cRoll))
 
-    if (choice >= 1) and (choice <= 4):
-        run = True
+            # power = runYawPID(float(cAngle))
 
-    while run:
-        sendDataB('readSerialArd.py')
-        try:
+            # power = -runPitchPID(float(cPitch))
 
-            power = 0.0
-            sensorVals = parseSensorVals()
+            # if(power > 0.6):
+            #     power = 0.3
+            # elif(power < -0.6):
+            #     power = -0.3
 
-            if choice == 1:
-                print('Running Depth')
-                power = -runDepthPID(float(sensorVals['depth']))
-            elif choice == 2:
-                print('Running Yaw')
-                power = runYawPID(float(sensorVals['gyro_x']))
-            elif choice == 3:
-                print('Running Row')
-                power = runRowPID(float(sensorVals['gyro_y']))
-            elif choice == 4:
-                print('Running Pitch')
-                power = -runPitchPID(float(sensorVals['gyro_z']))
+            #roll
+            # thrusterData = {
+            #     "fore-port-vert": power,
+            #     "fore-star-vert": -power,
+            #     "aft-port-vert": -power,
+            #     "aft-star-vert": power,
+            # }
 
-            if(power > 1.0):
-                power = 0.3
-            elif(power < -1.0):
-                power = -0.3
+            # yaw
 
-            thrusterData = selectThrusters(choice, power)
+            # thrusterData = {
+            #     "fore-port-horz": power,
+            #     "fore-star-horz": power,
+            #     "aft-port-horz": power,
+            #     "aft-star-horz": -power,
+            # }
+
+            # pitch
+            # thrusterData = {
+            #     "fore-port-vert": power,
+            #     "fore-star-vert": power,
+            #     "aft-port-vert": power,
+            #     "aft-star-vert": power,
+            # }
+
+            roll.target = -3.5
+            pitch.target = 3.2
+            # depth.target = 11.10
+            #
+            # thrusterData = {
+            #     "fore-port-vert": (runDepthPID(cDepth)-runPitchPID(float(cPitch))-runRollPID(float(cRoll)))/1.5,
+            #     "fore-star-vert": (runDepthPID(cDepth)-runPitchPID(float(cPitch))+runRollPID(float(cRoll)))/1.5,
+            #     "aft-port-vert": (-runDepthPID(cDepth)+runPitchPID(float(cPitch))-runRollPID(float(cRoll)))/1.5,
+            #     "aft-star-vert": (-runDepthPID(cDepth)+runPitchPID(float(cPitch))+runRollPID(float(cRoll)))/1.5
+            # }
+
+            thrusterData = {
+                "fore-port-vert": -runPitchPID(float(cPitch))-runRollPID(float(cRoll)),
+                "fore-star-vert": -runPitchPID(float(cPitch))+runRollPID(float(cRoll)),
+                "aft-port-vert": -runPitchPID(float(cPitch))+runRollPID(float(cRoll)),
+                "aft-star-vert": -runPitchPID(float(cPitch))-runRollPID(float(cRoll))
+            }
+
+
+            # power = runDepthPID(cDepth)
+            #
+            # thrusterData = {
+            #     "fore-port-vert": power,
+            #     "fore-star-vert": power,
+            #     "aft-port-vert": -power,
+            #     "aft-star-vert": -power,
+            # }
 
             for control in thrusterData:
                 val = thrusterData[control]
                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
             print("good")
-
-        except(Exception):
-            print(Exception)
-            continue;
+    except KeyboardInterrupt:
+        flag.set()
