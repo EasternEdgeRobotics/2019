@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request
 from flask_socketio import SocketIO, emit
+from adminAPI import protected
 import random
 
 bot_api = Blueprint("bot_api", __name__)
@@ -56,8 +57,8 @@ broadcasts the telemetry data to all clients
 def emitTelemetryData():
     socketio.emit('data', data, namespace='/bot/telemetry', broadcast=True )
 
-
 @bot_api.route("/bot/test")
+@protected
 def test():
     updateTelemetryData({"raspi1": {"ping": random.randint(20,40), "temp": random.randint(15, 20)}, "pressure": random.randint(80, 120)})
     return ""
