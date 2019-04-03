@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Camera startup script
+# Note: front camera is port 8 and back camera is port 11
+
+# Networking
+IPH="192.168.88.2" # Topsides ip address
+IPF="192.168.88.4" # Front camera ip address
+IPB="192.168.88.5" # Back camera ip address
+PORTF="5002" # Front camera port
+PORTB="5003" # Back camera port
+PORTO="5004" # OpenCV camera port
+
+# Defaults
+FPS="30" # Open with lower fps for stability
+HEIGHT="720" # Use 720p video
+WIDTH="1280"
+
+# Handle command line arguments
+for i in "$@"
+do
+case $i in
+    # Run for image recognition
+    -cv*|--opencv*)
+    FPS="10"
+    HEIGHT="480"
+    WIDTH="640"
+    shift
+    ;;
+    # Change video fps
+    -f=*|--fps=*)
+    FPS="${i#*=}"
+    shift
+    ;;
+    # Change video height
+    -h=*|--height=*)
+    HEIGHT="${i#*=}"
+    shift
+    ;;
+    # Change video width
+    -w=*|--width=*)
+    WIDTH="${i#*=}"
+    shift
+    ;;
+    *)
+          # Unknown option
+    ;;
+esac
+done
+
+# Open topsides camera capture if it is not already running
+if ps ax | grep -v grep | grep "gst-launch-1.0 udpsrc port=${PORTF} ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink" > /dev/null
+then
+    echo "Topsides capture is already running."
+else
+    setsid xterm -geometry 93x31+0+0 -e gst-launch-1.0 udpsrc port=${PORTF} ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink &
+fi
+
+if ps ax | grep -v grep | grep "gst-launch-1.0 udpsrc port=${PORTB} ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink" > /dev/null
+then
+    echo "Topsides capture is already running."
+else
+    setsid xterm -geometry 93x31+0+0 -e gst-launch-1.0 udpsrc port=${PORTB} ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink &
+fi
+
+# Start back camera
+sshpass -p raspberry ssh pi@${IPB} raspivid -t 0 -vf -hf -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! udpsink host=${IPH} port=${PORTB} &
+
+# Start front camera with split streams
+sshpass -p raspberry ssh pi@${IPF} raspivid -t 0 -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! tee name=t \
+t. ! queue ! udpsink host=${IPH} port=${PORTF} \
+t. ! queue ! udpsink host=${IPH} port=${PORTO} &
+
+# Keep running till closed
+read -n1 -r -p "Press any key to close..." key
