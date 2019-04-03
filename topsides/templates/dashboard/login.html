@@ -1,0 +1,78 @@
+<script>
+
+    $(document).ready(function(){
+        $("form").submit(function(){
+            $.ajax({
+                type: 'GET',
+                url: "/auth/login",
+                data: {
+                    user: $("#user").val(),
+                    pass: $("#pass").val()
+                },
+                success: function(){
+                    if(location.href.indexOf("login") != -1)
+                        location.href = "/";
+                    else
+                        location.href = location.href;
+                },
+                error: function(){
+                    $("#incorrect").toggleClass("visible", true);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+
+
+<style>
+    #login, form{
+        max-width: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        min-height: 200px;
+    }
+
+    form{
+        margin: 0px 30px;
+    }
+
+    input{
+        margin: 5px 0px;
+    }
+
+    #incorrect{
+        height: 0px;
+        opacity: 0;
+        transition: 0.3s;
+    }
+
+    #incorrect.visible{
+        margin: 20px 0px;
+        opacity: 1;
+        height: unset !important;
+    }
+
+    .page-login-container{
+        height: 90%;
+    }
+    
+</style>
+
+
+<div class="col-12 d-flex justify-content-center align-items-center page-login-container">
+    <div class="panel" id="login">
+        <h2>Login</h2>
+        <div id="incorrect" class="text-danger">
+            Incorrect username or password!
+        </div>
+        <form>
+            <input id="user" name="user" type="text" placeholder="username" />
+            <input id="pass" name="pass" type="password" placeholder="password" style="margin-bottom: 20px;"/>
+
+            <input class="btn btn-primary" type="submit" />
+        </form>
+    </div>
+</div>
