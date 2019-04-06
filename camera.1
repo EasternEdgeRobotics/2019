@@ -1,0 +1,22 @@
+.TH CAMERA 1
+.SH NAME
+camera \- camera startup script
+.SH SYNOPSIS
+.B camera
+[\fIOPTIONS\fR]
+.SH DESCRIPTION
+.B camera
+starts gstreamer camera streams on both raspberry pi's and opens the topsides viewing.
+.SH OPTIONS
+.TP
+.BR \-cv ", " \-\-opencv
+Run the camera stream with the correct settings for OpenCV image recognition.
+.TP
+.BR \-f ", " \-\-fps =\fIFPS\fR
+Set the fps of the camera stream. Default is 30.
+.TP
+.BR \-h ", " \-\-height =\fIHEIGHT\fR
+Set the height of the camera stream. Default is 720.
+.TP
+.BR \-w ", " \-\-width =\fIWIDTH\fR
+Set the width of the camera stream. Default is 1280.

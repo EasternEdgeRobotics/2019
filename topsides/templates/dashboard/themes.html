@@ -1,4 +1,5 @@
 <body>
+    <title>Eastern Edge - Theme Select</title>
     <script>
 
         var themeToSet = "";
@@ -47,16 +48,16 @@
                 <select id="themeSelect"></select>
             </div>
         </div>
-        <div class="col-lg-4 ">
+        <div class="col-lg-4 " style="display: flex;">
             <div class="panel margins center">
                 <button class="btn btn-primary" onclick="setTheme();">Set Theme</button>
                 <button class="btn btn-info" onclick="reloadThemes();">Reload Themes</button>
             </div>
         </div>
     </div>
-    <div class="panel margins" >
+    <!--<div class="panel margins" >
         <h1>Theme Preview</h1>
-    </div>
+    </div>-->
     
     <div class="container" >
         <iframe style="width: 100%; margin: 20px 0px; height: 620px; border-radius: 30px; border: none; box-shadow: 0px 0px 20px rgba(0,0,0,0.5)" id="themePreview" src=""></iframe>

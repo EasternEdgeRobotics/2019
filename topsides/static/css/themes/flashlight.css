@@ -30,7 +30,7 @@ body[theme='@theme'] h6{
     color: white;
 }
 
-body[theme='@theme'] input[type="text"]{
+body[theme='@theme'] input[type="text"], body[theme='@theme'] input[type="password"]{
     background-color: #515456;
     color: white;
     border: none;
@@ -144,7 +144,7 @@ body[theme='@theme'] .snackbar[type='danger']::before{
                                                         
 */
 
-body[theme='@theme'] #pageBody{
+body[theme='@theme'] .page-body{
     background-color: #33393b
 }
 

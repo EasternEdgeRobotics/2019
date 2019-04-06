@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <body>
-        <title>Edit Profiles</title>
+        <title>Eastern Edge - Profile Edit</title>
         <link href="static/css/dashboard/profileManagement.css" rel="stylesheet" type="text/css"/>
         <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css"/>
         
@@ -160,7 +160,7 @@
             }
 
             function cancelEdit_click(){
-                $dash.loadPage("dashboard/dashboard-profiles.html");
+                $dash.loadPage("Profile Management");
             }
 
             /** updateMenuIndicators
@@ -208,12 +208,12 @@
 
         <div class="row">
             <div class="col-md-6 init">
-                <div class="item-content panel vertical-center">
+                <div class="item-content panel profile edit name vertical-center">
                     <input type="text" id='profileName' class="align-bottom" placeholder="Enter Profile Name" value="{{profile['name']}}"/>
                 </div>
             </div>
             <div class="col-md-3 init">
-                <div class="item-content panel relative overflow">
+                <div class="item-content profile edit gamepads panel relative overflow">
                     <h1 id='gamepadCount'>{{profile["gamepads"]|length}}</h1>
                     <button id='btnAddGamepad' class="btn btn-primary" onclick="openGamepadMenu_click()" {%if profile['gamepads']|length >= 4%} disabled {%endif%}>Add Gamepad</button>
                     <div id="popupAddGamepad" class="hidden">
@@ -222,7 +222,7 @@
                 </div>
             </div>
             <div class="col-md-3 init">
-                <div class="item-content panel center vertical-center">
+                <div class="item-content panel profile edit save center vertical-center">
                     <button class="btn btn-primary no-margin" onclick="saveProfile_click()">Save</button>
                     <button class="btn btn-secondary no-margin" onclick="cancelEdit_click()">Cancel</button>
                 </div>
