@@ -63,10 +63,10 @@ else
 fi
 
 # Start back camera
-sshpass -p raspberry ssh pi@${IPB} raspivid -t 0 -vf -hf -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! udpsink host=${IPH} port=${PORTB} &
+sshpass -p raspberry ssh pi@${IPB} raspivid -t 0 -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! udpsink host=${IPH} port=${PORTB} &
 
 # Start front camera with split streams
-sshpass -p raspberry ssh pi@${IPF} raspivid -t 0 -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! tee name=t \
+sshpass -p raspberry ssh pi@${IPF} raspivid -t 0 -vf -hf -n -h ${HEIGHT} -w ${WIDTH} -fps ${FPS} -b 3000000 -o - | gst-launch-1.0 -v fdsrc ! h264parse config-interval=1 ! rtph264pay ! tee name=t \
 t. ! queue ! udpsink host=${IPH} port=${PORTF} \
 t. ! queue ! udpsink host=${IPH} port=${PORTO} &
 
