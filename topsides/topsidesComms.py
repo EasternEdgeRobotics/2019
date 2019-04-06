@@ -36,7 +36,7 @@ simulator = queue.Queue()
 
 
 # This function sends data to the ROV
-def sendData(inputData, location):
+def sendData(inputData, location = "raspi"):
     global s
     if (location == "micro"):
         s.sendto(inputData.encode('utf-8'), (ipSendMicro, portSendMicro))
