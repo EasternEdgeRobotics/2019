@@ -75,6 +75,16 @@ function setQueryParameter(name, value){
     history.pushState(null, '', newurl);
 }
 
+$(document).ready(function(){
+    runPythonGET("themes", null, function(themes){
+        $("head").append(themes.responseText);
+    });
+
+    runPythonGET("themes/get", null, function(data){
+        $("body").attr("theme", data.theme);
+    });
+});
+
  /*
 
 
@@ -126,6 +136,19 @@ function modalPrep(){
 }
 
 
+
+
+
+/**
+ * 
+ *  @deprecated
+ * - Troake
+ *  
+ * 
+ */
+
+
+
 /**
  *  @name Snackbar
  *  @author Troake
@@ -139,15 +162,16 @@ function modalPrep(){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+/*
 $(document).ready(function(){
-    $(".snackbar").html("<div class='snack'></div>");
+    //$(".snackbar").html("<div class='snack'></div>");
 });
-
+*/
 
 /**openSnackbar
  * 
  *  opens a snackbar of an id with a message for an amount of time (ms)
- */
+ *//*
 function openSnackbar(id, message, time=3000, requireExit = false){
     $('.snackbar').toggleClass('visible', false);
     $.each($('.snackbar'), function (i, obj) {
@@ -161,15 +185,15 @@ function openSnackbar(id, message, time=3000, requireExit = false){
             }
         }
     });
-}
-
+}*/
+/*
 function closeSnackbar(id){
     $.each($('.snackbar'), function (i, obj) {
         if($(obj).attr('id') == id){
             $(obj).toggleClass('visible', false);
         }
     });
-}
+}*/
 
 
 /**
@@ -185,9 +209,10 @@ function closeSnackbar(id){
  *      - For the system notifications, set the id of the snackbar to notification.
  *          This will automatically link it to the incoming notifications
  */
+/*
 $(document).ready(function() {
         var note = new NotificationHandler();
         note.setSnackbar('notification');
         note.start();
     }
-);
+);*/

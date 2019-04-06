@@ -19,5 +19,6 @@
         "fore-camera": 8,
         "aft-camera": 9
     },
-    "simulatorEnabled": true
+    "simulatorEnabled": true,
+    "defaultTheme": "snow"
 }
