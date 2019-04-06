@@ -5,19 +5,23 @@ import queue
 import threading
 from TopsidesGlobals import GLOBALS
 
-ipSendThruster = '255.255.255.255'
-portSendThruster = GLOBALS['portSendThruster']
-ipSendSensor = '255.255.255.255'
-portSendSensor = GLOBALS['portSendSensor']
-ipHost = '0.0.0.0'
+# Change IP addresses for a production or development environment
+if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
+    ipSend = GLOBALS['ipSend-dev']
+    ipSendMicro = GLOBALS['ipSendMicro-dev']
+    ipHost = GLOBALS['ipHost-dev']
+else:
+    ipSend = GLOBALS['ipSend']
+    ipHost = GLOBALS['ipHost']
+
+portSend = GLOBALS['portSend']
+portSendMicro = GLOBALS['portSendMicro']
 portHost = GLOBALS['portHost']
 
 received = queue.Queue()
 # Try opening a socket for communication
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 except socket.error:
     print("Failed To Create Socket")
     sys.exit()
@@ -26,33 +30,18 @@ except Exception as e:
 # Bind the ip and port of topsides to the socket and loop coms
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind((ipHost, portHost))
-s.sendto(("register").encode('utf-8'), (ipSendThruster, portSendThruster))
-s.sendto(("register").encode('utf-8'), (ipSendSensor, portSendSensor))
-data, addr = s.recvfrom(1024)
-data = data.decode("utf-8")
-if data == "sensorPi":
-    print("Sensor Pi: " + str(addr))
-    ipSendSensor = addr
-elif data == "thrusterPi":
-    print("Thruster Pi: " + str(addr))
-    ipSendThruster = addr
-data, addr = s.recvfrom(1024)
-data = data.decode("utf-8")
-if data == "sensorPi":
-    print("Sensor Pi: " + str(addr))
-    ipSendSensor = addr
-elif data == "thrusterPi":
-    print("Thruster Pi: " + str(addr))
-    ipSendThruster = addr
 
 # Queue to hold send commands to be read by simulator
 simulator = queue.Queue()
 
 
 # This function sends data to the ROV
-def sendData(inputData):
+def sendData(inputData, location):
     global s
-    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+    if (location == "micro"):
+        s.sendto(inputData.encode('utf-8'), (ipSendMicro, portSendMicro))
+    else:
+        s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
 
 
 # This function is constantly trying to receive data from the ROV
