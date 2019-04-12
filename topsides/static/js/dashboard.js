@@ -11,7 +11,7 @@ $(document).ready(function(){
             //loading all dashboard nav buttons
             $.get(menu.icon_url, function(data){
                 var svg = $(data).find("svg").attr("class", "nav-svg col-5 icon");
-                var button = $("<div data-page='" + menu.file_name + "' class='btn-nav row' style='order: " + index + "'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>" + menu.name + "</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
+                var button = $("<div data-page='" + menu.name + "' class='btn-nav row' style='order: " + index + "'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>" + menu.name + "</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
                 if(index == 0 && getQueryParameter("page") == null){
                     navButtonClick(button);
                 }else if(decodeURIComponent(getQueryParameter("page")) == menu.file_name){
@@ -22,6 +22,17 @@ $(document).ready(function(){
         if(getQueryParameter("page") != null){
             $dash.loadPage(getQueryParameter("page"));
         }
+    });
+
+    runPythonGET("auth/check", null, function(data){
+        $.get("static/res/icons/baseline-account_circle-24px.svg", function(data1){
+            var svg = $(data1).find("svg").attr("class", "nav-svg col-5 icon");
+            if(data.status != 200){
+                var button = $("<div data-page='login' class='btn-nav row auth login' style='order:9999'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-lg-5 col-md-12 col-5 icon'>" + svg.html() + "<svg><div class='text col-5 justify-content-center align-self-center'><p>Login</p></div></div>").click(function(){navButtonClick($(this))}).appendTo("#nav");
+            }else{
+                var button = $("<div data-page='' class='btn-nav row auth logout' style='order:9999'><div class='background'></div><svg viewbox='0 0 25 25' class='nav-svg col-3 icon'>" + svg.html() + "<svg><div class='text col-9 justify-content-center align-self-center'><p style='font-size:1.2em;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;' class='font-weight-bold text-captitalize'>" + data.responseText + "</p><p style='font-size:0.8em;'>LOGOUT</p></div></div>").click(function(){runPythonGET("/auth/logout", null, function(){window.location = window.location;})}).appendTo("#nav");
+            }
+        });
     });
 
     //init notification handler
@@ -128,8 +139,7 @@ class dashboard{
             this._onpageclose();
         this._clearPage();
         $("#loadingSpinner").toggleClass("hide", false);
-
-        runPythonGET("dashboard/page?name=" + pageURL, null, function(pageData){
+        runPythonGET("dashboard/page/" + pageURL, null, function(pageData){
             $dash.filename = pageURL;
             setQueryParameter("page", pageURL);
             $($dash._bodyContainer).html(pageData.responseText);

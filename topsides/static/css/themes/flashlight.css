@@ -30,7 +30,11 @@ body[theme='@theme'] h6{
     color: white;
 }
 
-body[theme='@theme'] input[type="text"]{
+body[theme='@theme'] label{
+    color: white;
+}
+
+body[theme='@theme'] input[type="text"], body[theme='@theme'] input[type="password"]{
     background-color: #515456;
     color: white;
     border: none;
@@ -144,7 +148,7 @@ body[theme='@theme'] .snackbar[type='danger']::before{
                                                         
 */
 
-body[theme='@theme'] #pageBody{
+body[theme='@theme'] .page-body{
     background-color: #33393b
 }
 
@@ -187,6 +191,7 @@ body[theme='@theme'] .panel{
     background-color: #33393b;
     border: none !important;
     box-shadow: none !important;
+    border-radius: 0px !important;
 }
 
     body[theme='@theme'] .panel p{}
