@@ -400,6 +400,12 @@ body[theme='@theme'] .panel{
     border-top: none;
 }
 
+body[theme='@theme'] .panel .card-header{
+    position: absolute;
+    top: 0px;
+    color: white;
+}
+
 body[theme='@theme'] .panel::before{
     height: 50px;
     content: " ";
