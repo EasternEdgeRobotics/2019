@@ -11,6 +11,8 @@
         <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/bootstrap.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/socket.io.slim.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/lib/three.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/lib/STLLoader.js')}}" type="text/javascript"></script>
         <script src="/static/js/lib/masonry.pkgd.min.js"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/ControlHandler.js')}}" type="text/javascript"></script>
@@ -18,6 +20,7 @@
         <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/customutil/Bot3D.js')}}" type="text/javascript"></script>
 
         <script>
             $(document).ready(function(){
@@ -26,6 +29,8 @@
                     columnWidth: '.grid-sizer',
                     percentPosition: true
                 });
+
+                $Bot3D().appendTo("#3dmodel");
             });
 
             var profileHandler = new ProfileHandler();
@@ -158,6 +163,11 @@
                                 <p>Run ends in <span id="timerText">00:00</span> minutes</p>
                                 <button type="button" class="btn btn-primary" id="startTimer">Start Timer</button>
                             </div>
+                        </div>
+                    </div>
+                    <div class="grid-item grid-item--width3">
+                        <div class="panel position-relative" style="height: 400px;" id="3dmodel">
+                            <button class="position-absolute btn btn-info" onclick="runPythonGET('/bot/test', null, function(){});">Random Position</button>
                         </div>
                     </div>
                 </div>
