@@ -54,6 +54,7 @@ def sendDataB(inputData):
 
 
 keep = [0]
+rovInMotion = False;
 
 # This function is constantly trying to receive data from the ROV
 def receiveData(flag):
@@ -80,12 +81,20 @@ def chechFourthFirstQuad(angle_1, angle_2):
         return True
     return False
 
+
+def runThruster(tData):
+    for control in tData:
+        val = tData[control]
+        putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+    print("good")
+
+
 """ Create objects for each component """
 
 depth = pid()
 pitch = pid()
 yaw = pid()
-roll = pid()
+r = pid()
 
 """ initialize the different PID components """
 
@@ -96,37 +105,40 @@ def depth_PID_init():
     depth.integral = 0.0
 
 def yaw_PID_init():
-    yaw.kP = 0.0099
-    yaw.kI = 0.000043
-    yaw.kD = 0.005
+    yaw.kP = 0.011
+    yaw.kI = 0.03
+    yaw.kD = 0.011
     yaw.integral = 0.0
 
 def roll_PID_init():
-    roll.kP = 0.013
-    roll.kI = 0.09
-    roll.kD = 0.0057
-    roll.integral = 0.0
+    r.kP = 0.0065
+    r.kI = 0.0054
+    r.kD = 0.0021
+    r.integral = 0.0
 
 def pitch_PID_init():
-    pitch.kP = 0.011
-    pitch.kI = 0.075
-    pitch.kD = 0.0399
+    pitch.kP = 0.0057
+    pitch.kI = 0.0109
+    pitch.kD = 0.017
     pitch.integral = 0.0
 
 """ Calculate the different power required for each component
     Note that each of these algorithm have differences based on which component is being used
     errors are Calculated differently
+
+    if you want to return the power calculated, set get to TRUE,
+    if you want to run only that component, set get to false.
 """
 
-def runDepthPID(cDepth):
+def runDepthPID(cDepth, get):
 
     depth_PID_init() ## initialize PID constants
-    depth.intError = 0.5 ## increases or decrease based on magnitude of oscillation
+    depth.intError = 0.2 ## increases or decrease based on magnitude of oscillation
     depth.error = depth.target - abs(cDepth) ## Keep current depth at an absolute value
 
     ## increase integral if the error does not zero out as power decreases
     if(abs(depth.error) < depth.intError):
-        depth.integral += 0.03
+        depth.integral += 0.1
     else:
         depth.integral = 0
 
@@ -142,25 +154,45 @@ def runDepthPID(cDepth):
         power = -0.3
 
     print('Power = ',power, "Error = ",depth.error, "Current D = ",cDepth, "target = ", depth.target)
-    return power;
+
+    if get: return power
+
+    thrusterData = {
+        "fore-port-vert": power,
+        "fore-star-vert": power,
+        "aft-port-vert": -power,
+        "aft-star-vert": -power,
+    }
+
+    runThruster(thrusterData)
 
 
-
-def runYawPID(angle):
+"""
+    @Params:
+        angle = (float) current yaw angle
+        get = (boolean) true if you want to get calculated power, false if you want to runRoll without returning power
+"""
+def runYawPID(angle, get):
 
     yaw_PID_init();
-    yaw.intError = 15
+    yaw.intError = 5
 
-    if(chechFourthFirstQuad(angle, yaw.target)):
-        if(angle > 260):
-            yaw.error = (angle-360) - yaw.target
-        else:
-            yaw.error = angle + (360 - yaw.target)
-    else:
-        yaw.error = yaw.target - abs(angle)
+    #if(chechFourthFirstQuad(angle, yaw.target)):
+    diff = yaw.target - angle
+    if diff > 180:
+        diff = -(360 - diff)
+    elif diff < -180:
+        diff = 360 + diff
+    yaw.error = diff
+        # """if(angle > 260):
+        #     yaw.error = (angle-360) - yaw.target
+        # else:
+        #     yaw.error = angle + (360 - yaw.target)"""
+    #else:
+    #    yaw.error = yaw.target - abs(angle)
 
     if(abs(yaw.error) < yaw.intError):
-        yaw.integral += 0.03
+        yaw.integral += 0.05
     else:
         yaw.integral = 0
 
@@ -169,50 +201,80 @@ def runYawPID(angle):
     yaw.last_error = yaw.error
 
     power = (yaw.error*yaw.kP) + (yaw.integral*yaw.kI) + (yaw.derivative*yaw.kD)
-    if(angle > 180):
-        power*=-1
+
+    # if power > 0.6: power = 0.3
+    # elif power < -0.6: power = -0.3
+
     print('Power = ',power, "Error = ",yaw.error, "Current yaw = ",angle, "target = ", yaw.target)
-    return power
+
+    if get: return power
+
+    thrusterData = {
+        "fore-port-horz": power,
+        "fore-star-horz": power,
+        "aft-port-horz": power,
+        "aft-star-horz": -power,
+    }
+    runThruster(thrusterData)
 
 
-def runRollPID(angle):
+"""
+    @Params:
+        angle = (float) current roll angle
+        get = (boolean) true if you want to get calculated power, false if you want to runRoll without returning power
+"""
+def runRollPID(angle, get):
+    roll_PID_init();
 
     if(angle < -75):
         angle = -75
     elif(angle > 75):
         angle = 75
 
-    roll_PID_init();
-    roll.intError = 15
 
+    r.intError = 5
 
-    roll.error = roll.target - angle
+    r.error = r.target - angle
 
-    if(abs(roll.error) < roll.intError):
-        roll.integral += 0.05
+    if(abs(r.error) < r.intError):
+        r.integral += 0.05
     else:
-        roll.integral = 0
+        r.integral = 0
 
-    roll.integral = 0 if roll.error == 0 else roll.integral
-    roll.derivative = roll.error - roll.last_error
-    roll.last_error = roll.error
+    r.integral = 0 if r.error == 0 else r.integral
+    r.derivative = r.error - r.last_error
+    r.last_error = r.error
 
-    power = (roll.error*roll.kP) + (roll.integral*roll.kI) + (roll.derivative*roll.kD)
-    if(angle > 180):
-        power*=-1
+    power = (r.error*r.kP) + (r.integral*r.kI) + (r.derivative*r.kD)
+
+    power *= -1
 
     if(power > 0.6):
         power = 0.3
     elif(power < -0.6):
         power = -0.3
 
-    print('Power = ', power, " Error = ", roll.error, " Current Roll = ", angle, " Target Roll= ", roll.target)
-    return power
+    print('Power = ', power, " Error = ", r.error, " Current Roll = ", angle, " Target Roll= ", r.target)
+    # print('Power = ', power, " Error = ", r.error, " derivative = ", r.derivative, " integral= ", r.integral)
+
+    if get: return power
+
+    thrusterData = {
+        "fore-port-vert": power,
+        "fore-star-vert": -power,
+        "aft-port-vert": -power,
+        "aft-star-vert": power,
+    }
+
+    runThruster(thrusterData)
 
 
-
-
-def runPitchPID(angle):
+"""
+    @Params:
+        angle = (float) current pitch angle
+        get = (boolean) true if you want to get calculated power, false if you want to runRoll without returning power
+"""
+def runPitchPID(angle, get):
 
     if(angle < -75):
         angle = -75
@@ -220,12 +282,14 @@ def runPitchPID(angle):
         angle = 75
 
     pitch_PID_init();
-    pitch.intError = 15
+    pitch.intError = 10
+
+
 
     pitch.error = pitch.target - angle
 
     if(abs(pitch.error) < pitch.intError):
-        pitch.integral += 0.05
+        pitch.integral += 0.1
     else:
         pitch.integral = 0
 
@@ -235,95 +299,88 @@ def runPitchPID(angle):
 
     power = (pitch.error*pitch.kP) + (pitch.integral*pitch.kI) + (pitch.derivative*pitch.kD)
 
+    power *= -1
+
     if(power > 0.6):
         power = 0.3
     elif(power < -0.6):
         power = -0.3
 
-    print('Power = ',power, "Error = ",pitch.error, "Current Pitch = ",angle, "target = ", pitch.target)
-    return power;
+
+    print('Power = ',power, "Error = ",pitch.error, "Current Pitch = ",angle, "target = ", pitch.target, " LE = ", pitch.derivative)
+
+    thrusterData = {
+        "fore-port-vert": power,
+        "fore-star-vert": power,
+        "aft-port-vert": power,
+        "aft-star-vert": power,
+    }
+
+    if get: return power
+
+    runThruster(thrusterData)
+
+"""
+    @Params
+        cPitch: pass current pitch angle
+        cRoll: pass current roll angle
+"""
+def runPitchAndRollPID(cPitch, cRoll):
+    pch = runPitchPID(float(cPitch), True)
+    rl = runRollPID(float(cRoll), True)
+
+    thrusterData = {
+        "fore-port-vert": pch+rl,
+        "fore-star-vert": pch-rl,
+        "aft-port-vert": pch-rl,
+        "aft-star-vert": pch+rl
+    }
+
+    runThruster(thrusterData)
+
+"""
+@Params cPitch, cRoll, cYaw, cDepth
+"""
+def runAbsoluteLockPID(cPitch, cRoll, cYaw, cDepth):
+    pch = runPitchPID(float(cPitch), True)
+    rl = runRollPID(float(cRoll), True)
+    yw = runYawPID(float(cYaw), True)
+    dth = runDepthPID(float(cDepth), True)
+
+    thrusterData = {
+        "fore-port-vert": dth+pch+rl,
+        "fore-star-vert": dth+pch-rl,
+        "aft-port-vert": -dth+pch-rl,
+        "aft-star-vert": -dth+pch+rl,
+        "fore-port-horz": yw,
+        "fore-star-horz": yw,
+        "aft-port-horz": yw,
+        "aft-star-horz": -yw,
+
+    }
+
+    runThruster(thrusterData)
 
 def getRollAngle():
     decoded_bytes = received.get()
     data = decoded_bytes.split(",")
-    return data[3]
+    return data[4]
 
 def getYawAngle():
     decoded_bytes = received.get()
     data = decoded_bytes.split(",")
-    return data[2]
+    return data[3]
 
 def getPitchAngle():
     decoded_bytes = received.get()
     data = decoded_bytes.split(",")
-    return data[4]
+    return data[5]
 
 def getDepth():
     decoded_bytes = received.get()
     data = decoded_bytes.split(",")
-    return data[0]
+    return data[1]
 
-#
-# if __name__ == "__main__":
-#
-#     run = False
-#     choice = int(input("Which input which PID: \n Depth : 1 \n Yaw : 2 \n Roll : 3 \n Pitch : 4 \nPick One: "))
-#     thrusterData = {}
-#
-#     if choice == 1:
-#         depth.target = float(input("Input Target Depth: "))
-#     elif choice == 2:
-#         yaw.target = float(input("Input Target Yaw angle: "))
-#     elif choice == 3:
-#         roll.target = float(input("Input Target Roll angle: "))
-#     elif choice == 4:
-#         pitch.target = float(input("Input Target Pitch angle: "))
-#
-#     if (choice >= 1) and (choice <= 4):
-#         run = True
-#
-#     while run:
-#         sendDataB('readSerialArd.py')
-#         try:
-#
-#             power = 0.0
-#             sensorVals = parseSensorVals()
-#
-#             if choice == 1:
-#                 print('Running Depth')
-#                 power = -runDepthPID(float(sensorVals['depth']))
-#             elif choice == 2:
-#                 print('Running Yaw')
-#                 power = runYawPID(float(sensorVals['gyro_x']))
-#             elif choice == 3:
-#                 print('Running Roll')
-#                 power = runRollPID(float(sensorVals['gyro_y']))
-#             elif choice == 4:
-#                 print('Running Pitch')
-#                 power = -runPitchPID(float(sensorVals['gyro_z']))
-#
-#             rollPitchControl = {
-#                 "fore-port-vert": -runPitchPID(float(sensorVals['gyro_z']))-runRollPID(float(sensorVals['gyro_y'])),
-#                 "fore-star-vert": -runPitchPID(float(sensorVals['gyro_z']))+runRollPID(float(sensorVals['gyro_y'])),
-#                 "aft-port-vert": runPitchPID(float(sensorVals['gyro_z']))-runRollPID(float(sensorVals['gyro_y'])),
-#                 "aft-star-vert": runPitchPID(float(sensorVals['gyro_z']))+runRollPID(float(sensorVals['gyro_y']))
-#             }
-#
-#             if(power > 1.0):
-#                 power = 0.3
-#             elif(power < -1.0):
-#                 power = -0.3
-#
-#             thrusterData = selectThrusters(choice, power)
-#
-#             for control in thrusterData:
-#                 val = thrusterData[control]
-#                 putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-#             print("good")
-#
-#         except(Exception):
-#             print(Exception)
-#             continue;
 
 # Setup threading for receiving data
 flag = threading.Event()
@@ -334,87 +391,27 @@ t.start()
 ## run pitch and roll together
 if __name__ == "__main__":
     sendDataB('readSerialArd.py')
-    # roll.target = float(input("Target Roll: "))
-    # yaw.target = float(input("Target Yaw: "))
-    #pitch.target = float(input("Target Pitch: "))
+
+
+    r.target = float(input("Target Roll: "))
+    yaw.target = float(input("Target Yaw: "))
+    pitch.target = float(input("Target Pitch: "))
+    depth.target = float(input("depth: "))  # input format for depth.target must me xx.xx
     try:
         while True:
+
             try:
                 cPitch = getPitchAngle()
                 cRoll = getRollAngle()
+                cYaw = getYawAngle()
                 cDepth = float(getDepth())/100
             except (IndexError,ValueError):
                 continue
 
-            # print(cAngle)
-
-            #power = -runRollPID(float(cRoll))
-
-            # power = runYawPID(float(cAngle))
-
-            # power = -runPitchPID(float(cPitch))
-
-            # if(power > 0.6):
-            #     power = 0.3
-            # elif(power < -0.6):
-            #     power = -0.3
-
-            #roll
-            # thrusterData = {
-            #     "fore-port-vert": power,
-            #     "fore-star-vert": -power,
-            #     "aft-port-vert": -power,
-            #     "aft-star-vert": power,
-            # }
-
-            # yaw
-
-            # thrusterData = {
-            #     "fore-port-horz": power,
-            #     "fore-star-horz": power,
-            #     "aft-port-horz": power,
-            #     "aft-star-horz": -power,
-            # }
-
-            # pitch
-            # thrusterData = {
-            #     "fore-port-vert": power,
-            #     "fore-star-vert": power,
-            #     "aft-port-vert": power,
-            #     "aft-star-vert": power,
-            # }
-
-            roll.target = -3.5
-            pitch.target = 3.2
-            # depth.target = 11.10
-            #
-            # thrusterData = {
-            #     "fore-port-vert": (runDepthPID(cDepth)-runPitchPID(float(cPitch))-runRollPID(float(cRoll)))/1.5,
-            #     "fore-star-vert": (runDepthPID(cDepth)-runPitchPID(float(cPitch))+runRollPID(float(cRoll)))/1.5,
-            #     "aft-port-vert": (-runDepthPID(cDepth)+runPitchPID(float(cPitch))-runRollPID(float(cRoll)))/1.5,
-            #     "aft-star-vert": (-runDepthPID(cDepth)+runPitchPID(float(cPitch))+runRollPID(float(cRoll)))/1.5
-            # }
-
-            thrusterData = {
-                "fore-port-vert": -runPitchPID(float(cPitch))-runRollPID(float(cRoll)),
-                "fore-star-vert": -runPitchPID(float(cPitch))+runRollPID(float(cRoll)),
-                "aft-port-vert": -runPitchPID(float(cPitch))+runRollPID(float(cRoll)),
-                "aft-star-vert": -runPitchPID(float(cPitch))-runRollPID(float(cRoll))
-            }
-
-
-            # power = runDepthPID(cDepth)
-            #
-            # thrusterData = {
-            #     "fore-port-vert": power,
-            #     "fore-star-vert": power,
-            #     "aft-port-vert": -power,
-            #     "aft-star-vert": -power,
-            # }
-
-            for control in thrusterData:
-                val = thrusterData[control]
-                putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-            print("good")
+            runAbsoluteLockPID(float(cPitch), float(cRoll), float(cYaw), cDepth)
+            # runDepthPID(cDepth, False)
+            # runPitchAndRollPID(float(cPitch), float(cRoll))
+            # runRollPID(float(cRoll), False)
+            #runPitchPID(float(cPitch), False)
     except KeyboardInterrupt:
         flag.set()
