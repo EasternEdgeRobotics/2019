@@ -11,14 +11,6 @@ try:
 except Exception as ex:
     print("Error loading Global JSON" + str(ex))
 
-try:
-    with open("../raspi/json/Raspi.json") as file:
-        data = json.load(file)
-        RASPI_GLOBALS = data
-except Exception as ex:
-    print("Error loading Raspi Global JSON" + str(ex))
-
-
 def updateTopsidesGlobals(newData):
     with open("json/Topsides.json", "r+") as file:
         data = json.load(file)

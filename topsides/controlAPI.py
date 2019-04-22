@@ -97,7 +97,7 @@ def sendControlValues():
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
             val = thrusterData[control]
-            topsidesComms.putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+            topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
         return "good"
 
     except(Exception):

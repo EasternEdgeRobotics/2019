@@ -8,12 +8,14 @@ from TopsidesGlobals import GLOBALS
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
     ipSend = GLOBALS['ipSend-dev']
+    ipSendMicro = GLOBALS['ipSendMicro-dev']
     ipHost = GLOBALS['ipHost-dev']
 else:
     ipSend = GLOBALS['ipSend']
     ipHost = GLOBALS['ipHost']
 
 portSend = GLOBALS['portSend']
+portSendMicro = GLOBALS['portSendMicro']
 portHost = GLOBALS['portHost']
 
 received = queue.Queue()
@@ -34,9 +36,12 @@ simulator = queue.Queue()
 
 
 # This function sends data to the ROV
-def sendData(inputData):
+def sendData(inputData, location = "raspi"):
     global s
-    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+    if (location == "micro"):
+        s.sendto(inputData.encode('utf-8'), (ipSendMicro, portSendMicro))
+    else:
+        s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
 
 
 # This function is constantly trying to receive data from the ROV
