@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import cmath
 
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture('udpsrc port=420 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER)
 # read the video capture frame
 _, frame = cap.read()
 # blur for better edge finding
