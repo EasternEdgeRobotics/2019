@@ -36,11 +36,6 @@ while(1):
                     rect += 1
             else:
                 circ += 1
-    print(count)
-    print(tri)
-    print(sqr)
-    print(rect)
-    print(circ)
 
     cv.circle(frame, (70, 300), 20, (0,0,255), -1)
     pts = np.array([[70, 330], [50, 360], [90, 360]], np.int32)
@@ -53,7 +48,6 @@ while(1):
     cv.putText(frame, str(tri), (10, 355), font, 2, (0, 0, 255), 2, cv.LINE_AA)
     cv.putText(frame, str(rect), (10, 400), font, 2, (0, 0, 255), 2, cv.LINE_AA)
     cv.putText(frame, str(sqr), (10, 445), font, 2, (0, 0, 255), 2, cv.LINE_AA)
-
 
     cv.imshow('frame',frame)
     cv.imshow('thresh', thresh)
