@@ -3,7 +3,9 @@ import socket
 import sys
 import threading
 import queue
+import time
 from RaspiGlobals import GLOBALS
+import telemetry.getAccel
 
 send = queue.Queue()
 threads = []
@@ -97,10 +99,17 @@ def executeData(file, flag):
         send.put(str(e))
         flag.set()
 
+def telemetryTest():
+    global s, send
+    accData = getAccel.get()
+    send.put({"telemetry": accData})
+    time.sleep(5)
 
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
+threads.append(threading.Thread(target=telemetryTest))
 
 if __name__ == "__main__":
     threads[0].start()
+    threads[1].start()
     receiveData()
