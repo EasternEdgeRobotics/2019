@@ -3,37 +3,34 @@ function $Bot3D(){
     //Initializing THREE.js
     var scene = new THREE.Scene();
     scene.background = new THREE.Color(0x555555);
-    var camera = new THREE.PerspectiveCamera( 10, window.innerWidth / window.innerHeight, 0.1, 60 );
+    var camera = new THREE.PerspectiveCamera( 10, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
     //var texture = new THREE.CanvasTexture(canvas);
 
     var renderer = new THREE.WebGLRenderer({alpha: true});
-    renderer.setClearColor( 0xC5C5C3 );
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xffffff, 0);
+    renderer.setSize( window.innerWidth, window.innerHeight );
 
     var botMesh;
-    var point = new THREE.Group();
-    scene.add(point);
 
-    var loader = new THREE.GLTFLoader();
-    loader.load("/static/models/model.min.gltf", function(geo){
-        geo.scene.scale.set(0.5,0.5,0.5);
-        geo.scene.position.x = 0;
-        geo.scene.position.y = 0;
-        geo.scene.position.z = 0;
-        
-        botMesh = geo.scene;
-        botMesh.position.y = -0.0625;
-        point.add(botMesh);
+    var loader = new THREE.STLLoader();
+    loader.load("/static/models/Calypso.stl", function(geo){
+        var material = new THREE.MeshPhongMaterial({color: 0x0011ff, specular: 0x111111, shininess: 200});
+        botMesh = new THREE.Mesh(geo, material);
+        botMesh.position.set(0,0,0);
+        botMesh.scale.set(0.1,0.1,0.1);
+        botMesh.receiveShadow = true;
+        botMesh.castShadow = true;
+
+        scene.add(botMesh);
     });
 
 
 
-    camera.position.z = 3;
+    camera.position.z = 500;
 
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    directionalLight.position.set(0,0,5);
+    directionalLight.position.set(0,100,300);
     scene.add( directionalLight );
 
     function animate() {
@@ -48,7 +45,7 @@ function $Bot3D(){
         var socket = io.connect("/bot/telemetry");
 
         socket.on("data", function(data){
-            point.rotation.set(data.accelerometer.x/(2*Math.PI),data.accelerometer.y/(2*Math.PI),data.accelerometer.y/(2*Math.PI));
+            botMesh.rotation.set(data.accelerometer.x/(2*Math.PI),data.accelerometer.y/(2*Math.PI),data.accelerometer.y/(2*Math.PI));
         });
     }
     initSocket();
