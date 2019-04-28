@@ -6,7 +6,8 @@ import queue
 from RaspiGlobals import GLOBALS
 
 send = queue.Queue()
-t = []
+threads = []
+stop_events = []
 
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
@@ -63,6 +64,8 @@ def receiveData():
             continue
         if data == "exit":
             send.put("exit")
+            for event in stop_events:
+                event.set()
             break
         print(data)
         # Identify the file name and arguments
@@ -78,25 +81,26 @@ def receiveData():
 
         # Setup threading for receiving data
         flag = threading.Event()
-        t.append(threading.Thread(target=executeData, args=(file, flag,)))
-        print(t)
-        t[len(t) - 1].start()
+        stop = threading.Event()
+        threads.append(threading.Thread(target=executeData, args=(file, flag, stop,)))
+        stop_events.append(stop)
+        threads[len(threads) - 1].start()
         flag.wait()
         del sys.argv[1:]
-        t = [i for i in t if i.isAlive()]
+        threads = [i for i in t if i.isAlive()]
 
 
 def executeData(file, flag):
     try:
-        exec(open(file).read(), {"send": send, "flag": flag})
+        exec(open(file).read(), {"send": send, "flag": flag, "stop": stop})
     except Exception as e:
         send.put(str(e))
         flag.set()
 
 
 # Setup threading for receiving data
-t.append(threading.Thread(target=sendData))
+threads.append(threading.Thread(target=sendData))
 
 if __name__ == "__main__":
-    t[0].start()
+    threads[0].start()
     receiveData()
