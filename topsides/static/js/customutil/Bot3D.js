@@ -48,7 +48,7 @@ function $Bot3D(){
         var socket = io.connect("/bot/telemetry");
 
         socket.on("data", function(data){
-            point.rotation.set(data.accelerometer.x/(2*Math.PI),data.accelerometer.y/(2*Math.PI),data.accelerometer.y/(2*Math.PI));
+            point.rotation.set(data.gyroscope.x/(2*Math.PI),data.gyroscope.y/(2*Math.PI),data.gyroscope.z/(2*Math.PI));
         });
     }
     initSocket();
