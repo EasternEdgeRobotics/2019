@@ -7,14 +7,18 @@ from TopsidesGlobals import GLOBALS
 
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
-    ipSend = GLOBALS['ipSend-dev']
+    ipSend4 = GLOBALS['ipSend-4-dev']
+    ipSend5 = GLOBALS['ipSend-5-dev']
     ipSendMicro = GLOBALS['ipSendMicro-dev']
     ipHost = GLOBALS['ipHost-dev']
 else:
-    ipSend = GLOBALS['ipSend']
+    ipSend4 = GLOBALS['ipSend-4']
+    ipSend5 = GLOBALS['ipSend-5']
+    ipSendMicro = GLOBALS['ipSendMicro']
     ipHost = GLOBALS['ipHost']
 
-portSend = GLOBALS['portSend']
+portSend4 = GLOBALS['portSend-4']
+portSend5 = GLOBALS['portSend-5']
 portSendMicro = GLOBALS['portSendMicro']
 portHost = GLOBALS['portHost']
 
@@ -36,12 +40,14 @@ simulator = queue.Queue()
 
 
 # This function sends data to the ROV
-def sendData(inputData, location = "raspi"):
+def sendData(inputData, location = "raspi-5"):
     global s
     if (location == "micro"):
         s.sendto(inputData.encode('utf-8'), (ipSendMicro, portSendMicro))
+    elif (location == "raspi-4"):
+        s.sendto(inputData.encode('utf-8'), (ipSend4, portSend4))
     else:
-        s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+        s.sendto(inputData.encode('utf-8'), (ipSend5, portSend5))
 
 
 # This function is constantly trying to receive data from the ROV

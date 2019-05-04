@@ -4,7 +4,7 @@ import serial
 import time
 
 # Serial setup
-ser = serial.Serial('/dev/ttyACM2', 115200)
+ser = serial.Serial('/dev/ttyACM0', 115200)
 
 # Set motor direction
 direction = sys.argv[1]
@@ -19,12 +19,14 @@ if (direction == "open"):
     if ser.isOpen() is False:
         ser.open()
     ser.write(send.encode("utf-8"))
+    ser.flush()
 
     time.sleep(0.2)  # TODO: Figure out this time
 
     # Stop motor
     send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
+    ser.flush()
 
     # Close serial connection
     ser.close()
@@ -34,12 +36,14 @@ elif (direction == "close"):
     if ser.isOpen() is False:
         ser.open()
     ser.write(send.encode("utf-8"))
+    ser.flush()
 
     time.sleep(0.2)  # TODO: Figure out this time
 
     # Stop motor
     send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
+    ser.flush()
 
     # Close serial connection
     ser.close()
