@@ -99,15 +99,8 @@ def executeData(file, flag):
         send.put(str(e))
         flag.set()
 
-def telemetryTest():
-    global s, send
-    accData = getAccel.get()
-    send.put({"telemetry": accData})
-    time.sleep(5)
-
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
-threads.append(threading.Thread(target=telemetryTest))
 
 if __name__ == "__main__":
     threads[0].start()
