@@ -30,7 +30,7 @@ if (direction == "open"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.01)  # TODO: Figure out this time
+    time.sleep(0.1)
 
     # Stop motor
     send = ("{ motor:1" + ", " + "1" + ", " + "0" + " }")
@@ -47,10 +47,20 @@ elif (direction == "close"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.01)  # TODO: Figure out this time
+    time.sleep(0.1)
 
     # Stop motor
     send = ("{ motor:1" + ", " + "1" + ", " + "0" + " }")
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
+    # Close serial connection
+    ser.close()
+elif (direction == "stop"):
+    # Stop motor
+    send = ("{ motor:1" + ", " + "1" + ", " + "0" + " }")
+    if ser.isOpen() is False:
+        ser.open()
     ser.write(send.encode("utf-8"))
     ser.flush()
 
