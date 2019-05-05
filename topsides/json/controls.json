@@ -1,6 +1,6 @@
 {
     "axes":["surge", "sway", "heave", "pitch", "roll", "yaw", "rotateCam1", "rotateCam2"],
-    "button":["surge_forewards", "surge_backwards", "heave_up", "heave_down", "sway_left", "sway_right", "yaw_cw", "yaw_ccw", "pitch_up", "pitch_down", "roll_cw", "roll_ccw", "claws", "light", "trout_fly"],
-    "buttonToggle":["invert_global", "invert_surge", "invert_sway", "invert_yaw", "invert_heave", "invert_pitch", "invert_roll", "light", "trout_fly"]
+    "button":["surge_forewards", "surge_backwards", "heave_up", "heave_down", "sway_left", "sway_right", "yaw_cw", "yaw_ccw", "pitch_up", "pitch_down", "roll_cw", "roll_ccw", "claws", "light", "trout_fry"],
+    "buttonToggle":["invert_global", "invert_surge", "invert_sway", "invert_yaw", "invert_heave", "invert_pitch", "invert_roll", "light", "trout_fry"]
     
 }
