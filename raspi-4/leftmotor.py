@@ -2,21 +2,24 @@
 import sys
 import serial
 import time
+import RaspiGlobals
 
 # Serial setup
-ser = serial.Serial('/dev/ttyACM0', 115200)
+'''ser = serial.Serial('/dev/ttyACM0', 115200)'''
 
 # Set motor speed (timings are based on this value)
 duty = 70
 
-#direction = threadData['claw']
+#initialize claw position
+'''direction = flag['claw']'''
 
-#while True:
-#   if direction == threadData['claw']:
-#        time.sleep(0.05)
-#       continue
-#
-#    direction = threadData['claw']
+#loop checking for updates with a small delay
+'''while True:
+    if direction == flag['claw']:
+        time.sleep(0.05)
+        continue
+
+    direction = flag['claw']'''
 
 # Set motor direction
 direction = sys.argv[1]
@@ -58,3 +61,6 @@ elif (direction == "close"):
     ser.close()
 else:
     print("Not a valid argument")
+
+#update the JSON
+RaspiGlobals.editJSON("claw-pos", direction)

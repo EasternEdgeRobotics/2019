@@ -95,7 +95,7 @@ def receiveData():
             threads = [i for i in t if i.isAlive()]
 
 
-def executeData(file, flag):
+def executeData(file, flag, stop):
     try:
         exec(open(file).read(), {"send": send, "flag": flag, "stop": stop})
     except Exception as e:
@@ -108,13 +108,14 @@ threads.append(threading.Thread(target=sendData))
 stopleft = threading.Event()
 stopright = threading.Event()
 stoppebbles = threading.Event()
-threads.append(threading.Thread(target='leftmotor.py', args=('leftmotor.py', stopleft, threadData)))
-threads.append(threading.Thread(target='rightmotor.py', args=('rightmotor.py', stopright, threadData)))
-threads.append(threading.Thread(target='pebbles.py', args=('pebbles.py', stoppebbles, threadData)))
+threads.append(threading.Thread(target=executeData, args=('leftmotor.py', threadData, stopleft)))
+#threads.append(threading.Thread(target=executeData, args=('rightmotor.py', threadData, stopright)))
+#threads.append(threading.Thread(target=executeData, args=('pebble.py', threadData, stoppebbles)))
 stop_events.append(stopleft)
 stop_events.append(stopright)
 stop_events.append(stoppebbles)
 
 if __name__ == "__main__":
-    threads[0].start()
+    for thread in threads:
+        thread.start()
     receiveData()
