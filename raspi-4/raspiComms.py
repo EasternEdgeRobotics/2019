@@ -47,7 +47,7 @@ def sendData():
 
 def receiveData():
     """Receive data from topsides."""
-    global t
+    global threads
     while True:
         try:
             data, addr = s.recvfrom(1024)
@@ -92,7 +92,7 @@ def receiveData():
             threads[len(threads) - 1].start()
             flag.wait()
             del sys.argv[1:]
-            threads = [i for i in t if i.isAlive()]
+            threads = [i for i in threads if i.isAlive()]
 
 
 def executeData(file, flag, stop):
