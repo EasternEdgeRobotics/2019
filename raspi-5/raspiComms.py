@@ -90,7 +90,7 @@ def receiveData():
         threads = [i for i in threads if i.isAlive()]
 
 
-def executeData(file, flag):
+def executeData(file, flag, stop):
     try:
         exec(open(file).read(), {"send": send, "flag": flag, "stop": stop})
     except Exception as e:
