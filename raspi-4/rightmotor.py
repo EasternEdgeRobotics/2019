@@ -6,11 +6,20 @@ import time
 # Serial setup
 ser = serial.Serial('/dev/ttyACM0', 115200)
 
-# Set motor direction
-direction = sys.argv[1]
-
 # Set motor speed (timings are based on this value)
 duty = 70
+
+#direction = threadData['claw']
+
+#while True:
+#   if direction == threadData['claw']:
+#        time.sleep(0.05)
+#       continue
+#
+#    direction = threadData['claw']
+
+# Set motor direction
+direction = sys.argv[1]
 
 # Open or close motor
 if (direction == "open"):

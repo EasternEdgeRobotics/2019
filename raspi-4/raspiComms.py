@@ -6,6 +6,7 @@ import queue
 from RaspiGlobals import GLOBALS
 
 send = queue.Queue()
+threadData = {"claw": GLOBALS['claw-pos'], "pebbles": GLOBALS['pebbles-pos']}
 threads = []
 stop_events = []
 
@@ -70,24 +71,28 @@ def receiveData():
         print(data)
         # Identify the file name and arguments
         nextSpace = data.find(".py") + 3
-        file = data[0:nextSpace]
-        lastSpace = nextSpace + 1
-        nextSpace = data.find(" ", lastSpace)
-        while nextSpace != -1:
-            sys.argv.append(data[lastSpace:nextSpace])
+        if nextSpace == 2:
+            nextSpace = data.find(" ")
+            threadData[data[:nextSpace]] = data[nextSpace + 1:]
+        else:
+            file = data[0:nextSpace]
             lastSpace = nextSpace + 1
             nextSpace = data.find(" ", lastSpace)
-        sys.argv.append(data[lastSpace:])
+            while nextSpace != -1:
+                sys.argv.append(data[lastSpace:nextSpace])
+                lastSpace = nextSpace + 1
+                nextSpace = data.find(" ", lastSpace)
+            sys.argv.append(data[lastSpace:])
 
-        # Setup threading for receiving data
-        flag = threading.Event()
-        stop = threading.Event()
-        threads.append(threading.Thread(target=executeData, args=(file, flag, stop,)))
-        stop_events.append(stop)
-        threads[len(threads) - 1].start()
-        flag.wait()
-        del sys.argv[1:]
-        threads = [i for i in t if i.isAlive()]
+            # Setup threading for receiving data
+            flag = threading.Event()
+            stop = threading.Event()
+            threads.append(threading.Thread(target=executeData, args=(file, flag, stop,)))
+            stop_events.append(stop)
+            threads[len(threads) - 1].start()
+            flag.wait()
+            del sys.argv[1:]
+            threads = [i for i in t if i.isAlive()]
 
 
 def executeData(file, flag):
@@ -100,6 +105,15 @@ def executeData(file, flag):
 
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
+stopleft = threading.Event()
+stopright = threading.Event()
+stoppebbles = threading.Event()
+threads.append(threading.Thread(target='leftmotor.py', args=('leftmotor.py', stopleft, threadData)))
+threads.append(threading.Thread(target='rightmotor.py', args=('rightmotor.py', stopright, threadData)))
+threads.append(threading.Thread(target='pebbles.py', args=('pebbles.py', stoppebbles, threadData)))
+stop_events.append(stopleft)
+stop_events.append(stopright)
+stop_events.append(stoppebbles)
 
 if __name__ == "__main__":
     threads[0].start()

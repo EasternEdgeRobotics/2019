@@ -14,5 +14,7 @@
     "aft-port-horz-r": 7,
     "aft-star-horz-r": 17,
     "fore-camera-r": 8,
-    "aft-camera-r": 11
+    "aft-camera-r": 11,
+    "claw-pos": "open",
+    "pebbles-pos": "open"
 }
