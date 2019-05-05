@@ -1,6 +1,104 @@
 {
-    "axes":["surge", "sway", "heave", "pitch", "roll", "yaw", "rotateCam1", "rotateCam2"],
-    "button":["surge_forewards", "surge_backwards", "heave_up", "heave_down", "sway_left", "sway_right", "yaw_cw", "yaw_ccw", "pitch_up", "pitch_down", "roll_cw", "roll_ccw", "claws", "light", "trout_fry"],
-    "buttonToggle":["invert_global", "invert_surge", "invert_sway", "invert_yaw", "invert_heave", "invert_pitch", "invert_roll", "light", "trout_fry"]
+    "axes":{
+        "surge":{
+            "on-enable": true
+        },
+        "sway":{
+            "on-enable": true
+        },
+        "heave":{
+            "on-enable": true
+        },
+        "pitch":{
+            "on-enable": true
+        },
+        "roll":{
+            "on-enable": true
+        },
+        "yaw":{
+            "on-enable": true
+        },
+        "rotateCam1":{
+            "on-enable": false
+        },
+        "rotateCam2":{
+            "on-enable": false
+        }},
+    "button":{
+        "surge_forewards":{
+            "on-enable": true
+        },
+        "surge_backwards":{
+            "on-enable": true
+        },
+        "heave_up":{
+            "on-enable": true
+        },
+        "heave_down":{
+            "on-enable": true
+        },
+        "sway_left":{
+            "on-enable": true
+        },
+        "sway_right":{
+            "on-enable": true
+        },
+        "yaw_cw":{
+            "on-enable": true
+        },
+        "yaw_ccw":{
+            "on-enable": true
+        },
+        "pitch_up":{
+            "on-enable": true
+        },
+        "pitch_down":{
+            "on-enable": true
+        },
+        "roll_cw":{
+            "on-enable": true
+        },
+        "roll_ccw":{
+            "on-enable": true
+        },
+        "claws":{
+            "on-enable": false
+        },
+        "light":{
+            "on-enable": false
+        },
+        "trout_fry":{
+            "on-enable": false
+        }
+    },
+    "buttonToggle":{
+        "invert_global":{
+            "on-enable": false
+        },
+        "invert_surge":{
+            "on-enable": false
+        },
+        "invert_sway":{
+            "on-enable": false
+        },
+        "invert_yaw":{
+            "on-enable": false
+        },
+        "invert_heave":{
+            "on-enable": false
+        },
+        "invert_pitch":{
+            "on-enable": false
+        },
+        "invert_roll":{
+            "on-enable": false
+        },
+        "light":{
+            "on-enable": false
+        },
+        "trout_fry":{
+            "on-enable": false
+        }
+    }
     
 }

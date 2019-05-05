@@ -78,8 +78,10 @@
           if($("#" + control).length){
             controls[control] = value * ($("#" + control).val()/100);
           }
-          if($("#pause")[0].checked != true){
-            controls[control] *= 0;
+          if($("#pause")[0].checked != true && control != null){
+            //console.log(controlOptions.get(control));
+            if(controlOptions.get(control)["on-enable"] == true)
+              controls[control] *= 0;
           }
         });
         console.log(controls);

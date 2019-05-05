@@ -77,6 +77,17 @@ class ControlOptions{
         return returnString;
     }
 
+    get(name){
+        if(name in this._axes){
+            return this._axes[name];
+        }else if(name in this._buttons){
+            return this._buttons[name];
+        }else if(name in this._toggleButtons){
+            return this._toggleButtons[name];
+        }
+        return false
+    }
+
     /*isHoldControl(name){
         var returnVal = false;
         $.each(this._holdButtons, function(control, _){
