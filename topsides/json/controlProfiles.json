@@ -164,5 +164,38 @@
             }
         ],
         "modified": "2019-11-2"
+    },
+    {
+        "name": "Troake Test",
+        "id": 8,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    "claws",
+                    null,
+                    "",
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "axes": [
+                    "sway",
+                    "surge",
+                    null,
+                    null,
+                    null,
+                    null
+                ],
+                "friendly_name": "Joystick"
+            }
+        ],
+        "modified": "2019-41-4"
     }
 ]

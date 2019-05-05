@@ -82,6 +82,7 @@
             controls[control] *= 0;
           }
         });
+        console.log(controls);
         runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
       }, 30);
     });

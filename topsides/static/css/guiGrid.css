@@ -1,0 +1,46 @@
+.dashboard-adjust{
+    padding-top: 80px;
+}
+
+.panel{
+    margin: 10px;
+    padding: 0px;
+}
+
+.grid-item--width12{
+    width: 100%;
+}
+.grid-item--width11{
+    width: 91.6%;
+}
+.grid-item--width10{
+    width: 83%;
+}
+.grid-item--width9{
+    width: 73%;
+}
+.grid-item--width8{
+    width: 66%;
+}
+.grid-item--width7{
+    width: 58%;
+}
+.grid-item--width6{
+    width: 50%;
+}
+.grid-item--width5{
+    width: 41.6%;
+}
+.grid-item--width4{
+    width: 33.3%;
+}
+.grid-item--width3{
+    width: 24%;
+}
+.grid-item--width2{
+    width: 16.6%;
+}
+.grid-sizer,
+.grid-item--width1{
+    width: 8.2%;
+}

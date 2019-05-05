@@ -11,3 +11,4 @@ raspi/print.py
 .vs/
 # Themes
 topsides/static/css/themes/loaded/
+Calypso.stl

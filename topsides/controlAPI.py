@@ -67,7 +67,7 @@ def sendControlValues():
     """
     try:
         data = request.json
-        print("1")
+        #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
         heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0))
@@ -78,6 +78,10 @@ def sendControlValues():
         sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0))
         rotateCam1 = data.get("rotateCam1")
         rotateCam2 = data.get("rotateCam2")
+
+        claws = data.get("claws", 0)
+        light = data.get("light", 0)
+        trout_fry = data("trout_fry", 0)
 
         # Handling Movement Axes Controls
         thrusterData = {
@@ -92,12 +96,19 @@ def sendControlValues():
             "aft-star-horz": -surge - yaw + sway,
 
             "fore-camera": rotateCam1,
-            "aft-camera": rotateCam2,
+            "aft-camera": rotateCam2
         }
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
             val = thrusterData[control]
             topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+
+            topsidesComms.putMessage("claw " + ("close" if claws is 1 else "open"), "raspi-4")
+            topsidesComms.putMessage("led.py " + ("100" if light is 1 else "0"))
+            topsidesComms.putMessage("pebbles " + ("open" if trout_fry is 1 else "close"), "raspi-4")
+            
+
+        
         return "good"
 
     except(Exception):

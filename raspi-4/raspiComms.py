@@ -97,7 +97,6 @@ def executeData(file, flag):
         send.put(str(e))
         flag.set()
 
-
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
 
