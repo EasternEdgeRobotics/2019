@@ -3,8 +3,6 @@ import socket
 import sys
 import queue
 import threading
-import json
-import botAPI
 from TopsidesGlobals import GLOBALS
 
 # Change IP addresses for a production or development environment
@@ -54,12 +52,6 @@ def receiveData():
         outputData = outputData.decode("utf-8")
         if (outputData == "exit"):
             break
-        elif ("telemetry" in outputData):
-            print("yeet")
-            print(type(outputData))
-            outputData = outputData.replace("'", '"')
-            botAPI.data = json.loads(str(outputData))["telemetry"]
-            botAPI.emitTelemetryData()
         print(outputData)
         received.put(outputData)
 
