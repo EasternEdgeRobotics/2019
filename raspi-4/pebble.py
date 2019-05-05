@@ -7,7 +7,7 @@ import time
 ser = serial.Serial('/dev/ttyACM0', 115200)
 
 # Set motor speed (timings are based on this value)
-duty = 70
+duty = 80
 
 #direction = threadData['pebbles']
 
@@ -30,7 +30,7 @@ if (direction == "open"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.1)  # TODO: Figure out this time
+    time.sleep(0.01)  # TODO: Figure out this time
 
     # Stop motor
     send = ("{ motor:1" + ", " + "1" + ", " + "0" + " }")
@@ -47,7 +47,7 @@ elif (direction == "close"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.1)  # TODO: Figure out this time
+    time.sleep(0.01)  # TODO: Figure out this time
 
     # Stop motor
     send = ("{ motor:1" + ", " + "1" + ", " + "0" + " }")

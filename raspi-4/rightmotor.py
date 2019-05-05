@@ -7,7 +7,7 @@ import time
 ser = serial.Serial('/dev/ttyACM0', 115200)
 
 # Set motor speed (timings are based on this value)
-duty = 70
+duty = 80
 
 #direction = threadData['claw']
 
@@ -24,16 +24,16 @@ direction = sys.argv[1]
 # Open or close motor
 if (direction == "open"):
     # Move motor
-    send = ("{ motor:3" + ", " + "1" + ", " + str(duty) + " }")
+    send = ("{ motor:4" + ", " + "1" + ", " + str(duty) + " }")
     if ser.isOpen() is False:
         ser.open()
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.2)  # TODO: Figure out this time
+    time.sleep(0.5)  # TODO: Figure out this time
 
     # Stop motor
-    send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
+    send = ("{ motor:4" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
     ser.flush()
 
@@ -41,16 +41,16 @@ if (direction == "open"):
     ser.close()
 elif (direction == "close"):
     # Move motor
-    send = ("{ motor:3" + ", " + "0" + ", " + str(duty) + " }")
+    send = ("{ motor:4" + ", " + "0" + ", " + str(duty) + " }")
     if ser.isOpen() is False:
         ser.open()
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(0.2)  # TODO: Figure out this time
+    time.sleep(0.5)  # TODO: Figure out this time
 
     # Stop motor
-    send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
+    send = ("{ motor:4" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
     ser.flush()
 
