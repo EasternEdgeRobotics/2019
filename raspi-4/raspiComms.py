@@ -3,9 +3,7 @@ import socket
 import sys
 import threading
 import queue
-import time
 from RaspiGlobals import GLOBALS
-import telemetry.getAccel
 
 send = queue.Queue()
 threads = []
@@ -104,5 +102,4 @@ threads.append(threading.Thread(target=sendData))
 
 if __name__ == "__main__":
     threads[0].start()
-    threads[1].start()
     receiveData()
