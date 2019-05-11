@@ -10,11 +10,6 @@
     width: 100px;
 }
 
-.pidSlider {
-  height: 30px;
-  width: 100px;
-}
-
 input[type=range][orient=vertical] {
     -webkit-appearance: slider-vertical;
 }
