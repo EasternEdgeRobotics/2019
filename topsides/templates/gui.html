@@ -35,7 +35,7 @@
     $(document).ready(function() {
       // Set up Notification Handler
       controlHandler.registerNotificationHandler(notificationHandler);
-      
+
       // Handle sliders
       var sliderInputs = $(".slider");
       sliderInputs.on('input', function() {
@@ -78,13 +78,10 @@
           if($("#" + control).length){
             controls[control] = value * ($("#" + control).val()/100);
           }
-          if($("#pause")[0].checked != true && control != null){
-            //console.log(controlOptions.get(control));
-            if(controlOptions.get(control)["on-enable"] == true)
-              controls[control] *= 0;
+          if($("#pause")[0].checked != true){
+            controls[control] *= 0;
           }
         });
-        console.log(controls);
         runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
       }, 30);
     });
@@ -100,17 +97,17 @@
           <h5 class="card-header">Power In Six Degrees Of Freedom</h5>
           <div class="card-body">
             <label for="surge">Surge <span id="outputsurge">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="surge" name="surge" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="surge" name="surge" orient="vertical">
             <label for="heave">Heave <span id="outputheave">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="heave" name="heave" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="heave" name="heave" orient="vertical">
             <label for="sway">Sway <span id="outputsway">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="sway" name="sway" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="sway" name="sway" orient="vertical">
             <label for="yaw">Yaw <span id="outputyaw">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="yaw" name="yaw" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="yaw" name="yaw" orient="vertical">
             <label for="pitch">Pitch <span id="outputpitch">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="pitch" name="pitch" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="pitch" name="pitch" orient="vertical">
             <label for="roll">Roll <span id="outputroll">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="roll" name="roll" orient="vertical">
+            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
             <label for="pause">Enable</label>
             <input type="checkbox" id="pause" />
           </div>

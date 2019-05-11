@@ -1,5 +1,5 @@
 {
-    "ipHost": "192.168.88.5",
+    "ipHost": "192.168.88.4",
     "ipHost-dev": "localhost",
     "portHost": 5000,
     "ipSend": "192.168.88.2",
@@ -14,5 +14,7 @@
     "aft-port-horz-r": 7,
     "aft-star-horz-r": 17,
     "fore-camera-r": 8,
-    "aft-camera-r": 11
+    "aft-camera-r": 11,
+    "claw-pos": "open",
+    "pebbles-pos": "open"
 }
