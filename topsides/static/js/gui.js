@@ -45,18 +45,29 @@ function getPresetValue(inputAttribute, inputValue) {
 *   id from gui.html to display to
 */
 function startCountDown(duration, display) {
-  var timer = duration, minutes, seconds;
-  setInterval(function () {
-      minutes = parseInt(timer / 60, 10);
-      seconds = parseInt(timer % 60, 10);
+    var timer = duration, minutes, seconds;
+      trigger = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
 
-      minutes = minutes < 10 ? "0" + minutes : minutes;
-      seconds = seconds < 10 ? "0" + seconds : seconds;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
 
-      display.text(minutes + ":" + seconds);
+        display.text(minutes + ":" + seconds);
 
-      if (--timer < 0) {
-          timer = duration;
-      }
-  }, 1000);
-}
+        if (--timer < 0) {
+            timer = duration;
+        }
+      }, 1000);
+  }
+
+  /**
+  *  Stops the countdown timer.
+  *
+  *  @param {string} display
+  *   id from gui.html to display to
+  */
+  function stopCountDown(display) {
+      display.text("00:00");
+      clearInterval(trigger);
+  }

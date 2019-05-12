@@ -45,11 +45,20 @@
       });
 
       // Handle count down timer
-      var timer = $('#startTimer');
+      var timer = $('#toggleTimer');
+      var trigger;
+      var count;
       timer.click(function() {
-        var fifteenMinutes = 60 * 15,
-        display = $('#timerText');
-        startCountDown(fifteenMinutes, display);
+        if (count === 0) {
+          count = 1;
+          display = $('#timerText');
+          stopCountDown(display)
+        }
+        else {
+          count = 0;
+          display = $('#timerText');
+          startCountDown(900, display);
+        }
       });
 
       // Handle preset slider button
@@ -131,7 +140,7 @@
           <h5 class="card-header">Count Down Timer</h5>
           <div class="card-body">
             Run ends in <span id="timerText">00:00</span> minutes
-            <button type="button" class="btn btn-primary" id="startTimer">Start Timer</button>
+            <button type="button" class="btn btn-primary" id="toggleTimer">Toggle Timer</button>
           </div>
         </div>
 
