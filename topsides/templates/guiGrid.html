@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="{{url_for('static', filename='css/snackbar.css')}}" type="text/css" />
         <link rel="stylesheet" href="{{url_for('static', filename='css/guiGrid.css')}}" type="text/css" />
 
-        <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/lib/jquery-3.4.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/bootstrap.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/socket.io.slim.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/three.min.js')}}" type="text/javascript"></script>
@@ -48,11 +48,11 @@
                 notificationHandler.localNotification("Profile set to " + controlHandler.profile.name, "info");
                 });
             }
-        
+
             $(document).ready(function() {
                 // Set up Notification Handler
                 controlHandler.registerNotificationHandler(notificationHandler);
-                
+
                 // Handle sliders
                 var sliderInputs = $(".slider");
                 sliderInputs.on('input', function() {
@@ -60,7 +60,7 @@
                 var inputValue = $( this ).val();
                 getNewSliderValues(inputAttribute, inputValue)
                 });
-        
+
                 // Handle count down timer
                 var timer = $('#startTimer');
                 timer.click(function() {
@@ -68,7 +68,7 @@
                 display = $('#timerText');
                 startCountDown(fifteenMinutes, display);
                 });
-        
+
                 // Handle preset slider button
                 var preset = $('#presetButton');
                 preset.click(function() {
@@ -76,7 +76,7 @@
                 var inputValue = $('#presetValue').val();
                 getPresetValue(inputAttribute, inputValue);
                 });
-        
+
                 // Handle present button slider enter in input
                 $('#presetValue').keypress(function (e) {
                 var key = e.which;
@@ -85,7 +85,7 @@
                     return false;
                 }
                 });
-        
+
                 // Handle joystick input
                 setInterval(function(){
                 var controls = controlHandler.parseControlsIfChanged();
