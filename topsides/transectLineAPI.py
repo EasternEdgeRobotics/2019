@@ -7,8 +7,8 @@ from detectCracks import detectCracks
 
 cam = None
 #cam_connection = 0
-#cam_connection = "udpsrc port=4444 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER"
-cam_connection = "static/video/lineVideo.MOV"
+cam_connection = "udpsrc port=4444 ! application/x-rtp,encoding-name=H264,payload=96 ! rtph264depay ! avdec_h264 ! videoconvert ! appsink', cv2.CAP_GSTREAMER"
+#cam_connection = "static/video/lineVideo.MOV"
 
 frameWidth = 0
 frameHeight = 0
@@ -155,51 +155,41 @@ def loop():
                 checkDistance(contour)
 
         #maskBlack = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        blackhsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        maskBlack = cv2.inRange(blackhsv, black["low"], black["high"])
-        maskBlack = cv2.GaussianBlur(maskBlack,(5,5),0)
+        #blackhsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        #maskBlack = cv2.inRange(blackhsv, black["low"], black["high"])
+        #maskBlack = cv2.GaussianBlur(maskBlack,(5,5),0)
         
-        #maskBlack = cv2.bitwise_not(maskBlack)
-        #maskBlack = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        contours, h = cv2.findContours(maskBlack, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if(area > 5000):
-                x,y,w,h = cv2.boundingRect(contour)
-                cv2.drawContours(frame, contour, -1, (255,255,0), 3)
-                cv2.putText(frame, str(min(h/w, w/h)), (cx, cy),cv2.FONT_HERSHEY_PLAIN, 6, (0,0,0))
-                cx = 0
-                cy = 0
-                M = cv2.moments(contour)
-                if(M["m00"] > 0):
-                    cx = int(M["m10"]/M["m00"])
-                    cy = int(M["m01"]/M["m00"])
-                    cv2.circle(frame, (cx,cy), 5, (0,255,0), -1)
+        if(blackInsideRectangle(frame, int(frameWidth/2 - 200), 0, 2, int(frameHeight/2) - 100) and currentOrientation == "vertical"):
+            if(stopMoveGrid and lastMoveGrid is not "up"):
+                stopMoveGrid = False
+            elif(currentDirection == "up" and not stopMoveGrid):
+                lastMoveGrid = "up"
+                stopMoveGrid = True
+                print("moved up")
 
-                if(blackInsideRectangle(int(frameWidth/2 - 200), 0, 2, frameHeight) and currentOrientation == "vertical"):
-                        if(stopMoveGrid and currentDirection == "down"):
-                            stopMoveGrid = False
-                        elif(currentDirection == "up" and not stopMoveGrid):
-                            lastMoveGrid = "up"
-                            stopMoveGrid = True
-                            print("moved up")
-                        elif(currentDirection == "down" and not stopMoveGrid):
-                            lastMoveGrid = "down"
-                            stopMoveGrid = True
-                            print("moved down")
+        elif (blackInsideRectangle(frame, int(frameWidth/2 - 200), int(frameHeight/2 + 100), 2, int(frameHeight/2 - 100)) and currentOrientation == "vertical"):
+            if(stopMoveGrid and lastMoveGrid is not "down"):
+                stopMoveGrid = False
+            elif(currentDirection == "down" and not stopMoveGrid):
+                lastMoveGrid = "down"
+                stopMoveGrid = True
+                print("moved down")
 
-                elif (blackInsideRectangle(0, int(frameHeight/2 - 200), frameWidth, 2) and currentOrientation == "horizontal"):
-                        if(stopMoveGrid and currentDirection == "right"):
-                            stopMoveGrid = False
-                        elif(currentDirection == "left" and not stopMoveGrid):
-                            lastMoveGrid = "left"
-                            stopMoveGrid = True
-                            print("moved left")
-                        elif(currentDirection == "right" and not stopMoveGrid):
-                            lastMoveGrid = "right"
-                            stopMoveGrid = True
-                            print("moved right")
+        elif(blackInsideRectangle(frame, 0, int(frameHeight/2 - 200), int(frameWidth/2 - 00), 2) and currentOrientation == "horizontal"):
+            if(stopMoveGrid and lastMoveGrid is not "left"):
+                stopMoveGrid = False
+            elif(currentDirection == "left" and not stopMoveGrid):
+                lastMoveGrid = "left"
+                stopMoveGrid = True
+                print("moved left")
 
+        elif(blackInsideRectangle(frame, int(frameWidth/2 + 100), int(frameHeight/2 - 200), int(frameWidth/2 - 100), 2) and currentOrientation == "horizontal"):
+            if(stopMoveGrid and lastMoveGrid is not "right"):
+                stopMoveGrid = False
+            elif(currentDirection == "right" and not stopMoveGrid):
+                lastMoveGrid = "right"
+                stopMoveGrid = True
+                print("moved right")
 
 
         if(stopDirectionSwitchTime <= 0):
@@ -269,7 +259,7 @@ def redInsideRectangle(matRed, x, y, w, h):
 def blackInsideRectangle(frame, x, y, w, h):
     for xx in range(x,x+w-1):
         for yy in range(y, y+h-1):
-            if(inColorRange(matRed[yy,xx], black["low"], black["high"])):
+            if(inColorRange(frame[yy,xx], black["low"], black["high"])):
                 return True
     return False
 

@@ -13,7 +13,7 @@ def detectCracks(frame):
     hsv = cv.cvtColor(blur, cv.COLOR_BGR2HSV)
 
     # create blue boundaries
-    lower_blue = np.array([100,100,30])
+    lower_blue = np.array([100,100,50])
     upper_blue = np.array([150,255,255])
 
     # create mask based on blue detection
@@ -22,21 +22,25 @@ def detectCracks(frame):
 
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     corners = cv.goodFeaturesToTrack(mask, 4, 0.01, 10)
+    cord = []
+    cv.imshow("blue", mask)
     if corners is not None:
         corners = np.int0(corners)
-        cord = []
         for i in corners:
             x,y = i.ravel()
             cord.append([x, y])
-            cv.circle(frame, (x, y), 3, 255, -1)
+            cv.circle(frame, (x, y), 3, (0,0,255), -1)
 
+    if(len(cord) < 4):
+        return -1
+        
     cord.sort(key=sort)
 
     if cord[0][0] > cord[1][0]:
         swap(cord, 0, 1)
     if cord[2][0] > cord[3][0]:
         swap(cord, 2, 3)
-    print(cord)
+    #print(cord)
 
     len1 = pythagC((cord[1][0]-cord[0][0]), (cord[1][1]-cord[0][1]))
     len2 = pythagC((cord[3][0]-cord[2][0]), (cord[3][1]-cord[2][1]))
@@ -54,11 +58,11 @@ def detectCracks(frame):
 
     length = ratio * 1.9
     length = length / 0.1
-    length = round(length)
+    #length = round(length)
     length = length * 0.1
 
-    cv.putText(frame, str(length) + ' cm', (20, 400), cv.FONT_HERSHEY_SIMPLEX, 3, (255,255,255), 2, cv.LINE_AA)
-
+    #cv.putText(frame, str(length) + ' cm', (20, 400), cv.FONT_HERSHEY_SIMPLEX, 3, (255,255,255), 2, cv.LINE_AA)
+    """
     # show the final output(s)
     while(True):
         cv.imshow('frame', frame)
@@ -68,7 +72,7 @@ def detectCracks(frame):
         k = cv.waitKey(5) & 0xFF
         if k == 27:
             break
-    
+    """
     return str(length)
 
 def sort(elem):
