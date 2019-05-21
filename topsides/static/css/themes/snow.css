@@ -258,7 +258,7 @@ body[theme='@theme'] .badge-dark{}
 
 
 body[theme='@theme'] .btn{
-    border: none !important;
+    /*border: none !important;*/
 }
 
 body[theme='@theme'] .btn-primary{
