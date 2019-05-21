@@ -69,7 +69,7 @@ loads pages outside the dashboard
 @dashboard_api.route("/dashboard/ext")
 @adminAPI.protected(permissions=["CONTROL"], redirectB=True)
 def loadExternalPage():
-    return render_template(request.args.get("name"))
+    return render_template("dashboard/dashboard-external.html") + render_template(request.args.get("name"))
 
 """
 special case for login

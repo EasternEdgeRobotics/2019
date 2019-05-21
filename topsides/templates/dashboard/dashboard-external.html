@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}" type="text/css" />
+
+    <script>
+        function returnToDashboard() {
+            window.location.href = "/";
+        }
+    </script>
+
+    <style>
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-header">
+        <div class='head-content'>
+            <img src='/static/res/img/eer-logo.png' class="dashboard-logo" />
+            <button class="btn btn-primary" onclick="returnToDashboard();">Return To Dashboard</button>
+            <div class="dashboard-drop-down"></div>
+        </div>
+    </div>
+</body>
+
+</html> 
