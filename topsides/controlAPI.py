@@ -70,12 +70,12 @@ def sendControlValues():
         #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
-        heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0))
-        pitch = data.get("pitch", data.get("pitch_up", 0) - data.get("pitch_down", 0))
-        roll = data.get("roll", data.get("roll_cw", 0) - data.get("roll_ccw", 0))
-        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0))
-        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0))
-        sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0))
+        heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0)) * GLOBALS["thrusterSafety"]
+        pitch = data.get("pitch", data.get("pitch_up", 0) - data.get("pitch_down", 0)) * GLOBALS["thrusterSafety"]
+        roll = data.get("roll", data.get("roll_cw", 0) - data.get("roll_ccw", 0)) * GLOBALS["thrusterSafety"]
+        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0)) * GLOBALS["thrusterSafety"]
+        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0)) * GLOBALS["thrusterSafety"]
+        sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0)) * GLOBALS["thrusterSafety"]
         rotateCam1 = data.get("rotateCam1")
         rotateCam2 = data.get("rotateCam2")
 
@@ -98,14 +98,16 @@ def sendControlValues():
             "fore-camera": rotateCam1,
             "aft-camera": rotateCam2
         }
+
+
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
             val = thrusterData[control]
             topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
-            topsidesComms.putMessage("claw " + ("close" if claws is 1 else "open"), "raspi-4")
-            topsidesComms.putMessage("led.py " + ("100" if light is 1 else "0"))
-            topsidesComms.putMessage("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
+        topsidesComms.putMessage("claw " + ("close" if claws is 1 else "open"), "raspi-4")
+        topsidesComms.putMessage("led.py " + ("100" if light is 1 else "0"))
+        topsidesComms.putMessage("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
             
 
         
