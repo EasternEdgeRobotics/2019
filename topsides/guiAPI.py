@@ -1,5 +1,6 @@
 """GUI."""
 from flask import Blueprint, render_template, jsonify, request
+from adminAPI import protected
 
 import math
 import time
@@ -13,6 +14,7 @@ gui_api = Blueprint("gui_api", __name__)
 
 
 @gui_api.route("/gui")
+@protected
 def returnGuiPage():
     """
     Return page for the control gui.

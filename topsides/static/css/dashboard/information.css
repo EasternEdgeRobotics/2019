@@ -50,3 +50,13 @@ canvas {
     font-size: 24px;
     vertical-align: top;
 }
+
+.data-indicator[value-type="meters"]::after{
+    content: "m";
+    font-size: 24px;
+}
+
+.data-indicator[value-type="kpa"]::after{
+    content: "kPa";
+    font-size: 24px;
+}

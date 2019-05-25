@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Start / Restart Script
 
+# Networking
+IP5="192.168.88.5" # Raspberry pi with maestro ip address
+IP4="192.168.88.4" # Raspberry pi with tooling board ip address
+
 # Open Google Chrome on localhost if it is not already running
 if ps ax | grep -v grep | grep "chrome" > /dev/null
 then
@@ -10,8 +14,11 @@ else
 fi
 
 # Start / restart raspberry pi communications
-sshpass -p raspberry ssh pi@192.168.88.5 /bin/sh -c '"pkill -f raspiComms.py"'
-xterm -geometry 93x31+0+0 -e sshpass -p raspberry ssh pi@192.168.88.5 /bin/sh -c '"cd /home/pi/raspi/ && python3 raspiComms.py"' &
+sshpass -p raspberry ssh pi@${IP5} /bin/sh -c '"pkill -f raspiComms.py"'
+xterm -geometry 93x31+0+0 -e sshpass -p raspberry ssh pi@${IP5} /bin/sh -c '"cd /home/pi/raspi/ && python3 raspiComms.py"' &
+
+sshpass -p raspberry ssh pi@${IP4} /bin/sh -c '"pkill -f raspiComms.py"'
+xterm -geometry 93x31+0+0 -e sshpass -p raspberry ssh pi@${IP4} /bin/sh -c '"cd /home/pi/raspi/ && python3 raspiComms.py"' &
 
 # Start / restart topsides server
 sudo pkill -f main.py

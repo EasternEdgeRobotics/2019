@@ -49,6 +49,10 @@ class ControlHandler{
 
         this._toggledControls = {};
         this._previousToggledButtons = [{},{},{},{}];
+
+        //this._holdControls = {};
+        //this._previousHoldControls = [{},{},{},{}];
+
         $(document).ready(function(){
             $('body').append("<div id='popupAssignGamepads' style='display:none'><div class='black-overlay'></div><p class='panel' id='assignGamepadsText'></p></div>");
         });
@@ -90,7 +94,9 @@ class ControlHandler{
         var _profile = this._profile;
         var _gamepads = this._gamepads;
         var _previousToggledButtons = this._previousToggledButtons;
+        //var _previousHoldControls = this._previousHoldControls;
         var _toggledControls = this._toggledControls;
+        //var _holdControls = this._holdControls;
         var _controloptions = this._CONTROLOPTIONS;
 
 
@@ -106,13 +112,12 @@ class ControlHandler{
                         });
 
                         $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){ //loop through each button controls of the profile
-                            if(mapped_control != ""){//if the button is mapped to something aka not empty string
+                            if(mapped_control != "" && mapped_control != null){//if the button is mapped to something aka not empty string
                                 var value = gamepad.buttons[button_index].value;
-                                if(_controloptions.toggleButtons.includes(mapped_control)){
+                                if(_controloptions.toggleButtons.hasOwnProperty(mapped_control)){
                                     if(_previousToggledButtons[gamepad_index][mapped_control] != undefined){
                                         if(value == 1){
                                             if(_previousToggledButtons[gamepad_index][mapped_control] != value){
-                                                console.log("toggled");
                                                 _toggledControls[mapped_control] = Math.abs(_toggledControls[mapped_control] - 1);
                                             }
                                         }
@@ -122,12 +127,19 @@ class ControlHandler{
                                         _toggledControls[mapped_control] = 0;
                                     }
                                     parsedControls[mapped_control] = _toggledControls[mapped_control];
-                                }
+                                }/*else if(_controloptions.isHoldControl(mapped_control) == true){
+                                    if(value == 1){
+                                        parsedControls[_controloptions.holdButtons[mapped_control].hold] = 1;
+                                        parsedControls[_controloptions.holdButtons[mapped_control].release] = 0;
+                                    }else{
+                                        parsedControls[_controloptions.holdButtons[mapped_control].release] = 1;
+                                        parsedControls[_controloptions.holdButtons[mapped_control].hold] = 0;
+                                    }
+                                }*/
                                 
                                 else{
                                     parsedControls[mapped_control] = value; //set the control option mapped to the value of the gamepad
                                 }
-
                             }
                         });
                     }
@@ -159,6 +171,7 @@ class ControlHandler{
         }
         if(JSON.stringify(parsed) != this._previous){
             this._previous = JSON.stringify(parsed);
+            console.log(parsed);
             return parsed;
         }
 

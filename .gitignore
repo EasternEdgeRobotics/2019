@@ -9,5 +9,6 @@ raspi/print.py
 # Visual Studio
 .vscode/
 .vs/
-#Themes
-**/themes/loaded
+# Themes
+topsides/static/css/themes/loaded/
+Calypso.stl

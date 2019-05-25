@@ -1,31 +1,34 @@
-var GRAPH_MAX_DATA = 200;
-
 class Graph{
-    constructor(id, canvasID, color = "#ffffff"){
-        var numOfLines = 1;
+    constructor(canvasID, color = "#ffffff", max = 100, labels = []){
         let ctx = document.getElementById(canvasID).getContext("2d");
-        
+
+        if(labels.length <= 0)
+            for(var i = 0 ; i < 100 ; i++)labels.push("");
+
+
         this.color = color;
-        this._id = id;
         this._data = [];
+        this._max = max;
+        this._function = function(){};
         this._chart = new Chart(ctx,
         {
             type: 'line',
             data: {
-                labels: [],
-                datasets:[]
+                labels: labels,
+                datasets: []
             },
             options:{
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero:true,
-                            max: 50,
-                            fontColor: color
+                            min: 0,
+                            fontColor: color,
+                            fontSize: 18
                         },
                         gridLines: {
                             //display: false,
-                            color: color,
+                            color: color
                         },
                         scaleLabel:{
                             display: false
@@ -40,7 +43,9 @@ class Graph{
                         }
                     }]
                 },
-                animation: false,
+                animation:{
+                    duration: 0
+                },
                 // responsive: true,
                 maintainAspectRatio: false,
                 legend: {
@@ -48,36 +53,64 @@ class Graph{
                 },
                 tooltips: {
                     enabled: false
+                },
+                layout:{
+                    padding:{
+                        top: 25,
+                        right: 0,
+                        left: 0,
+                        bottom: 0
+                    }
                 }
             }
             
         });
+    }
 
-        for(let i = 0 ; i < numOfLines ; i++){
-            this._chart.data.datasets.push({
-                label: "",
-                data: [],
-                pointRadius: 0,
-                borderColor: this.color,
-                borderWidth: 5,
-                fill: false
-            });
-            this._chart.update();
+    line(lineObj){
+        if(lineObj.data == null)
+            lineObj.data = [];
+        if(lineObj.data.length <= 0)
+            for(var i = 0 ; i < 100 ; i++)lineObj.data.push(null);
+
+        this._chart.data.datasets.push(lineObj);
+
+        this._chart.update();
+        return this;
+    }
+
+    maxPoints(max){
+        if(max == undefined)
+            return this._max;
+        this._max = max;
+        return this;
+    }
+
+    run(f){
+        if(f instanceof Function){
+            this._function = f;
+            this._function();
         }
+        return this;
     }
 
-    get id(){
-        return this._id;
+    delete(f){
+        if(f instanceof Function){
+            this._delete = f;
+        }else if(f == undefined && this._delete instanceof Function){
+            this._delete();
+        }
+        return this;
     }
 
-    addData(num){
-        if(this._chart.data.datasets[0].data.length >= GRAPH_MAX_DATA){
-            this._chart.data.datasets[0].data.shift();
+    addData(num, label, graph){
+        if(this._chart.data.datasets[graph].data.length >= this._max){
+            this._chart.data.datasets[graph].data.shift();
             this._chart.data.labels.shift();
         }
-        this._chart.data.datasets[0].data.push(num);
-        this._chart.data.labels.push("");
-        
+        this._chart.data.datasets[graph].data.push(num);
+        this._chart.data.labels.push(label);
+
         this._chart.update();
     }
 }

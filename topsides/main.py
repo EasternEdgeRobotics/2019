@@ -6,6 +6,7 @@ import random
 from profileAPI import profile_api
 from controlAPI import controlAPI
 import notificationAPI
+import botAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 import dashboardAPI
@@ -34,10 +35,12 @@ app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
 app.register_blueprint(themeAPI.themeAPI())
+app.register_blueprint(botAPI.bot_api)
 
 
 #Register socket events
 notificationAPI.socketSetup(socketio)
+botAPI.socketSetup(socketio)
 
 
 @app.after_request
