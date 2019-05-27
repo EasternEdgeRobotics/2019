@@ -70,14 +70,17 @@ def sendControlValues():
         #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
-        heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0)) * GLOBALS["thrusterSafety"]
-        pitch = data.get("pitch", data.get("pitch_up", 0) - data.get("pitch_down", 0)) * GLOBALS["thrusterSafety"]
-        roll = data.get("roll", data.get("roll_cw", 0) - data.get("roll_ccw", 0)) * GLOBALS["thrusterSafety"]
-        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0)) * GLOBALS["thrusterSafety"]
-        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0)) * GLOBALS["thrusterSafety"]
-        sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0)) * GLOBALS["thrusterSafety"]
+        heave = data.get("heave", data.get("heave_up", data.get("heave_down", 0))) * GLOBALS["thrusterSafety"]
+        pitch = data.get("pitch", data.get("pitch_up", data.get("pitch_down", 0))) * GLOBALS["thrusterSafety"]
+        roll = data.get("roll", data.get("roll_cw", data.get("roll_ccw", 0))) * GLOBALS["thrusterSafety"]
+        surge = data.get("surge", data.get("surge_forewards", data.get("surge_backwards", 0))) * GLOBALS["thrusterSafety"]
+        yaw = data.get("yaw", data.get("yaw_cw", data.get("yaw_ccw", 0))) * GLOBALS["thrusterSafety"]
+        sway = data.get("sway", data.get("sway_right", data.get("sway_left", 0))) * GLOBALS["thrusterSafety"]
         rotateCam1 = data.get("rotateCam1")
         rotateCam2 = data.get("rotateCam2")
+        
+        smartPitch = data.get("smart_pitch", 0)
+        smartRoll = data.get("smart_roll", 0)
 
         claws = data.get("claws", 0)
         light = data.get("light", 0)
@@ -85,10 +88,10 @@ def sendControlValues():
 
         # Handling Movement Axes Controls
         thrusterData = {
-            "fore-port-vert": +heave - pitch - roll,
-            "fore-star-vert": +heave - pitch + roll,
-            "aft-port-vert": -heave - pitch + roll,
-            "aft-star-vert": -heave - pitch - roll,
+            "fore-port-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
+            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "aft-star-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
             "fore-port-horz": -surge + yaw + sway,
             "fore-star-horz": +surge + yaw + sway,
