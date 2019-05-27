@@ -47,7 +47,8 @@
             $(".btn-preset").click(function(){
               var pthis = $(this);
               controlHandler.profile.presets.forEach(function(preset){
-                if(toString(pthis.attr("preset-id")) == toString(preset.id)){
+                if(pthis.attr("preset-id") == preset.id){
+                  console.log(preset);
                   $.each(preset.values, function(name, val){
                     $(".slider[name='" + name + "']").val(val);
                     $("#output"+name).html(val);

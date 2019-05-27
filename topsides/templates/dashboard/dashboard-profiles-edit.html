@@ -246,6 +246,7 @@
 
                 $.each($(".preset-slider"), function(i, slider){
                     $(slider).val(values[$(slider).attr("name")]);
+                    $("#output"+$(slider).attr("name")).html(values[$(slider).attr("name")]);
                 });
             }
 
