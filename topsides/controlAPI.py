@@ -70,21 +70,25 @@ def sendControlValues():
         #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
-        heave = data.get("heave", data.get("heave_up", data.get("heave_down", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_heave" in data) else 1)
-        pitch = data.get("pitch", data.get("pitch_up", data.get("pitch_down", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_pitch" in data) else 1)
-        roll = data.get("roll", data.get("roll_cw", data.get("roll_ccw", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_roll" in data) else 1)
-        surge = data.get("surge", data.get("surge_forewards", data.get("surge_backwards", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_surge" in data) else 1)
-        yaw = data.get("yaw", data.get("yaw_cw", data.get("yaw_ccw", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_yaw" in data) else 1)
-        sway = data.get("sway", data.get("sway_right", data.get("sway_left", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_sway" in data) else 1)
-        rotateCam1 = data.get("rotateCam1")
-        rotateCam2 = data.get("rotateCam2")
+        #print(1)
         
+        heave = data.get("heave", data.get("heave_up",0) - data.get("heave_down", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_heave", 0)))
+        pitch = data.get("pitch", data.get("pitch_up",0) - data.get("pitch_down", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_pitch", 0)))
+        roll = data.get("roll", data.get("roll_cw",0) - data.get("roll_ccw", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_roll", 0)))
+        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_backwards", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_surge", 0)))
+        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_yaw", 0)))
+        sway = data.get("sway", data.get("sway_right",0) - data.get("sway_left", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_sway", 0)))
+        rotateCam1 = data.get("rotateCam1", 0)
+        rotateCam2 = data.get("rotateCam2", 0)
+
+        #print(2)
+
         smartPitch = data.get("smart_pitch", 0)
         smartRoll = data.get("smart_roll", 0)
 
         claws = data.get("claws", 0)
         light = data.get("light", 0)
-        trought_fly = data("trout_fly", 0)
+        trought_fly = data.get("trout_fly", 0)
 
         # Handling Movement Axes Controls
         thrusterData = {
@@ -103,18 +107,22 @@ def sendControlValues():
         }
 
 
+        print(sway)
+
+
         for control in thrusterData:
-            print(control + "   " + str(thrusterData))
+            #print(control + "   " + str(thrusterData))
             val = thrusterData[control]
             topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
-        topsidesComms.putMessage("claw " + ("close" if claws is 1 else "open"), "raspi-4")
-        topsidesComms.putMessage("led.py " + ("100" if light is 1 else "0"))
-        topsidesComms.putMessage("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
-            
+        topsidesComms.sendData("claw " + ("close" if claws is 1 else "open"), "raspi-4")
+        topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))
+        topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
+        
 
         
         return "good"
 
-    except(Exception):
-        return "error"
+    except Exception as e:
+        print(e)
+        return str(e), 500

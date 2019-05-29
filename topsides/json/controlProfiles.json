@@ -174,19 +174,19 @@
                 "buttons": [
                     "claws",
                     null,
-                    "",
                     null,
                     null,
                     null,
                     null,
                     null,
                     null,
-                    null,
-                    null,
-                    null
+                    "sway_left",
+                    "sway_right",
+                    "invert_sway",
+                    ""
                 ],
                 "axes": [
-                    "sway",
+                    "",
                     "surge",
                     null,
                     null,
@@ -196,6 +196,6 @@
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-4"
+        "modified": "2019-41-29"
     }
 ]
