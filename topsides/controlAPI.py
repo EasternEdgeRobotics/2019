@@ -70,12 +70,12 @@ def sendControlValues():
         #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
-        heave = data.get("heave", data.get("heave_up", data.get("heave_down", 0))) * GLOBALS["thrusterSafety"]
-        pitch = data.get("pitch", data.get("pitch_up", data.get("pitch_down", 0))) * GLOBALS["thrusterSafety"]
-        roll = data.get("roll", data.get("roll_cw", data.get("roll_ccw", 0))) * GLOBALS["thrusterSafety"]
-        surge = data.get("surge", data.get("surge_forewards", data.get("surge_backwards", 0))) * GLOBALS["thrusterSafety"]
-        yaw = data.get("yaw", data.get("yaw_cw", data.get("yaw_ccw", 0))) * GLOBALS["thrusterSafety"]
-        sway = data.get("sway", data.get("sway_right", data.get("sway_left", 0))) * GLOBALS["thrusterSafety"]
+        heave = data.get("heave", data.get("heave_up", data.get("heave_down", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_heave" in data) else 1)
+        pitch = data.get("pitch", data.get("pitch_up", data.get("pitch_down", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_pitch" in data) else 1)
+        roll = data.get("roll", data.get("roll_cw", data.get("roll_ccw", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_roll" in data) else 1)
+        surge = data.get("surge", data.get("surge_forewards", data.get("surge_backwards", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_surge" in data) else 1)
+        yaw = data.get("yaw", data.get("yaw_cw", data.get("yaw_ccw", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_yaw" in data) else 1)
+        sway = data.get("sway", data.get("sway_right", data.get("sway_left", 0))) * GLOBALS["thrusterSafety"] * (-1 if ("invert_global" in data or "invert_sway" in data) else 1)
         rotateCam1 = data.get("rotateCam1")
         rotateCam2 = data.get("rotateCam2")
         
