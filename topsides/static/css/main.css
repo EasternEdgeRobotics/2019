@@ -449,3 +449,9 @@ textarea {
     background-image: url("../res/img/background.jpg");
     background-size: cover;
 }
+
+
+.custom-switch-lg label::before{
+    width: 3.5rem;
+    height: 2rem;
+}

@@ -183,13 +183,13 @@
                     "sway_left",
                     "sway_right",
                     "invert_sway",
-                    ""
+                    null
                 ],
                 "axes": [
+                    "pitch",
+                    "roll",
+                    null,
                     "",
-                    "surge",
-                    null,
-                    null,
                     null,
                     null
                 ],

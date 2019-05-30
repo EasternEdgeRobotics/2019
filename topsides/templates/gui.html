@@ -82,6 +82,8 @@
             controls[control] *= 0;
           }
         });
+        controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
+        controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
         console.log(controls);
         runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
       }, 30);
@@ -109,8 +111,19 @@
             <input type="range" min="0" max="100" value="50" step="10" class="slider" id="pitch" name="pitch" orient="vertical">
             <label for="roll">Roll <span id="outputroll">50</span></label>
             <input type="range" min="0" max="100" value="50" step="10" class="slider" id="roll" name="roll" orient="vertical">
-            <label for="pause">Enable</label>
-            <input type="checkbox" id="pause" />
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="pause">
+              <label class="custom-control-label" for="pause">Enable Controls</label>
+            </div>
+            <!--<input type="checkbox" id="pause" />-->
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="smartPitch">
+              <label class="custom-control-label" for="smartPitch">Smart Pitch</label>
+            </div>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="smartRoll">
+              <label class="custom-control-label" for="smartRoll">Smart Roll</label>
+            </div>
           </div>
         </div>
       </div>

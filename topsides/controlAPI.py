@@ -83,8 +83,8 @@ def sendControlValues():
 
         #print(2)
 
-        smartPitch = data.get("smart_pitch", 0)
-        smartRoll = data.get("smart_roll", 0)
+        smartPitch = bool(data.get("smart_pitch", 0))
+        smartRoll = bool(data.get("smart_roll", 0))
 
         claws = data.get("claws", 0)
         light = data.get("light", 0)
@@ -107,7 +107,7 @@ def sendControlValues():
         }
 
 
-        print(sway)
+        print(thrusterData["fore-port-vert"])
 
 
         for control in thrusterData:
