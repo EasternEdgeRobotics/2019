@@ -21,19 +21,20 @@ isRunning = False
 currentLocation = [-1, 3]
 crackPosition = [0, 0]
 currentDirection = None
+currentAdjust = None
 
 #direction switching control values
 stopDirectionSwitch = False
 stopDirectionSwitchTime = 0
 
 #distance from dam initialization
-distanceWidth = 70
-distanceDeadZone = 15
+distanceWidth = 50
+distanceDeadZone = 5
 distanceIndicator = ""
 
 #red hsv threshold values
-red2HSV = {"low": (0, 35, 57), "high": (30, 255, 170)}
-redHSV = {"low": (149, 35, 57), "high": (179, 255, 170)}
+red2HSV = {"low": (0, 50, 57), "high": (30, 255, 210)}
+redHSV = {"low": (149, 50, 57), "high": (179, 255, 210)}
 
 red = {"low": (), "high": ()} #when ran, hsv is converted to rgb80
 red2 = {"low": (), "high": ()} #when ran, hsv is converted to rgb80
@@ -65,7 +66,7 @@ def end():
     cv2.destroyAllWondows()
 
 def loop():
-    global cam, currentDirection, stopDirectionSwitchTime, stopDirectionSwitch, stopMoveGrid, lastMoveGrid, currentLocation
+    global cam, currentDirection, stopDirectionSwitchTime, stopDirectionSwitch, stopMoveGrid, lastMoveGrid, currentLocation, currentAdjust
 
     cornerCount = 0
 
@@ -97,6 +98,8 @@ def loop():
         width = None
         height = None
         
+        centerX = 0
+        centerY = 0
         for contour in contours:
             area = cv2.contourArea(contour)
             if(area > 10000 and area < frameWidth*frameHeight - 2000):
@@ -108,12 +111,14 @@ def loop():
                     cx = int(M["m10"]/M["m00"])
                     cy = int(M["m01"]/M["m00"])
                     cv2.circle(frame, (cx,cy), 5, (255,255,0), -1)
+                    centerX = (centerX + cx) / 2
+                    centerY = (centerY + cy) / 2
 
                 xTemp,yTemp,widthTemp,heightTemp = cv2.boundingRect(contour)
                 x = min(x, xTemp)
                 y = min(y, yTemp)
                 x2 = max(x2, xTemp + widthTemp)
-                y2 = max(y2, yTemp + heightTemp)      
+                y2 = max(y2, yTemp + heightTemp)
 
         if(x2 != -1):
             width = x2 - x
@@ -135,18 +140,38 @@ def loop():
                 stopDirectionSwitchTime -= 1
 
             if(currentOrientation != "corner"):
-                checkDistance(contour)
+                checkDistance(width, height)
+            else:
+                distanceIndicator = ""
 
             if(stopDirectionSwitchTime <= 0):
                 stopDirectionSwitch = False
 
             if(cornerCount > 10):
                 findNextLine(frame, frameWidth, frameHeight, int(x + width/2), int(y + height/2))
+            
+            if(currentOrientation == "vertical"):
+                if(centerX > 190):
+                    currentAdjust = "right"
+                elif(centerX < 130):
+                    currentAdjust = "left"
+                else:
+                    currentAdjust = ""
+            elif(currentOrientation == "horizontal"):
+                if(centerY > 150):
+                    currentAdjust = "down"
+                elif(centerY < 90):
+                    currentAdjust = "up"
+                else:
+                    currentAdjust = ""
+            else:
+                currentAdjust = ""
 
-            cv2.putText(frame, "orientation: " + str(currentOrientation), (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0,255,0))
-            cv2.putText(frame, "move: " + str(currentDirection), (20, 210), cv2.FONT_HERSHEY_PLAIN, 3, (0,255,0))
-            cv2.putText(frame, str(distanceIndicator), (20, 280), cv2.FONT_HERSHEY_PLAIN, 3, (0,255,0))
-            cv2.putText(frame, str(currentLocation), (20, 350), cv2.FONT_HERSHEY_PLAIN, 3, (0,255,0))
+            cv2.putText(frame, "orientation: " + str(currentOrientation), (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255))
+            cv2.putText(frame, "move: " + str(currentDirection), (20, 210), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255))
+            cv2.putText(frame, str(distanceIndicator), (20, 280), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255))
+            cv2.putText(frame, str(currentLocation), (20, 350), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255))
+            cv2.putText(frame, str(currentAdjust), (20, 400), cv2.FONT_HERSHEY_PLAIN, 3, (255,0,255))
             
             #fullBoundingBox
             cv2.rectangle(frame, (x,y), (x2,y2), (255, 0, 255), 3)
@@ -170,10 +195,20 @@ def loop():
 
         surge = 0
         if(distanceIndicator == "move forward"):
-            surge = 0.3
+            surge = 0.1
         elif(distanceIndicator == "move back"):
-            surge = -0.3
-        
+            surge = -0.1
+            
+        if(currentAdjust == "up"):
+            heave = 0.1
+        elif(currentAdjust == "down"):
+            heave = -0.1
+
+        if(currentAdjust == "right"):
+            sway = 0.1
+        elif(currentAdjust == "left"):
+            sway = -0.1
+        '''
         thrusterData = {
             "fore-port-vert": +heave,
             "fore-star-vert": +heave,
@@ -189,7 +224,8 @@ def loop():
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
             val = thrusterData[control]
-            topsidesComms.putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+            topsidesComms.putMessage("runThrusters.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+        '''
 
         cv2.imshow("frame", imgShow)
         if cv2.waitKey(1) == 27:
@@ -256,10 +292,11 @@ def inColorRange(val, min, max):
                 return True
     return False
 
-def checkDistance(contour):
-    global distanceIndicator
-    x,y,w,h = cv2.boundingRect(contour)
-    v = min(w,h)
+def checkDistance(width, height):
+    global distanceIndicator, distanceWidth, distanceDeadZone
+    v = min(width, height)
+    print(width)
+    print(height)
     if(v > distanceWidth + distanceDeadZone):
         distanceIndicator = "move back"
     elif(v < distanceWidth - distanceDeadZone):
