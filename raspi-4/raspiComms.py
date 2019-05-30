@@ -3,11 +3,10 @@ import socket
 import sys
 import threading
 import queue
-import time
 from RaspiGlobals import GLOBALS
-import telemetry.getAccel
 
 send = queue.Queue()
+threadData = {"claw": GLOBALS['claw-pos'], "pebbles": GLOBALS['pebbles-pos']}
 threads = []
 stop_events = []
 
@@ -48,7 +47,7 @@ def sendData():
 
 def receiveData():
     """Receive data from topsides."""
-    global t
+    global threads
     while True:
         try:
             data, addr = s.recvfrom(1024)
@@ -72,27 +71,31 @@ def receiveData():
         print(data)
         # Identify the file name and arguments
         nextSpace = data.find(".py") + 3
-        file = data[0:nextSpace]
-        lastSpace = nextSpace + 1
-        nextSpace = data.find(" ", lastSpace)
-        while nextSpace != -1:
-            sys.argv.append(data[lastSpace:nextSpace])
+        if nextSpace == 2:
+            nextSpace = data.find(" ")
+            threadData[data[:nextSpace]] = data[nextSpace + 1:]
+        else:
+            file = data[0:nextSpace]
             lastSpace = nextSpace + 1
             nextSpace = data.find(" ", lastSpace)
-        sys.argv.append(data[lastSpace:])
+            while nextSpace != -1:
+                sys.argv.append(data[lastSpace:nextSpace])
+                lastSpace = nextSpace + 1
+                nextSpace = data.find(" ", lastSpace)
+            sys.argv.append(data[lastSpace:])
 
-        # Setup threading for receiving data
-        flag = threading.Event()
-        stop = threading.Event()
-        threads.append(threading.Thread(target=executeData, args=(file, flag, stop,)))
-        stop_events.append(stop)
-        threads[len(threads) - 1].start()
-        flag.wait()
-        del sys.argv[1:]
-        threads = [i for i in t if i.isAlive()]
+            # Setup threading for receiving data
+            flag = threading.Event()
+            stop = threading.Event()
+            threads.append(threading.Thread(target=executeData, args=(file, flag, stop,)))
+            stop_events.append(stop)
+            threads[len(threads) - 1].start()
+            flag.wait()
+            del sys.argv[1:]
+            threads = [i for i in threads if i.isAlive()]
 
 
-def executeData(file, flag):
+def executeData(file, flag, stop):
     try:
         exec(open(file).read(), {"send": send, "flag": flag, "stop": stop})
     except Exception as e:
@@ -101,8 +104,17 @@ def executeData(file, flag):
 
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
+stopleft = threading.Event()
+stopright = threading.Event()
+stoppebbles = threading.Event()
+threads.append(threading.Thread(target=executeData, args=('leftmotor.py', threadData, stopleft)))
+#threads.append(threading.Thread(target=executeData, args=('rightmotor.py', threadData, stopright)))
+#threads.append(threading.Thread(target=executeData, args=('pebble.py', threadData, stoppebbles)))
+stop_events.append(stopleft)
+stop_events.append(stopright)
+stop_events.append(stoppebbles)
 
 if __name__ == "__main__":
-    threads[0].start()
-    threads[1].start()
+    for thread in threads:
+        thread.start()
     receiveData()

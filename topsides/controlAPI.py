@@ -107,8 +107,6 @@ def sendControlValues():
         }
 
 
-        print(thrusterData["fore-port-vert"])
-
 
         for control in thrusterData:
             #print(control + "   " + str(thrusterData))

@@ -93,10 +93,10 @@
                 // Scaling each control based on sliders
                 $.each(controls, function(control, value){
                     if($("#" + control).length){
-                    controls[control] = value * ($("#" + control).val()/100);
+                        controls[control] = value * ($("#" + control).val()/100);
                     }
-                    if($("#pause")[0].checked != true){
-                    controls[control] *= 0;
+                    if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
+                        controls[control] *= 0;
                     }
                 });
                 controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;

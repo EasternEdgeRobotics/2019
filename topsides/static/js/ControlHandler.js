@@ -114,7 +114,7 @@ class ControlHandler{
                         $.each(_profile.gamepads[profile_gamepad_index].buttons, function(button_index, mapped_control){ //loop through each button controls of the profile
                             if(mapped_control != "" && mapped_control != null){//if the button is mapped to something aka not empty string
                                 var value = gamepad.buttons[button_index].value;
-                                if(_controloptions.toggleButtons.includes(mapped_control)){
+                                if(_controloptions.toggleButtons.hasOwnProperty(mapped_control)){
                                     if(_previousToggledButtons[gamepad_index][mapped_control] != undefined){
                                         if(value == 1){
                                             if(_previousToggledButtons[gamepad_index][mapped_control] != value){
