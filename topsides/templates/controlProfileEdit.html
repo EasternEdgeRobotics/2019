@@ -7,7 +7,7 @@
     <link href="static/css/main.css" rel="stylesheet" type="text/css" />
     <link href="static/css/controlProfileEdit.css" rel="stylesheet" type="text/css" />
 
-    <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='js/lib/jquery-3.4.1.min.js')}}" type="text/javascript"></script>
     <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
     <script src="{{url_for('static', filename='js/ControlOptions.js')}}" type="text/javascript"></script>
     <!--<script src="{{url_for('static', filename='js/joystickHandle.js')}}" type="text/javascript"></script>-->
@@ -17,13 +17,13 @@
             var PROFILEHANDLE;
             var CONTROLOPTIONS = new ControlOptions();
             var gamepads = navigator.getGamepads();
-            
+
 
             runPythonGET("getProfiles", null, function(data){
                 PROFILEHANDLE = new ProfileHandler(data);
             });
 
-            
+
 
             /**
              * Edit Modal fill logic
@@ -31,9 +31,9 @@
              *      - input-id determines what field from the json will fill that spot
              *      - EX: for input-id="name", the name of the profile will fill that
              * - when a profile is saved the values of the input-id in the json will be set the the value of that input
-             * 
+             *
             */
-            
+
             function editProfile_click(id){
                 //sets all the fields in the edit panel to the current values of that profile in the json and opens the panel
                 var profile = PROFILEHANDLE.getProfileById(id);
@@ -43,7 +43,7 @@
                 clearProfileEdit();
 
                 //set the values of the textboxes to the corresponding value in the profile
-                //each textbox has the class: control-edit-input 
+                //each textbox has the class: control-edit-input
                 $.each($(".control-edit-input"), function(i, element){
                     let field = $(element).attr("input-id");
                     let val = profile[field];
@@ -56,10 +56,10 @@
                     addGamepadInfo(i, gamepad);
                 });
             }
-            
+
 
             /**addGamepadInfo
-             * 
+             *
              *  generates and appends html for the edit panel of a gamepad
             */
             function addGamepadInfo(i, gamepad){
@@ -67,11 +67,11 @@
                 let gamepadSelectorString = "<div class='selector " + (i ==0? "active": "") +"' id='gamepadSelector" + i + "' onclick='openGamepadPanel_click(" + i + ")'>" + gamepad['name'] + "</div>";
                 //initial starting string for gamepad panel edit menu
                 let gamepadEditPanelString = "<div id='gamepadEdit" + i + "' class='gamepad-edit " + (i == 0? "visible":"") + "'><input class='input-text' type='text' id='iPg" + i + "name' placeholder='Gamepad Name' value='" + gamepad["friendly_name"] + "'/><p>To see which button is which, press the button on the joystick and the proper button will be indicator. Move an axes to it's maximum position to identify which axes it is. (Must have joystick plugged in)</p>";
-                
-                
+
+
                 gamepadEditPanelString+= "<input type='hidden' class='hdnIdentity' id='gamepadID' value='" + gamepad['name'] + "'/> "
                 gamepadEditPanelString+= "<input type='hidden' class='iPg' id='gamepadID' value='" + i + "'/> "
-                
+
 
 
                 //for each axes on joystick, add a selector box and label inside the gamepad edit menu (append to string)
@@ -90,30 +90,30 @@
                 gamepadEditPanelString += "</div>";//end of section in string
 
                 gamepadEditPanelString += "<button class='btn btn-danger' onclick='removeGamepad(" + i + ");'>Remove Gamepad</button>"
-                
-                gamepadEditPanelString += "</div>"//end of entire panel
-                
 
-                //append the html (in the strings) of the selector and edit panel to the selector container and panel container respectively 
+                gamepadEditPanelString += "</div>"//end of entire panel
+
+
+                //append the html (in the strings) of the selector and edit panel to the selector container and panel container respectively
                 $("#joystick-selector-container").append(gamepadSelectorString);
                 $("#current-joystick-container").append(gamepadEditPanelString);
-                
-                //Set the current values of axes selector boxes to respected value in profile 
+
+                //Set the current values of axes selector boxes to respected value in profile
                 $.each($('#gamepadEdit' + i).find(".joystick-axis-input"), function(i2, obj){
                     $(obj).val(gamepad["axes"][i2]);
                 });
-                
+
                 //Set the current values of button selector boxes to respected value in profile
                 $.each($('#gamepadEdit' + i).find(".button-input"), function(i2, obj){
                     $(obj).val(gamepad["buttons"][i2]);
                 });
             }
-            
+
 
             /**openGamepadMenu_Click
-             * 
+             *
              *  generates and opens the add gamepad modal to add a gamepad to profile
-             * 
+             *
             */
             function openGamepadMenu_click(){
                 gamepads = navigator.getGamepads();
@@ -129,16 +129,16 @@
                         $("#addGamepadContainer").append("<div class='gamepad-selector' onclick='addGamepad(" + i + "); $(" + '"' + "#modalAddGamepad" + '"' + ").toggleClass(" + '"' + "visible" + '"' + ");'><p>" + obj["id"] + "</p></div>");
                     }
                 });
-                
+
                 //if there are no gamepads connected, add the no gamepad connected text
                 if(noGamepads){
                     $("#addGamepadContainer").append("<p>No gamepads connected.</p><p>If there is one connected try moving an axis and retry adding it. If it still doesn't show up, the gamepad may be broken or not suppoerted.</p>")
                 }
             }
-            
+
 
             /**clearProfileEdit()
-             * 
+             *
              *      clears the profile edit modal.
             */
             function clearProfileEdit(){
@@ -149,16 +149,16 @@
                 $("#joystick-selector-container").html("");
                 $("#current-joystick-container").html("");
             }
-            
+
 
             /** addGamepad()
-             *  
+             *
              *      registers/add a gamepad to the current profileToEdit and runs the addGamepadInfo function for the gamepad
             */
             function addGamepad(index){
                 gamepad = gamepads[index];
                 newGamepad = {"name": gamepad["id"], "buttons": [], "axes":[]}
-                
+
                 $.each(gamepad["axes"], function(i, obj){
                     newGamepad['axes'][i] = '';
                 });
@@ -166,7 +166,7 @@
                 $.each(gamepad["buttons"], function(i, obj){
                     newGamepad['buttons'][i] = '';
                 });
-                
+
                 profileToEdit["gamepads"].push(newGamepad);
                 addGamepadInfo(profileToEdit["gamepads"].length-1, newGamepad);
             }
@@ -179,15 +179,15 @@
 
 
             /** newProfile_click
-             * 
+             *
              *      resets the profile edit menu and sets the profileToEdit to a fresh, new profile
-             * 
+             *
             */
             function newProfile_click(id){
                 clearProfileEdit();
                 profileToEdit = {"name":"", "id": PROFILEHANDLE.getNextId(), "gamepads":[]};
             }
-            
+
             //Switches the active gamepad mapping panel in the profile edit modal
             function openGamepadPanel_click(open){
                 $(".gamepad-edit").toggleClass("visible", false);
@@ -195,7 +195,7 @@
                 $(".selector").toggleClass("active", false);
                 $("#gamepadSelector" + open).toggleClass("active", true);
             }
-            
+
 
             //Saves profile
             function saveProfile_click(){
@@ -219,9 +219,9 @@
             }
 
             /** updateMenuIndicators
-             * 
+             *
              *      handles bolding the name of inputs of the gampeads when they are maxed out. This is to indicate which input is which
-             * 
+             *
             */
             function updateMenuIndicators(){
                 let gamepads = navigator.getGamepads(); //get fresh inputs
@@ -229,7 +229,7 @@
                 $.each(gamepads, function(i, gamepad){
                     if(gamepad == null)
                         return;
-                    
+
                     var parent = null;
 
                     $.each($(".hdnIdentity"), function(i2, obj){
@@ -267,7 +267,7 @@
                     location.reload();
                 });
             }
-            
+
             //setup the indicator logic on loop
             setInterval(function(){updateMenuIndicators();}, 10);
         </script>

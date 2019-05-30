@@ -6,8 +6,11 @@
   <title>Gui</title>
   <link rel="stylesheet" href="{{url_for('static', filename='css/gui.css')}}" type="text/css" />
   <link rel="stylesheet" href="{{url_for('static', filename='css/snackbar.css')}}" type="text/css" />
+  <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap/bootstrap.min.css')}}" type="text/css" />
+  <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}" type="text/css" />
 
-  <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/lib/jquery-3.4.1.min.js')}}" type="text/javascript"></script>
+  <script src="{{url_for('static', filename='js/lib/bootstrap.min.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/lib/socket.io.slim.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/gui.js')}}" type="text/javascript"></script>
@@ -16,6 +19,10 @@
   <script src="{{url_for('static', filename='js/ProfileHandler.js')}}" type="text/javascript"></script>
   <script src="{{url_for('static', filename='js/NotificationHandler.js')}}" type="text/javascript"></script>
   <script>
+    function returnToDashboard() {
+        window.location.href = "/";
+    }
+
     var profileHandler = new ProfileHandler();
     var controlOptions = new ControlOptions();
     var controlHandler = new ControlHandler(controlOptions);
@@ -29,7 +36,33 @@
       $(".profile-select").change(function(){
         controlHandler.profile = profileHandler.getProfileById($(this).val());
         notificationHandler.localNotification("Profile set to " + controlHandler.profile.name, "info");
+
+        $("#presetHolder").empty();
+        if(controlHandler.profile.presets != undefined){
+          if(controlHandler.profile.presets.length > 0){
+            controlHandler.profile.presets.forEach(function(preset){
+              $("#presetHolder").append("<button class='btn btn-" + preset.color + " btn-preset mr-1 ml-1' preset-id='" + preset.id + "'>" + preset.name + "</button>");
+            });
+
+            $(".btn-preset").click(function(){
+              var pthis = $(this);
+              controlHandler.profile.presets.forEach(function(preset){
+                if(pthis.attr("preset-id") == preset.id){
+                  console.log(preset);
+                  $.each(preset.values, function(name, val){
+                    $(".slider[name='" + name + "']").val(val);
+                    $("#output"+name).html(val);
+                  });
+                }
+              });
+            });
+            return;
+          }
+        }
+        $("#presetHolder").append("<p>No Presets</p>")
       });
+
+      $(".profile-select").trigger("change");
     }
 
     $(document).ready(function() {
@@ -45,11 +78,20 @@
       });
 
       // Handle count down timer
-      var timer = $('#startTimer');
+      var timer = $('#toggleTimer');
+      var trigger;
+      var count;
       timer.click(function() {
-        var fifteenMinutes = 60 * 15,
-        display = $('#timerText');
-        startCountDown(fifteenMinutes, display);
+        if (count === 0) {
+          count = 1;
+          display = $('#timerText');
+          stopCountDown(display)
+        }
+        else {
+          count = 0;
+          display = $('#timerText');
+          startCountDown(900, display);
+        }
       });
 
       // Handle preset slider button
@@ -90,26 +132,37 @@
 
 <body class="gui-back">
 
+  <div class="dashboard-header">
+    <div class='head-content'>
+      <img src='/static/res/img/eer-logo.png' class="dashboard-logo" />
+      <button class="btn btn-primary" onclick="returnToDashboard();">Return To Dashboard</button>
+      <div class="dashboard-drop-down"></div>
+    </div>
+  </div>
+
   <div class="container-fluid">
     <div class="row">
       <div class="col-9">
         <div class="card mx-5 mt-5 mb-3 text-center">
           <h5 class="card-header">Power In Six Degrees Of Freedom</h5>
-          <div class="card-body">
-            <label for="surge">Surge <span id="outputsurge">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="surge" name="surge" orient="vertical">
-            <label for="heave">Heave <span id="outputheave">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="heave" name="heave" orient="vertical">
-            <label for="sway">Sway <span id="outputsway">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="sway" name="sway" orient="vertical">
-            <label for="yaw">Yaw <span id="outputyaw">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="yaw" name="yaw" orient="vertical">
-            <label for="pitch">Pitch <span id="outputpitch">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="pitch" name="pitch" orient="vertical">
-            <label for="roll">Roll <span id="outputroll">50</span></label>
-            <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
-            <label for="pause">Enable</label>
-            <input type="checkbox" id="pause" />
+          <div class="card-body d-flex flex-column align-items-center">
+            <div class="mb-5">
+              <label for="surge">Surge <span id="outputsurge">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="surge" name="surge" orient="vertical">
+              <label for="heave">Heave <span id="outputheave">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="heave" name="heave" orient="vertical">
+              <label for="sway">Sway <span id="outputsway">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="sway" name="sway" orient="vertical">
+              <label for="yaw">Yaw <span id="outputyaw">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="yaw" name="yaw" orient="vertical">
+              <label for="pitch">Pitch <span id="outputpitch">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="pitch" name="pitch" orient="vertical">
+              <label for="roll">Roll <span id="outputroll">50</span></label>
+              <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
+              <label for="pause">Enable</label>
+              <input type="checkbox" id="pause" />
+            </div>
+            <div class="row" id="presetHolder"></div>
           </div>
         </div>
       </div>
@@ -131,7 +184,7 @@
           <h5 class="card-header">Count Down Timer</h5>
           <div class="card-body">
             Run ends in <span id="timerText">00:00</span> minutes
-            <button type="button" class="btn btn-primary" id="startTimer">Start Timer</button>
+            <button type="button" class="btn btn-primary" id="toggleTimer">Toggle Timer</button>
           </div>
         </div>
 
@@ -144,6 +197,8 @@
         </div>
       </div>
     </div>
+
+    
   </div>
 
   <div class="snackbar hidden" id="notification"></div>

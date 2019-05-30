@@ -100,16 +100,17 @@ def sendControlValues():
         }
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
-            val = thrusterData[control]
+            val = thrusterData[control] * 1.0
             topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
             topsidesComms.putMessage("claw " + ("close" if claws is 1 else "open"), "raspi-4")
             topsidesComms.putMessage("led.py " + ("100" if light is 1 else "0"))
             topsidesComms.putMessage("pebbles " + ("open" if trout_fry is 1 else "close"), "raspi-4")
-            
 
-        
+
+
         return "good"
 
-    except(Exception):
+    except Exception as e:
+        print(e)
         return "error"
