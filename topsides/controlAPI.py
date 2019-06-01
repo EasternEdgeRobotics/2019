@@ -93,8 +93,8 @@ def sendControlValues():
         # Handling Movement Axes Controls
         thrusterData = {
             "fore-port-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
-            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
-            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
             "aft-star-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
             "fore-port-horz": -surge + yaw + sway,
