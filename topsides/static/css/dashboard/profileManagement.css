@@ -56,6 +56,11 @@
     font-size: 16px;
 }
 
+.item-content .preset-count:after{
+    content: ' presets';
+    font-size: 16px;
+}
+
 #profileCount:after {
     content: ' profiles';
     font-size: 22px;
@@ -164,4 +169,9 @@ EDIT PAGE
 
 .center .btn {
     margin: 5px;
+}
+
+.btn-color.selected{
+    border: 3px solid #fffa00 !important;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.6);
 }

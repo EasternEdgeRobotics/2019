@@ -172,7 +172,10 @@
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "claws",
+                    null,
+                    null,
+                    null,
+                    null,
                     null,
                     null,
                     null,
@@ -196,6 +199,34 @@
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-29"
+        "modified": "2019-41-21",
+        "presets": [
+            {
+                "id": 1302194,
+                "values": {
+                    "surge": "58",
+                    "heave": "0",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "0",
+                    "roll": "0"
+                },
+                "name": "Test Preset",
+                "color": "secondary"
+            },
+            {
+                "id": 6350969,
+                "values": {
+                    "surge": "0",
+                    "heave": "100",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "26",
+                    "roll": "0"
+                },
+                "name": "Test 4",
+                "color": "info"
+            }
+        ]
     }
 ]

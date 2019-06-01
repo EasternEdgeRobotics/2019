@@ -64,7 +64,7 @@ def editProfileMenu():
 
 
 """
-loads pages outside the dashboard with the header to return to dashboard
+loads pages outside the dashboard
 """
 @dashboard_api.route("/dashboard/ext")
 @adminAPI.protected(permissions=["CONTROL"], redirectB=True)

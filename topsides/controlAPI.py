@@ -116,9 +116,9 @@ def sendControlValues():
         topsidesComms.sendData("claw " + ("close" if claws is 1 else "open"), "raspi-4")
         topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))
         topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
-        
 
-        
+
+
         return "good"
 
     except Exception as e:
