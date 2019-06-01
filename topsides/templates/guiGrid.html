@@ -49,8 +49,8 @@
                 $(".profile-select").append("<option value='" + profile.id + "'>" + profile.name + "</option>")
                 });
                 $(".profile-select").change(function(){
-                controlHandler.profile = profileHandler.getProfileById($(this).val());
-                notificationHandler.localNotification("Profile set to " + controlHandler.profile.name, "info");
+                    controlHandler.profile = profileHandler.getProfileById($(this).val());
+                    notificationHandler.localNotification("Profile set to " + controlHandler.profile.name, "info");
                 });
             }
 
@@ -98,12 +98,14 @@
                 // Scaling each control based on sliders
                 $.each(controls, function(control, value){
                     if($("#" + control).length){
-                    controls[control] = value * ($("#" + control).val()/100);
+                        controls[control] = value * ($("#" + control).val()/100);
                     }
-                    if($("#pause")[0].checked != true){
-                    controls[control] *= 0;
+                    if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
+                        controls[control] *= 0;
                     }
                 });
+                controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
+                controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
                 runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
                 }, 30);
             });
@@ -151,8 +153,21 @@
                                     <label for="roll">Roll <span id="outputroll">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
                                 </div>
-                                <label for="pause">Enable</label>
-                                <input type="checkbox" id="pause" />
+                            </div>
+                            <!--SWITCHES -->
+                            <div class="d-flex m-3">
+                                <div class="custom-control custom-switch m-4">
+                                    <input type="checkbox" class="custom-control-input" id="pause">
+                                    <label class="custom-control-label" for="pause">Enable Controls</label>
+                                </div>
+                                <div class="custom-control custom-switch m-4">
+                                    <input type="checkbox" class="custom-control-input" id="smartPitch">
+                                    <label class="custom-control-label" for="smartPitch">Smart Pitch</label>
+                                </div>
+                                <div class="custom-control custom-switch m-4">
+                                    <input type="checkbox" class="custom-control-input" id="smartRoll">
+                                    <label class="custom-control-label" for="smartRoll">Smart Roll</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -181,6 +196,15 @@
                     <div class="grid-item grid-item--width3">
                         <div class="panel position-relative" style="height: 400px;" id="3dmodel">
                             <button class="position-absolute btn btn-info" onclick="runPythonGET('/bot/test', null, function(){});">Random Position</button>
+                        </div>
+                    </div>
+                    <div class="grid-item grid-item--width3">
+                        <div class="panel">
+                            <h5 class="card-header">Profile Select</h5>
+                            <div class="card-body">
+                                <select class="profile-select"></select>
+                                <button type="button" class="btn btn-primary" onclick="controlHandler.setGamepads();">Map Gamepads</button>
+                            </div>
                         </div>
                     </div>
                 </div>

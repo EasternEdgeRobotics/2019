@@ -183,13 +183,16 @@
                     null,
                     null,
                     null,
+                    "sway_left",
+                    "sway_right",
+                    "invert_sway",
                     null
                 ],
                 "axes": [
+                    "pitch",
+                    "roll",
                     null,
-                    null,
-                    null,
-                    null,
+                    "rotateCam1",
                     null,
                     null
                 ],

@@ -23,7 +23,8 @@
         },
         "rotateCam2":{
             "on-enable": false
-        }},
+        }
+    },
     "button":{
         "surge_forewards":{
             "on-enable": true
@@ -99,6 +100,6 @@
         "trout_fry":{
             "on-enable": false
         }
-    }
-    
+    },
+    "settings": ["smart_pitch", "smart_roll"]
 }

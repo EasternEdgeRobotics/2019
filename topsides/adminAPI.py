@@ -5,6 +5,7 @@ import string
 import json
 import datetime
 from functools import update_wrapper
+import sys
 
 admin_api = Blueprint("admin_api", __name__)
 
@@ -32,6 +33,10 @@ def protected(permissions=["ADMIN"], redirectB=False):
     def decorator(func):
         global activeKeys
         def wrap(*args, **kwargs):
+
+            if(len(sys.argv) > 1 and (sys.argv[1] == "--dev")):
+                return func()
+
             name = func.__name__
             if("eer_auth_key" in request.cookies):
                 key = request.cookies.get("eer_auth_key")
