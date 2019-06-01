@@ -24,7 +24,7 @@
                     "surge",
                     "yaw",
                     "rotateCam1",
-                    null,
+                    "yaw",
                     null
                 ],
                 "friendly_name": "joystickhorizontal"
@@ -57,7 +57,22 @@
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-01-24"
+        "modified": "2019-51-1",
+        "presets": [
+            {
+                "id": 1007119376,
+                "values": {
+                    "surge": "100",
+                    "heave": "8",
+                    "sway": "24",
+                    "yaw": "54",
+                    "pitch": "26",
+                    "roll": "0"
+                },
+                "name": "welcome2Hell",
+                "color": "danger"
+            }
+        ]
     },
     {
         "name": "One Joy",

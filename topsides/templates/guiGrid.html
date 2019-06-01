@@ -51,7 +51,31 @@
                 $(".profile-select").change(function(){
                     controlHandler.profile = profileHandler.getProfileById($(this).val());
                     notificationHandler.localNotification("Profile set to " + controlHandler.profile.name, "info");
+                    
+                    $("#presetHolder").empty();
+                    if(controlHandler.profile.presets != undefined){
+                      if(controlHandler.profile.presets.length > 0){
+                        controlHandler.profile.presets.forEach(function(preset){
+                          $("#presetHolder").append("<button class='btn btn-" + preset.color + " btn-preset mr-1 ml-1' preset-id='" + preset.id + "'>" + preset.name + "</button>");
+                        });
+                        $(".btn-preset").click(function(){
+                          var pthis = $(this);
+                          controlHandler.profile.presets.forEach(function(preset){
+                            if(toString(pthis.attr("preset-id")) == toString(preset.id)){
+                              $.each(preset.values, function(name, val){
+                                $(".slider[name='" + name + "']").val(val);
+                                $("#output"+name).html(val);
+                              });
+                            }
+                          });
+                        });
+                        return;
+                      }
+                    }
+                    $("#presetHolder").append("<p>No Presets</p>");
                 });
+                
+                $(".profile-select").trigger("change");
             }
 
             $(document).ready(function() {
@@ -154,6 +178,7 @@
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
                                 </div>
                             </div>
+                            <div class="row align-items-center justify-content-center" id="presetHolder"></div>
                             <!--SWITCHES -->
                             <div class="d-flex m-3">
                                 <div class="custom-control custom-switch m-4">
