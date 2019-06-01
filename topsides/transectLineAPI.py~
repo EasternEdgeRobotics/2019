@@ -28,8 +28,8 @@ stopDirectionSwitch = False
 stopDirectionSwitchTime = 0
 
 #distance from dam initialization
-distanceWidth = 90
-distanceDeadZone = 10
+distanceWidth = 50
+distanceDeadZone = 5
 distanceIndicator = ""
 
 #red hsv threshold values
@@ -66,7 +66,7 @@ def end():
     cv2.destroyAllWondows()
 
 def loop():
-    global cam, currentDirection, stopDirectionSwitchTime, stopDirectionSwitch, stopMoveGrid, lastMoveGrid, currentLocation, currentAdjust, distanceIndicator
+    global cam, currentDirection, stopDirectionSwitchTime, stopDirectionSwitch, stopMoveGrid, lastMoveGrid, currentLocation, currentAdjust
 
     cornerCount = 0
 
@@ -183,32 +183,32 @@ def loop():
         
         heave = 0
         if(currentDirection == "up"):
-            heave = -0.1
+            heave = 0.3
         elif(currentDirection == "down"):
-            heave = 0.1
+            heave = -0.3
 
         sway = 0
         if(currentDirection == "right"):
-            sway = 0.1
+            sway = 0.3
         elif(currentDirection == "left"):
-            sway = -0.1
+            sway = -0.3
 
         surge = 0
         if(distanceIndicator == "move forward"):
-            surge = -0.2
+            surge = 0.1
         elif(distanceIndicator == "move back"):
-            surge = 0.2
+            surge = -0.1
             
         if(currentAdjust == "up"):
-            heave = -0.1
-        elif(currentAdjust == "down"):
             heave = 0.1
+        elif(currentAdjust == "down"):
+            heave = -0.1
 
         if(currentAdjust == "right"):
             sway = 0.1
         elif(currentAdjust == "left"):
             sway = -0.1
-        
+        '''
         thrusterData = {
             "fore-port-vert": +heave,
             "fore-star-vert": +heave,
@@ -224,8 +224,8 @@ def loop():
         for control in thrusterData:
             print(control + "   " + str(thrusterData))
             val = thrusterData[control]
-            topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-        
+            topsidesComms.putMessage("runThrusters.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+        '''
 
         cv2.imshow("frame", imgShow)
         if cv2.waitKey(1) == 27:

@@ -84,3 +84,4 @@ t. ! queue ! udpsink host=${IPH} port=${PORTO} &
 
 # Keep running till closed
 read -n1 -r -p "Press any key to close..." key
+

@@ -48,7 +48,7 @@ def sendData(inputData, location = "raspi-5"):
         s.sendto(inputData.encode('utf-8'), (ipSend4, portSend4))
     else:
         s.sendto(inputData.encode('utf-8'), (ipSend5, portSend5))
-        print("sent " + inputData + " to " + str(ipSend5) + " at " + str(portSend5))
+        print("sent " + inputData)
 
 
 # This function is constantly trying to receive data from the ROV
