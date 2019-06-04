@@ -28,7 +28,7 @@ stopDirectionSwitch = False
 stopDirectionSwitchTime = 0
 
 #distance from dam initialization
-distanceWidth = 90
+distanceWidth = 80
 distanceDeadZone = 10
 distanceIndicator = ""
 
@@ -195,10 +195,10 @@ def loop():
 
         surge = 0
         if(distanceIndicator == "move forward"):
-            surge = -0.2
+            surge = -0.1
         elif(distanceIndicator == "move back"):
-            surge = 0.2
-            
+            surge = 0.1
+        
         if(currentAdjust == "up"):
             heave = -0.1
         elif(currentAdjust == "down"):
@@ -210,15 +210,15 @@ def loop():
             sway = -0.1
         
         thrusterData = {
-            "fore-port-vert": +heave,
-            "fore-star-vert": +heave,
-            "aft-port-vert": -heave,
-            "aft-star-vert": -heave,
+            #"fore-port-vert": +heave,
+            #"fore-star-vert": +heave,
+            #"aft-port-vert": -heave,
+            #"aft-star-vert": -heave,
 
-            "fore-port-horz": -surge + sway,
-            "fore-star-horz": +surge + sway,
-            "aft-port-horz": -surge - sway,
-            "aft-star-horz": -surge + sway,
+            "fore-port-horz": -surge, # + sway,
+            "fore-star-horz": +surge,# + sway,
+            "aft-port-horz": -surge, #- sway,
+            "aft-star-horz": -surge,# + sway,
         }
 
         for control in thrusterData:
