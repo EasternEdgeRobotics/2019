@@ -24,7 +24,7 @@
                     "surge",
                     "yaw",
                     "rotateCam1",
-                    null,
+                    "yaw",
                     null
                 ],
                 "friendly_name": "joystickhorizontal"
@@ -57,7 +57,22 @@
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-01-24"
+        "modified": "2019-51-1",
+        "presets": [
+            {
+                "id": 1007119376,
+                "values": {
+                    "surge": "100",
+                    "heave": "8",
+                    "sway": "24",
+                    "yaw": "54",
+                    "pitch": "26",
+                    "roll": "0"
+                },
+                "name": "welcome2Hell",
+                "color": "danger"
+            }
+        ]
     },
     {
         "name": "One Joy",
@@ -172,9 +187,6 @@
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
-                    "claws",
-                    null,
-                    "",
                     null,
                     null,
                     null,
@@ -183,19 +195,53 @@
                     null,
                     null,
                     null,
+                    null,
+                    null,
+                    null,
+                    "sway_left",
+                    "sway_right",
+                    "invert_sway",
                     null
                 ],
                 "axes": [
-                    "sway",
-                    "surge",
+                    "pitch",
+                    "roll",
                     null,
-                    null,
+                    "rotateCam1",
                     null,
                     null
                 ],
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-4"
+        "modified": "2019-41-21",
+        "presets": [
+            {
+                "id": 1302194,
+                "values": {
+                    "surge": "58",
+                    "heave": "0",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "0",
+                    "roll": "0"
+                },
+                "name": "Test Preset",
+                "color": "secondary"
+            },
+            {
+                "id": 6350969,
+                "values": {
+                    "surge": "0",
+                    "heave": "100",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "26",
+                    "roll": "0"
+                },
+                "name": "Test 4",
+                "color": "info"
+            }
+        ]
     }
 ]

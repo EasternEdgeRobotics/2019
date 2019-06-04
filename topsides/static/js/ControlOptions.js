@@ -45,7 +45,7 @@ class ControlOptions{
         let returnString = "";
         returnString += "<option value = '' disabled></option><option value=''>No Control</option><option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Axes Controls</option>";
         $.each(this._axes, function(i, obj){
-            returnString += "<option value='" + obj + "'>" + obj + "</option>"
+            returnString += "<option value='" + i + "'>" + i + "</option>"
         });
         return returnString;
     }
@@ -57,7 +57,7 @@ class ControlOptions{
         //REGULAR BUTTONS
         returnString += "<option value = '' disabled></option><option value = ''>No Control</option><option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Press Controls</option>";
         $.each(this._buttons, function(i, obj){
-            returnString += "<option value='" + obj + "'>" + obj + "</option>"
+            returnString += "<option value='" + i + "'>" + i + "</option>"
         });
 
         //HOLD BUTTONS
@@ -71,7 +71,7 @@ class ControlOptions{
         returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Toggle Controls</option>";
 
         $.each(this._toggleButtons, function(i, obj){
-            returnString += "<option value='" + obj +"'>" + obj + "</option>";
+            returnString += "<option value='" + i +"'>" + i + "</option>";
         });
 
         return returnString;
