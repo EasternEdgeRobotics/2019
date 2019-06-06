@@ -86,9 +86,13 @@ def sendControlValues():
         smartPitch = bool(data.get("smart_pitch", 0))
         smartRoll = bool(data.get("smart_roll", 0))
 
-        claws = data.get("claws", 0)
+        rightClaw = data.get("open_both_claw", data.get("open_right_claw", -1 + data.get("close_both_claw", data.get("close_right_claw", 0))))
+        leftClaw = data.get("open_both_claw", data.get("open_left_claw", -1 + data.get("close_both_claw", data.get("close_left_claw", 0))))
         light = data.get("light", 0)
-        trought_fly = data.get("trout_fly", 0)
+        pebbles = data.get("pebbles_open", -1 + data.get("pebbles_close", 0))
+
+        #rightClaw = data.get("open_both_claw", 0)
+        print(rightClaw)
 
         # Handling Movement Axes Controls
         thrusterData = {
@@ -113,10 +117,26 @@ def sendControlValues():
             val = thrusterData[control]
             topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
+
+        print("====================")
+        print("left motor -   " + str(leftClaw))
+        print("right motor -    " + str(rightClaw))
+        print("pebbles -   " + str(pebbles))
+        print("====================")
+
+
+        if(rightClaw is not -1):
+            topsidesComms.sendData("rightmotor" + ("open" if rightClaw is 1 else "close"), "raspi-4")
+        if(leftClaw is not -1):
+            topsidesComms.sendData("leftmotor" + ("open" if leftClaw is 1 else "close"), "raspi-4")
+        if(pebbles is not -1):
+            topsidesComms.sendData("pebbles" + ("open" if pebbles is 1 else "close"), "raspi-4")
+
+        """
         topsidesComms.sendData("claw " + ("close" if claws is 1 else "open"), "raspi-4")
         topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))
         topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
-        
+        """
 
         
         return "good"

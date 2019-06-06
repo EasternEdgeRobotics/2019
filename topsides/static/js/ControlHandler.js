@@ -49,6 +49,7 @@ class ControlHandler{
 
         this._toggledControls = {};
         this._previousToggledButtons = [{},{},{},{}];
+        this._previousFlash = [];
 
         //this._holdControls = {};
         //this._previousHoldControls = [{},{},{},{}];
@@ -94,6 +95,7 @@ class ControlHandler{
         var _profile = this._profile;
         var _gamepads = this._gamepads;
         var _previousToggledButtons = this._previousToggledButtons;
+        var _previousFlash = this._previousFlash;
         //var _previousHoldControls = this._previousHoldControls;
         var _toggledControls = this._toggledControls;
         //var _holdControls = this._holdControls;
@@ -136,8 +138,15 @@ class ControlHandler{
                                         parsedControls[_controloptions.holdButtons[mapped_control].hold] = 0;
                                     }
                                 }*/
-                                
-                                else{
+                                else if(_controloptions.flashButtons.hasOwnProperty(mapped_control)){
+                                    if(!_previousFlash.includes(mapped_control) && value == 1){
+                                        console.log("yeep");
+                                        parsedControls[mapped_control] = value
+                                        _previousFlash.push(mapped_control);
+                                    }else if(_previousFlash.includes(mapped_control) && value == 0){
+                                        _previousFlash.splice(_previousFlash.indexOf(mapped_control), 1);
+                                    }
+                                }else{
                                     parsedControls[mapped_control] = value; //set the control option mapped to the value of the gamepad
                                 }
                             }
@@ -171,7 +180,6 @@ class ControlHandler{
         }
         if(JSON.stringify(parsed) != this._previous){
             this._previous = JSON.stringify(parsed);
-            console.log(parsed);
             return parsed;
         }
 

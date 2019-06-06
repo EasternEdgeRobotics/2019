@@ -62,13 +62,7 @@
         "roll_ccw":{
             "on-enable": true
         },
-        "claws":{
-            "on-enable": false
-        },
         "light":{
-            "on-enable": false
-        },
-        "trout_fry":{
             "on-enable": false
         }
     },
@@ -96,9 +90,32 @@
         },
         "light":{
             "on-enable": false
+        }
+    },
+    "buttonFlash": {
+        "open_left_claw":{
+            "on-enable": true
         },
-        "trout_fry":{
-            "on-enable": false
+        "close_left_claw":{
+            "on-enable": true
+        },
+        "open_right_claw":{
+            "on-enable": true
+        },
+        "close_right_claw":{
+            "on-enable": true
+        },
+        "open_both_claw":{
+            "on-enable": true
+        },
+        "close_both_claw":{
+            "on-enable": true
+        },
+        "pebbles_open": {
+            "on-enable": true
+        },
+        "pebbles_close":{
+            "on-enable": true
         }
     },
     "settings": ["smart_pitch", "smart_roll"]

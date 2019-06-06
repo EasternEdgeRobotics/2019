@@ -88,20 +88,25 @@
         
                 // Handle joystick input
                 setInterval(function(){
-                var controls = controlHandler.parseControlsIfChanged();
-                if(controls == null) return;
-                // Scaling each control based on sliders
-                $.each(controls, function(control, value){
-                    if($("#" + control).length){
-                        controls[control] = value * ($("#" + control).val()/100);
-                    }
-                    if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
-                        controls[control] *= 0;
-                    }
-                });
-                controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
-                controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
-                runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+                    var controls = controlHandler.parseControlsIfChanged();
+                    if(controls == null) return;
+                    // Scaling each control based on sliders
+                    $.each(controls, function(control, value){
+                        if($("#" + control).length){
+                            controls[control] = value * ($("#" + control).val()/100);
+                        }
+                        if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
+                            controls[control] *= 0;
+                            if(controlOptions.isFlashControl(control)){
+                                console.log("yeep");
+                                delete controls[control];
+                            }
+                        }
+                    });
+                    controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
+                    controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
+                    console.log(controls);
+                    runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
                 }, 30);
             });
         </script>
