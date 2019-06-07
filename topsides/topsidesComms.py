@@ -4,6 +4,7 @@ import sys
 import queue
 import threading
 from TopsidesGlobals import GLOBALS
+import botAPI
 
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
@@ -58,6 +59,19 @@ def receiveData():
         outputData = outputData.decode("utf-8")
         if (outputData == "exit"):
             break
+        elif("gyro" in outputData):
+            args = outputData.split()
+            botAPI.data["gyroscope"]["x"] = args[1]
+            botAPI.data["gyroscope"]["y"] = args[2]
+            botAPI.data["gyroscope"]["z"] = args[3]
+            botAPI.emitTelemetryData()
+        elif("accel" in outputData):
+            args = outputData.split()
+            botAPI.data["accelerometer"]["x"] = args[1]
+            botAPI.data["accelerometer"]["y"] = args[2]
+            botAPI.data["accelerometer"]["z"] = args[3]
+            botAPI.emitTelemetryData()
+
         print(outputData)
         received.put(outputData)
 
