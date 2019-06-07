@@ -110,8 +110,6 @@ def sendControlValues():
             "aft-camera": rotateCam2
         }
 
-
-
         for control in thrusterData:
             #print(control + "   " + str(thrusterData))
             val = thrusterData[control]
@@ -140,8 +138,6 @@ def sendControlValues():
         topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))
         topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
         """
-
-
 
         return "good"
 
