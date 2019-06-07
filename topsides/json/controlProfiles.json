@@ -24,10 +24,10 @@
                     "surge",
                     "yaw",
                     "rotateCam1",
-                    "yaw",
+                    null,
                     null
                 ],
-                "friendly_name": "joystickhorizontal"
+                "friendly_name": "Vertical"
             },
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
@@ -53,24 +53,63 @@
                     null,
                     null
                 ],
-                "friendly_name": "joystickvertical"
+                "friendly_name": "Horizontal"
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-51-1",
+        "modified": "2019-51-7",
         "presets": [
             {
-                "id": 1007119376,
+                "id": 1282230587,
                 "values": {
-                    "surge": "100",
-                    "heave": "8",
-                    "sway": "24",
-                    "yaw": "54",
-                    "pitch": "26",
-                    "roll": "0"
+                    "surge": "40",
+                    "heave": "40",
+                    "sway": "20",
+                    "yaw": "10",
+                    "pitch": "20",
+                    "roll": "20"
                 },
-                "name": "welcome2Hell",
-                "color": "danger"
+                "name": "Standard",
+                "color": "primary"
+            },
+            {
+                "id": 1282274622,
+                "values": {
+                    "surge": "10",
+                    "heave": "80",
+                    "sway": "10",
+                    "yaw": "10",
+                    "pitch": "10",
+                    "roll": "10"
+                },
+                "name": "Cannon",
+                "color": "warning"
+            },
+            {
+                "id": 1282308906,
+                "values": {
+                    "surge": "20",
+                    "heave": "20",
+                    "sway": "20",
+                    "yaw": "4",
+                    "pitch": "20",
+                    "roll": "20"
+                },
+                "name": "Grout",
+                "color": "primary"
+            },
+            {
+                "id": 1282402786,
+                "values": {
+                    "surge": "20",
+                    "heave": "20",
+                    "sway": "30",
+                    "yaw": "0",
+                    "pitch": "20",
+                    "roll": "20"
+                },
+                "name": "Cannon shells",
+                "color": "primary"
             }
         ]
     },
