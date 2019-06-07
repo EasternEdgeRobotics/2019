@@ -97,8 +97,8 @@ def sendControlValues():
         # Handling Movement Axes Controls
         thrusterData = {
             "fore-port-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
-            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
-            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
             "aft-star-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
             "fore-port-horz": -surge + yaw + sway,
@@ -141,7 +141,8 @@ def sendControlValues():
         topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
         """
 
-        
+
+
         return "good"
 
     except Exception as e:
