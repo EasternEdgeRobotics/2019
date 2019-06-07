@@ -92,7 +92,7 @@ def sendControlValues():
         pebbles = data.get("pebbles_open", -1 + data.get("pebbles_close", 0))
 
         #rightClaw = data.get("open_both_claw", 0)
-        print(rightClaw)
+        print(pebbles)
 
         # Handling Movement Axes Controls
         thrusterData = {
@@ -119,19 +119,22 @@ def sendControlValues():
 
 
         print("====================")
-        print("left motor -   " + str(leftClaw))
-        print("right motor -    " + str(rightClaw))
-        print("pebbles -   " + str(pebbles))
-        print("====================")
+        
+        
 
 
         if(rightClaw is not -1):
             topsidesComms.sendData("rightmotor" + ("open" if rightClaw is 1 else "close"), "raspi-4")
+            print("right motor -    " + ("open" if rightClaw is 1 else "close"))
         if(leftClaw is not -1):
             topsidesComms.sendData("leftmotor" + ("open" if leftClaw is 1 else "close"), "raspi-4")
+            print("left motor -   " + ("open" if leftClaw is 1 else "close"))
         if(pebbles is not -1):
             topsidesComms.sendData("pebbles" + ("open" if pebbles is 1 else "close"), "raspi-4")
-
+            print("pebbles -   " + ("open" if pebbles is 1 else "close"))
+        
+        
+        print("====================")
         """
         topsidesComms.sendData("claw " + ("close" if claws is 1 else "open"), "raspi-4")
         topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))

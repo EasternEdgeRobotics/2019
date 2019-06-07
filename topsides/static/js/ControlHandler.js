@@ -140,7 +140,6 @@ class ControlHandler{
                                 }*/
                                 else if(_controloptions.flashButtons.hasOwnProperty(mapped_control)){
                                     if(!_previousFlash.includes(mapped_control) && value == 1){
-                                        console.log("yeep");
                                         parsedControls[mapped_control] = value
                                         _previousFlash.push(mapped_control);
                                     }else if(_previousFlash.includes(mapped_control) && value == 0){

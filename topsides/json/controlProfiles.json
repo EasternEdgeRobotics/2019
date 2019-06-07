@@ -176,7 +176,7 @@
                     null,
                     null,
                     null,
-                    "pebbles_open",
+                    "pebbles_close",
                     "pebbles_open",
                     "close_both_claw",
                     "open_both_claw",
@@ -196,6 +196,6 @@
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-51-5"
+        "modified": "2019-51-7"
     }
 ]
