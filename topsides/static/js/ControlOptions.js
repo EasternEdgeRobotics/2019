@@ -8,6 +8,7 @@ class ControlOptions{
             controlOption._buttons = data["button"];
             controlOption._holdButtons = data["buttonHold"];
             controlOption._toggleButtons = data["buttonToggle"];
+            controlOption._flashButtons = data["buttonFlash"];
             controlOption._loadFunction();
         });
     }
@@ -28,6 +29,10 @@ class ControlOptions{
 
     get holdButtons(){
         return this._holdButtons;
+    }
+
+    get flashButtons(){
+        return this._flashButtons;
     }
 
     set onOptionsLoaded(f){
@@ -57,15 +62,21 @@ class ControlOptions{
         //REGULAR BUTTONS
         returnString += "<option value = '' disabled></option><option value = ''>No Control</option><option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Press Controls</option>";
         $.each(this._buttons, function(i, obj){
-            returnString += "<option value='" + i + "'>" + i + "</option>"
+            returnString += "<option value='" + i + "'>" + i + "</option>";
+        });
+
+        //FLASH BUTTONS
+        $.each(this._flashButtons, function(i, obj){
+            returnString += "<option value='" + i + "'>" + i + "</option>"; //FLASH BUTTONS
         });
 
         //HOLD BUTTONS
-        returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Hold Controls</option>";
+        /*returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Hold Controls</option>";
 
         $.each(this._holdButtons, function(i, obj){
             returnString += "<option value='" + i + "'>" + i + "</option>";
-        });
+        });*/
+
 
         //TOGGLE BUTTONS
         returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Toggle Controls</option>";
@@ -84,8 +95,21 @@ class ControlOptions{
             return this._buttons[name];
         }else if(name in this._toggleButtons){
             return this._toggleButtons[name];
+        }else if(name in this._flashButtons){
+            return this._flashButtons[name];
         }
         return false
+    }
+
+    isFlashControl(name){
+        console.log(name);
+        var returnVal = false;
+        $.each(this._flashButtons, function(control, _){
+            if(control == name){
+                returnVal = true;
+            }
+        });
+        return returnVal;
     }
 
     /*isHoldControl(name){

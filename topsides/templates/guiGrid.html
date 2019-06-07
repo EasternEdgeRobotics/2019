@@ -83,27 +83,26 @@
                 controlHandler.registerNotificationHandler(notificationHandler);
 
                 // Handle sliders
-                var sliderInputs = $(".slider");
-                sliderInputs.on('input', function() {
-                var inputAttribute = $( this ).attr('name');
-                var inputValue = $( this ).val();
-                getNewSliderValues(inputAttribute, inputValue)
+                $(".slider").on('input', function() {
+                    var inputAttribute = $( this ).attr('name');
+                    var inputValue = $( this ).val();
+                    getNewSliderValues(inputAttribute, inputValue)
                 });
 
                 // Handle count down timer
                 var timer = $('#startTimer');
                 timer.click(function() {
-                var fifteenMinutes = 60 * 15,
-                display = $('#timerText');
-                startCountDown(fifteenMinutes, display);
+                    var fifteenMinutes = 60 * 15,
+                    display = $('#timerText');
+                    startCountDown(fifteenMinutes, display);
                 });
 
                 // Handle preset slider button
                 var preset = $('#presetButton');
                 preset.click(function() {
-                var inputAttribute = ["surge", "heave", "sway", "yaw", "pitch", "roll"];
-                var inputValue = $('#presetValue').val();
-                getPresetValue(inputAttribute, inputValue);
+                    var inputAttribute = ["surge", "heave", "sway", "yaw", "pitch", "roll"];
+                    var inputValue = $('#presetValue').val();
+                    getPresetValue(inputAttribute, inputValue);
                 });
 
                 // Handle present button slider enter in input
@@ -117,20 +116,23 @@
 
                 // Handle joystick input
                 setInterval(function(){
-                var controls = controlHandler.parseControlsIfChanged();
-                if(controls == null) return;
-                // Scaling each control based on sliders
-                $.each(controls, function(control, value){
-                    if($("#" + control).length){
-                        controls[control] = value * ($("#" + control).val()/100);
-                    }
-                    if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
-                        controls[control] *= 0;
-                    }
-                });
-                controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
-                controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
-                runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
+                    var controls = controlHandler.parseControlsIfChanged();
+                    if(controls == null) return;
+                    // Scaling each control based on sliders
+                    $.each(controls, function(control, value){
+                        if($("#" + control).length){
+                            controls[control] = value * ($("#" + control).val()/100);
+                        }
+                        if($("#pause")[0].checked != true && controlOptions.get(control)["on-enable"] == true){
+                            controls[control] *= 0;
+                            if(controlOptions.isFlashControl(control)){
+                                delete controls[control];
+                            }
+                        }
+                    });
+                    controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
+                    controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
+                    runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
                 }, 30);
             });
         </script>
