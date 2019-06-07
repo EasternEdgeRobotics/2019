@@ -75,7 +75,7 @@ t.start()
 if __name__ == "__main__":
     command = input()
     while command != "exit":
-        sendData(command)
+        sendData(command, "raspi-4")
         command = input()
     sendData(command)
     while t.is_alive():

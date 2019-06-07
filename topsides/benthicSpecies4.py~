@@ -26,7 +26,7 @@ while(1):
     circ = 0
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 350 and area < 18000:
+        if area > 350 and area < 15000:
             M = cv.moments(contour)
             cX = int(M["m10"]/M["m00"])
             cY = int(M["m01"]/M["m00"])
@@ -41,14 +41,9 @@ while(1):
                         #is rect
                         rect += 1
                     else:
-                        #peri = cv.arcLength(contour, True)
-                        #approx = cv.approxPolyDP(contour, 0.04 * peri, True)
-                        #if len(approx) == 3:
-                        areaAdj = 1000
-                        #font = cv.FONT_HERSHEY_COMPLEX_SMALL
-                        #cv.putText(frame, str(int(area)), (cX, cY - 40), font, 2, (0, 0, 255), 2, cv.LINE_AA)
-                        #cv.putText(frame, str(int(w*h/2)), (cX, cY - 60), font, 2, (0, 0, 255), 2, cv.LINE_AA)
-                        if(w*h/2 > area - areaAdj and w*h/2 < area + areaAdj):
+                        peri = cv.arcLength(contour, True)
+                        approx = cv.approxPolyDP(contour, 0.04 * peri, True)
+                        if len(approx) == 3:
                             #is triangle
                             tri += 1
                         else:
@@ -74,7 +69,7 @@ while(1):
     cv.putText(frame, str(sqr), (10, 445), font, 2, (0, 0, 255), 2, cv.LINE_AA)
 
     cv.imshow('frame',frame)
-    #cv.imshow('thresh', thresh)
+    cv.imshow('thresh', thresh)
 
     k = cv.waitKey(5) & 0xFF
     if k == 27:

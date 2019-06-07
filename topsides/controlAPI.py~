@@ -122,13 +122,13 @@ def sendControlValues():
 
 
         if(rightClaw is not -1):
-            topsidesComms.sendData("rightmotor " + ("open" if rightClaw is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("rightmotor" + ("open" if rightClaw is 1 else "close"), "raspi-4")
             print("right motor -    " + ("open" if rightClaw is 1 else "close"))
         if(leftClaw is not -1):
-            topsidesComms.sendData("leftmotor " + ("open" if leftClaw is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("leftmotor" + ("open" if leftClaw is 1 else "close"), "raspi-4")
             print("left motor -   " + ("open" if leftClaw is 1 else "close"))
         if(pebbles is not -1):
-            topsidesComms.sendData("pebbles " + ("open" if pebbles is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("pebbles" + ("open" if pebbles is 1 else "close"), "raspi-4")
             print("pebbles -   " + ("open" if pebbles is 1 else "close"))
         
         
