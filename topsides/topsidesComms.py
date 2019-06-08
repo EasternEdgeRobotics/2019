@@ -75,7 +75,14 @@ t.start()
 if __name__ == "__main__":
     command = input()
     while command != "exit":
-        sendData(command, "raspi-4")
+        if command == "motors open":
+            sendData("leftmotor open", "raspi-4")
+            sendData("rightmotor open", "raspi-4")
+        elif command == "motors close":
+            sendData("leftmotor close", "raspi-4")
+            sendData("rightmotor close", "raspi-4")
+        else:
+            sendData(command, "raspi-4")
         command = input()
     sendData(command)
     while t.is_alive():
