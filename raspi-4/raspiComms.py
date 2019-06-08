@@ -6,7 +6,7 @@ import queue
 from RaspiGlobals import GLOBALS
 
 send = queue.Queue()
-threadData = {"claw": GLOBALS['claw-pos'], "pebbles": GLOBALS['pebbles-pos']}
+threadData = {"leftmotor": "None", "rightmotor": "None", "pebbles": "None"}
 threads = []
 stop_events = []
 
@@ -31,7 +31,6 @@ except socket.error:
     sys.exit()
 # Bind the ip and port of the raspi to the socket and loop coms
 s.bind((ipHost, portHost))
-
 
 def sendData():
     """Send data to topsides."""
@@ -104,15 +103,9 @@ def executeData(file, flag, stop):
 
 # Setup threading for receiving data
 threads.append(threading.Thread(target=sendData))
-stopleft = threading.Event()
-stopright = threading.Event()
-stoppebbles = threading.Event()
-threads.append(threading.Thread(target=executeData, args=('leftmotor.py', threadData, stopleft)))
-#threads.append(threading.Thread(target=executeData, args=('rightmotor.py', threadData, stopright)))
-#threads.append(threading.Thread(target=executeData, args=('pebble.py', threadData, stoppebbles)))
-stop_events.append(stopleft)
-stop_events.append(stopright)
-stop_events.append(stoppebbles)
+stopserial = threading.Event()
+threads.append(threading.Thread(target=executeData, args=('serialComm.py', threadData, stopserial)))
+stop_events.append(stopserial)
 
 if __name__ == "__main__":
     for thread in threads:

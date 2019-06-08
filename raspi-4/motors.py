@@ -2,13 +2,12 @@
 import sys
 import serial
 import time
-import RaspiGlobals
 
 # Serial setup
 ser = serial.Serial('/dev/ttyACM0', 115200)
 
 # Set motor speed (timings are based on this value)
-duty = 99
+duty = 80
 
 # Initialize claw position
 '''direction = flag['claw']'''
@@ -33,10 +32,26 @@ if (direction == "open"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
-    time.sleep(1)
+    time.sleep(0.1)
+
+    # Move motor
+    send = ("{ motor:4" + ", " + "1" + ", " + str(duty) + " }")
+    if ser.isOpen() is False:
+        ser.open()
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
+    time.sleep(0.5)
 
     # Stop motor
     send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
+    time.sleep(0.1)
+
+    # Stop motor
+    send = ("{ motor:4" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
     ser.flush()
 
@@ -50,10 +65,26 @@ elif (direction == "close"):
     ser.write(send.encode("utf-8"))
     ser.flush()
 
+    time.sleep(0.1)
+
+    # Move motor
+    send = ("{ motor:4" + ", " + "0" + ", " + str(duty) + " }")
+    if ser.isOpen() is False:
+        ser.open()
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
     time.sleep(0.5)
 
     # Stop motor
     send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
+    time.sleep(0.1)
+
+    # Stop motor
+    send = ("{ motor:4" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
     ser.flush()
 
@@ -64,6 +95,13 @@ elif (direction == "stop"):
     send = ("{ motor:3" + ", " + "1" + ", " + "0" + " }")
     if ser.isOpen() is False:
         ser.open()
+    ser.write(send.encode("utf-8"))
+    ser.flush()
+
+    time.sleep(0.1)
+
+    # Stop motor
+    send = ("{ motor:4" + ", " + "1" + ", " + "0" + " }")
     ser.write(send.encode("utf-8"))
     ser.flush()
 

@@ -1,78 +1,29 @@
 """Communicate from server to raspberry pi"""
-import socket
-import sys
 import queue
-import serial
-import syslog
 import time
 import math
 import threading
-sys.path.append('../raspi/libraries')
-import maestro
 from pidh import pid
 from TopsidesGlobals import GLOBALS
-#import topsidesComms
-
-
-# Change IP addresses for a production or development environment
-if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
-    ipSend = GLOBALS['ipSend-dev']
-    ipHost = GLOBALS['ipHost-dev']
-else:
-    ipSend = GLOBALS['ipSend']
-    ipHost = GLOBALS['ipHost']
-
-portSend = GLOBALS['portSend']
-portHost = GLOBALS['portHost']
-
-received = queue.Queue()
-# Try opening a socket for communication
-try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-except socket.error:
-    print("Failed To Create Socket")
-    sys.exit()
-except Exception as e:
-    print("failed")
-# Bind the ip and port of topsides to the socket and loop coms
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((ipHost, portHost))
-
-# Queue to hold send commands to be read by simulator
-simulator = queue.Queue()
-
-
-# This function sends data to the ROV
-def sendData(inputData):
-    global s
-    s.sendto(inputData.encode('utf-8'), ("192.168.88.5", portSend))
-
-# TESTING
-def sendDataB(inputData):
-    global s
-    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
-
 
 keep = [0]
 rovInMotion = False;
+topsidesComms = None
 
-# This function is constantly trying to receive data from the ROV
-def receiveData(flag):
-    global s
-    while True:
-        outputData, addr = s.recvfrom(1024)
-        outputData = outputData.decode("utf-8")
-        if (outputData == "exit"):
-            break
-        received.put(outputData)
-        if flag.is_set():
-            break
+""" Create objects for each component """
+depth = pid()
+pitch = pid()
+yaw = pid()
+r = pid()
 
+def pidInit(comms):
+    global topsidesComms
+    topsidesComms = comms
 
-def putMessage(msg):
-    sendData(msg)
-    simulator.put(msg, timeout=0.005)
-
+def updateTargets(pitchT, rollT, yawT):
+    r.target = rollT
+    yaw.target = yawT
+    pitch.target = pitchT
 
 def chechFourthFirstQuad(angle_1, angle_2):
     if(angle_1 > 260 and angle_2 < 100):
@@ -85,16 +36,8 @@ def chechFourthFirstQuad(angle_1, angle_2):
 def runThruster(tData):
     for control in tData:
         val = tData[control]
-        putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
-    print("good")
-
-
-""" Create objects for each component """
-
-depth = pid()
-pitch = pid()
-yaw = pid()
-r = pid()
+        #topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+        print("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
 """ initialize the different PID components """
 
@@ -382,36 +325,23 @@ def getDepth():
     return data[1]
 
 
-# Setup threading for receiving data
-flag = threading.Event()
-t = threading.Thread(target=receiveData, args=(flag,))
-t.start()
-
 
 ## run pitch and roll together
 if __name__ == "__main__":
-    sendDataB('readSerialArd.py')
-
-
     r.target = float(input("Target Roll: "))
     yaw.target = float(input("Target Yaw: "))
     pitch.target = float(input("Target Pitch: "))
     depth.target = float(input("depth: "))  # input format for depth.target must me xx.xx
-    try:
-        while True:
+    while True:
+        try:
+            cPitch = float(input("Input Pitch: "))
+            cRoll = float(input("Input Roll: "))
+            cYaw = float(input("Input Yaw: "))
+        except (IndexError,ValueError):
+            continue
 
-            try:
-                cPitch = getPitchAngle()
-                cRoll = getRollAngle()
-                cYaw = getYawAngle()
-                cDepth = float(getDepth())/100
-            except (IndexError,ValueError):
-                continue
-
-            #runAbsoluteLockPID(float(cPitch), float(cRoll), float(cYaw), cDepth)
-            # runDepthPID(cDepth, False)
-            runPitchAndRollPID(float(cPitch), float(cRoll))
-            # runRollPID(float(cRoll), False)
-            #runPitchPID(float(cPitch), False)
-    except KeyboardInterrupt:
-        flag.set()
+        #runAbsoluteLockPID(float(cPitch), float(cRoll), float(cYaw), cDepth)
+        # runDepthPID(cDepth, False)
+        runPitchAndRollPID(float(cPitch), float(cRoll))
+        # runRollPID(float(cRoll), False)
+        #runPitchPID(float(cPitch), False)
