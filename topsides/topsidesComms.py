@@ -5,6 +5,8 @@ import queue
 import threading
 from TopsidesGlobals import GLOBALS
 import botAPI
+import topsidePID
+
 
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
@@ -62,10 +64,12 @@ def receiveData():
             break
         elif("gyro" in outputData):
             args = outputData.split()
-            botAPI.data["gyroscope"]["x"] = args[1]
-            botAPI.data["gyroscope"]["y"] = args[2]
+            botAPI.data["gyroscope"]["x"] = args[1] #pitch
+            botAPI.data["gyroscope"]["y"] = args[2] #roll
             botAPI.data["gyroscope"]["z"] = args[3]
             botAPI.emitTelemetryData()
+            if(botAPI.rotationLock):
+                topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
         elif("accel" in outputData):
             args = outputData.split()
             botAPI.data["accelerometer"]["x"] = args[1]

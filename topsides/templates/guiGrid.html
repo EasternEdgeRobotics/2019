@@ -36,6 +36,10 @@
                 });
 
                 $Bot3D().appendTo("#3dmodel");
+
+                $("#rotateLock").on("change", function(){
+                    runPythonPOST('bot/trigger/rotation', JSON.stringify({'enabled': $(this)[0].checked}), function(){});
+                });
             });
 
             var profileHandler = new ProfileHandler();
@@ -238,17 +242,19 @@
                         <div class="panel">
                             <h5 class="card-header">PID Control</h5>
                             <div class="card-body">
-                                <div>
+                                <div class="d-flex flex-column align-items-center">
                                     <div class="custom-control custom-switch m-4">
                                         <input type="checkbox" class="custom-control-input" id="rotateLock">
                                         <label class="custom-control-label" for="rotateLock">Rotation Lock</label>
                                     </div>
+                                    <button class="btn btn-primary" onclick="runPythonPOST('bot/target/rotation', null, function(){})">Set Rotation</button>
                                 </div>
-                                <div>
+                                <div class="d-flex flex-column align-items-center">
                                     <div class="custom-control custom-switch m-4">
                                         <input type="checkbox" class="custom-control-input" id="depthLock">
                                         <label class="custom-control-label" for="depthLock">Depth Lock</label>
                                     </div>
+                                    <button disabled class="btn btn-primary" onclick="runPythonPOST('bot/target/depth', null, function(){})">Set Depth</button>
                                 </div>
                             </div>
                         </div>

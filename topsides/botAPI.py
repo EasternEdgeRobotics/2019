@@ -3,6 +3,8 @@ from flask_socketio import SocketIO, emit
 from adminAPI import protected
 import random
 
+topsidePID = None
+
 bot_api = Blueprint("bot_api", __name__)
 bot_api.threaded = True
 
@@ -40,6 +42,13 @@ data = {
     "pressure": None
 }
 
+def botAPI(topPID):
+    global topsidePID
+    topsidePID = topPID
+
+    return bot_api
+
+
 def socketSetup(socket):
     global socketio
     socketio = socket
@@ -73,20 +82,34 @@ def emitTelemetryData():
     socketio.emit('data', data, namespace='/bot/telemetry', broadcast=True )
 
 
-@bot_api.route("/bot/target/rotation")
+@bot_api.route("/bot/target/rotation", methods=["POST"])
 def lockRotation():
     global targetRotation
-    data = request.json
+    """
     targetRotation = {
-        "x": data.get("x", None)
-        "y": data.get("y", None)
-        "z": data.get("z", None)
+        "x": data["gyroscope"]["x"]
+        "y": data["gyroscope"]["y"]
+        "z": data["gyroscope"]["z"]
     }
+    """
+    topsidePID.pitch.target = data["gyroscope"]["x"] # x on gyro
+    topsidePID.r.target = data["gyroscope"]["y"]
+    topsidePID.yaw.target = data["gyroscope"]["z"]
+    return "good"
 
-@bot_api.route("/bot/target/depth")
+@bot_api.route("/bot/target/depth", methods=["POST"])
+def lockDepth():
     global targetDepth
-    data = request.json
+    topsidePID.depth.target = data[""]
     targetDepth = data.get("depth", None)
+    return "good"
+
+@bot_api.route("/bot/trigger/rotation", methods=["POST"])
+def triggerRotation():
+    data = request.json
+
+    rotationLock = bool(data.get("enabled", False))
+    return "good"
 
 @bot_api.route("/bot/test")
 def test():

@@ -7,7 +7,7 @@ from pidh import pid
 from TopsidesGlobals import GLOBALS
 
 keep = [0]
-rovInMotion = False;
+rovInMotion = False
 topsidesComms = None
 
 """ Create objects for each component """
@@ -15,6 +15,11 @@ depth = pid()
 pitch = pid()
 yaw = pid()
 r = pid()
+
+
+def setTopsidesComms(comms):
+    global topsidesComms
+    topsidesComms = comms
 
 def pidInit(comms):
     global topsidesComms
@@ -36,7 +41,7 @@ def chechFourthFirstQuad(angle_1, angle_2):
 def runThruster(tData):
     for control in tData:
         val = tData[control]
-        #topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+        topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
         print("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
 
 """ initialize the different PID components """
@@ -167,7 +172,7 @@ def runYawPID(angle, get):
         get = (boolean) true if you want to get calculated power, false if you want to runRoll without returning power
 """
 def runRollPID(angle, get):
-    roll_PID_init();
+    roll_PID_init()
 
     if(angle < -75):
         angle = -75
@@ -224,7 +229,7 @@ def runPitchPID(angle, get):
     elif(angle > 75):
         angle = 75
 
-    pitch_PID_init();
+    pitch_PID_init()
     pitch.intError = 10
 
 
