@@ -8,6 +8,16 @@ bot_api.threaded = True
 
 socketio = None
 
+rotationLock = False
+targetRotation = {
+    "x": None,
+    "y": None,
+    "z": None
+}
+
+depthLock = True
+targetDepth = None
+
 data = {
     "raspi1": {
         "ping": None,
@@ -56,6 +66,22 @@ broadcasts the telemetry data to all clients
 """
 def emitTelemetryData():
     socketio.emit('data', data, namespace='/bot/telemetry', broadcast=True )
+
+
+@bot_api.route("/bot/target/rotation")
+def lockRotation():
+    global targetRotation
+    data = request.json
+    targetRotation = {
+        "x": data.get("x", None)
+        "y": data.get("y", None)
+        "z": data.get("z", None)
+    }
+
+@bot_api.route("/bot/target/depth")
+    global targetDepth
+    data = request.json
+    targetDepth = data.get("depth", None)
 
 @bot_api.route("/bot/test")
 def test():

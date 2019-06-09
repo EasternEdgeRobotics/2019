@@ -155,28 +155,28 @@
                         <div class="panel">
                             <h5 class="card-header">Power In Six Degrees Of Freedom</h5>
                             <div class="d-flex m-3">
-                                <div>
-                                    <label for="surge">Surge <span id="outputsurge">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="surge">Surge <span id="outputsurge">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="surge" name="surge" orient="vertical">
                                 </div>
-                                <div>
-                                    <label for="heave">Heave <span id="outputheave">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="heave">Heave <span id="outputheave">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="heave" name="heave" orient="vertical">
                                 </div>
-                                <div>
-                                    <label for="sway">Sway <span id="outputsway">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="sway">Sway <span id="outputsway">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="sway" name="sway" orient="vertical">
                                 </div>
-                                <div>
-                                    <label for="yaw">Yaw <span id="outputyaw">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="yaw">Yaw <span id="outputyaw">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="yaw" name="yaw" orient="vertical">
                                 </div>
-                                <div>
-                                    <label for="pitch">Pitch <span id="outputpitch">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="pitch">Pitch <span id="outputpitch">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="pitch" name="pitch" orient="vertical">
                                 </div>
-                                <div>
-                                    <label for="roll">Roll <span id="outputroll">50</span></label>
+                                <div class="d-flex flex-column-reverse align-items-center" style="flex: 1;">
+                                    <label class="text-center" for="roll">Roll <span id="outputroll">50</span></label>
                                     <input type="range" min="0" max="100" value="50" step="2" class="slider" id="roll" name="roll" orient="vertical">
                                 </div>
                             </div>
@@ -231,6 +231,25 @@
                             <div class="card-body">
                                 <select class="profile-select"></select>
                                 <button type="button" class="btn btn-primary" onclick="controlHandler.setGamepads();">Map Gamepads</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-item grid-item--width3">
+                        <div class="panel">
+                            <h5 class="card-header">PID Control</h5>
+                            <div class="card-body">
+                                <div>
+                                    <div class="custom-control custom-switch m-4">
+                                        <input type="checkbox" class="custom-control-input" id="rotateLock">
+                                        <label class="custom-control-label" for="rotateLock">Rotation Lock</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="custom-control custom-switch m-4">
+                                        <input type="checkbox" class="custom-control-input" id="depthLock">
+                                        <label class="custom-control-label" for="depthLock">Depth Lock</label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

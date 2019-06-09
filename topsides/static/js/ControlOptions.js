@@ -9,6 +9,7 @@ class ControlOptions{
             controlOption._holdButtons = data["buttonHold"];
             controlOption._toggleButtons = data["buttonToggle"];
             controlOption._flashButtons = data["buttonFlash"];
+            controlOption._axesSnap = data["axesSnap"];
             controlOption._loadFunction();
         });
     }
@@ -35,6 +36,10 @@ class ControlOptions{
         return this._flashButtons;
     }
 
+    get axesSnap(){
+        return this._axesSnap;
+    }
+
     set onOptionsLoaded(f){
         if(f instanceof Function){
             this._loadFunction = f;
@@ -52,6 +57,12 @@ class ControlOptions{
         $.each(this._axes, function(i, obj){
             returnString += "<option value='" + i + "'>" + i + "</option>"
         });
+
+        returnString += "<option value = '' disabled></option><option value='' style='font-weight: bold;color:rgb(1,1,1);' disabled>Snap Controls</option>";
+        $.each(this._axesSnap, function(i, obj){
+            returnString += "<option value='" + i +"'>" + i + "</option>";
+        });
+
         return returnString;
     }
 

@@ -25,6 +25,20 @@
             "on-enable": false
         }
     },
+    "axesSnap": {
+        "cam1_UP":{
+            "on-enable": false
+        },
+        "cam1_DOWN":{
+            "on-enable": false
+        },
+        "cam2_UP":{
+            "on-enable": false
+        },
+        "cam2_DOWN":{
+            "on-enable": false
+        }
+    },
     "button":{
         "surge_forewards":{
             "on-enable": true
