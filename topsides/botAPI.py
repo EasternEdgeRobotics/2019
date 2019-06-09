@@ -32,6 +32,11 @@ data = {
         "y": None,
         "z": None
     },
+    "gyroscope": {
+        "x": None,
+        "y": None,
+        "z": None
+    },
     "pressure": None
 }
 
@@ -85,5 +90,5 @@ def lockRotation():
 
 @bot_api.route("/bot/test")
 def test():
-    updateTelemetryData({"raspi1": {"ping": random.randint(20,40), "temp": random.randint(15, 20)}, "pressure": random.randint(80, 120), "accelerometer": {"x": random.randint(0, 360),"y": random.randint(0, 360),"z": random.randint(0, 360)}})
+    updateTelemetryData({"raspi1": {"ping": random.randint(20,40), "temp": random.randint(15, 20)}, "pressure": random.randint(80, 120), "accelerometer": {"x": random.randint(0, 360),"y": random.randint(0, 360),"z": random.randint(0, 360)},"gyroscope": {"x": random.randint(0, 360),"y": random.randint(0, 360),"z": random.randint(0, 360)}})
     return ""
