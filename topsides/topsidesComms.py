@@ -60,22 +60,26 @@ def receiveData():
     while True:
         outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
-        if (outputData == "exit"):
-            break
-        elif("gyro" in outputData):
-            args = outputData.split()
-            botAPI.data["gyroscope"]["x"] = args[1] #pitch
-            botAPI.data["gyroscope"]["y"] = args[2] #roll
-            botAPI.data["gyroscope"]["z"] = args[3]
-            botAPI.emitTelemetryData()
-            if(botAPI.rotationLock):
-                topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
-        elif("accel" in outputData):
-            args = outputData.split()
-            botAPI.data["accelerometer"]["x"] = args[1]
-            botAPI.data["accelerometer"]["y"] = args[2]
-            botAPI.data["accelerometer"]["z"] = args[3]
-            botAPI.emitTelemetryData()
+        try:
+            if (outputData == "exit"):
+                break
+            elif("gyro" in outputData):
+                args = outputData.split()
+                botAPI.data["gyroscope"]["x"] = float(args[3]) #pitch
+                botAPI.data["gyroscope"]["y"] = float(args[2]) - 1 #roll
+                botAPI.data["gyroscope"]["z"] = float(args[1])
+                botAPI.emitTelemetryData()
+                if(botAPI.rotationLock):
+                    topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
+            elif("accel" in outputData):
+                print("aaaaaaaaaaaaaaaaaaaaaaaaa")
+                args = outputData.split()
+                botAPI.data["accelerometer"]["x"] = args[1]
+                botAPI.data["accelerometer"]["y"] = args[2]
+                botAPI.data["accelerometer"]["z"] = args[3]
+                botAPI.emitTelemetryData()
+        except Exception:
+            pass
 
         print(outputData)
         received.put(outputData)
