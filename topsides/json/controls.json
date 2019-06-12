@@ -23,19 +23,11 @@
         },
         "rotateCam2":{
             "on-enable": false
-        }
-    },
-    "axesSnap": {
-        "cam1_UP":{
+        },
+        "cam1_step":{
             "on-enable": false
         },
-        "cam1_DOWN":{
-            "on-enable": false
-        },
-        "cam2_UP":{
-            "on-enable": false
-        },
-        "cam2_DOWN":{
+        "cam2_step":{
             "on-enable": false
         }
     },

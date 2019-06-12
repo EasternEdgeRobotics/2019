@@ -8,6 +8,9 @@ control_api = Blueprint("control_api", __name__)
 topsidesComms = None
 
 
+rotateCam1 = 0
+rotateCam2 = 0
+
 def controlAPI(comms):
     global topsidesComms
     topsidesComms = comms
@@ -47,6 +50,7 @@ def loadControlTestPage():
 
 @control_api.route("/sendControlValues", methods=["POST"])
 def sendControlValues():
+    global rotateCam1, rotateCam2
     """
     Parsed control values are sent to the server and eventually to the bot.
 
@@ -78,8 +82,11 @@ def sendControlValues():
         surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_backwards", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_surge", 0)))
         yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_yaw", 0)))
         sway = data.get("sway", data.get("sway_right",0) - data.get("sway_left", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_sway", 0)))
-        rotateCam1 = data.get("rotateCam1", 0)
-        rotateCam2 = data.get("rotateCam2", 0)
+        rotateCam1 = data.get("rotateCam1", rotateCam1 - 0.05*data.get("cam1_step", 0))
+        rotateCam2 = data.get("rotateCam2", rotateCam2 - 0.05*data.get("cam2_step", 0))
+
+        rotateCam1 = (rotateCam1 if (rotateCam1 > -1 and rotateCam1 < 1) else (rotateCam1/abs(rotateCam1)))
+        rotateCam2 = (rotateCam2 if (rotateCam2 > -1 and rotateCam2 < 1) else (rotateCam2/abs(rotateCam2)))
 
         #print(2)
 
@@ -92,7 +99,7 @@ def sendControlValues():
         pebbles = data.get("pebbles_open", -1 + data.get("pebbles_close", 0))
 
         #rightClaw = data.get("open_both_claw", 0)
-        print(pebbles)
+        print(rotateCam1)
 
         # Handling Movement Axes Controls
         thrusterData = {

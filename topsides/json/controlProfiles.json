@@ -245,12 +245,12 @@
                     null,
                     null,
                     null,
-                    null
+                    "cam1_step"
                 ],
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-21",
+        "modified": "2019-51-12",
         "presets": [
             {
                 "id": 1302194,
