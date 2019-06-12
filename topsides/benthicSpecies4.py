@@ -26,40 +26,51 @@ while(1):
     circ = 0
     for contour in contours:
         area = cv.contourArea(contour)
-        if area > 350 and area < 18000:
+        if area > 1000 and area < 30000:
             M = cv.moments(contour)
             cX = int(M["m10"]/M["m00"])
             cY = int(M["m01"]/M["m00"])
             if(frame[cY,cX][0] < 50 and frame[cY,cX][1] < 50 and frame[cY,cX][2] < 50):
                 cv.circle(frame, (cX,cY), 7, (255,255,0), -1)
-                cv.drawContours(frame, contour, -1, (0,255,0), 3)
+                #cv.drawContours(frame, contour, -1, (0,255,0), 3)
                 count += 1
-                ((x,y), (w,h), rot) = cv.minAreaRect(contour)
-                if(float(w) > 0.0 and float(h) > 0.0):
-                    ratio = w / float(h)
-                    if ratio <= 0.4  or ratio >= 2.8:
-                        #is rect
-                        rect += 1
-                    else:
-                        #peri = cv.arcLength(contour, True)
-                        #approx = cv.approxPolyDP(contour, 0.04 * peri, True)
-                        #if len(approx) == 3:
-                        areaAdj = 1000
+                
+                (x,y), (MA, ma), angle = cv.fitEllipse(contour)
+                areaEllipse = PI/4 * MA * ma
+                if(abs(areaEllipse - area) < 100):
+                    #is circle
+                    circ += 1
+                    cv.drawContours(frame, contour, -1, (0,255,255), 3)
+                else:
+                    ((x,y), (w,h), rot) = cv.minAreaRect(contour)
+                    if(float(w) > 0.0 and float(h) > 0.0):
+                        ratio = w / float(h)
                         #font = cv.FONT_HERSHEY_COMPLEX_SMALL
-                        #cv.putText(frame, str(int(area)), (cX, cY - 40), font, 2, (0, 0, 255), 2, cv.LINE_AA)
-                        #cv.putText(frame, str(int(w*h/2)), (cX, cY - 60), font, 2, (0, 0, 255), 2, cv.LINE_AA)
-                        if(w*h/2 > area - areaAdj and w*h/2 < area + areaAdj):
-                            #is triangle
-                            tri += 1
+                        #cv.putText(frame, str(ratio), (cX, cY - 40), font, 2, (0, 0, 255), 2, cv.LINE_AA)
+                        
+                        if ratio <= 0.6  or ratio >= 2.8:
+                            #is rect
+                            cv.drawContours(frame, contour, -1, (0,255,0), 3)
+                            rect += 1
                         else:
-                            (x,y), (MA, ma), angle = cv.fitEllipse(contour)
-                            areaEllipse = PI/4 * MA * ma
-                            if(abs(areaEllipse - area) < 100):
-                                #is circle
-                                circ += 1
+                            #peri = cv.arcLength(contour, True)
+                            #approx = cv.approxPolyDP(contour, 0.04 * peri, True)
+                            #if len(approx) == 3:
+                        
+                        
+                            areaAdj = 1400
+                            #font = cv.FONT_HERSHEY_COMPLEX_SMALL
+                            #cv.putText(frame, str(int(area)), (cX, cY - 40), font, 2, (0, 0, 255), 2, cv.LINE_AA)
+                            #cv.putText(frame, str(int(w*h/2)), (cX, cY - 60), font, 2, (0, 0, 255), 2, cv.LINE_AA)
+                            if(w*h/2 > area - areaAdj and w*h/2 < area + areaAdj):
+                                #is triangle
+                                
+                                cv.drawContours(frame, contour, -1, (255,0,0), 3)
+                                tri += 1
                             else:
                                 #is square
                                 sqr += 1
+                                cv.drawContours(frame, contour, -1, (0,0,255), 3)
 
     cv.circle(frame, (70, 300), 20, (0,0,255), -1)
     pts = np.array([[70, 330], [50, 360], [90, 360]], np.int32)

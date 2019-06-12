@@ -67,9 +67,6 @@
         },
         "roll_ccw":{
             "on-enable": true
-        },
-        "light":{
-            "on-enable": false
         }
     },
     "buttonToggle":{

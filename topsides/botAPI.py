@@ -107,6 +107,7 @@ def lockDepth():
 @bot_api.route("/bot/trigger/rotation", methods=["POST"])
 def triggerRotation():
     data = request.json
+    global rotationLock
 
     rotationLock = bool(data.get("enabled", False))
     return "good"
