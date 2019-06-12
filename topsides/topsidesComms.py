@@ -67,15 +67,16 @@ def receiveData():
             botAPI.data["gyroscope"]["x"] = args[1] #pitch
             botAPI.data["gyroscope"]["y"] = args[2] #roll
             botAPI.data["gyroscope"]["z"] = args[3]
-            botAPI.emitTelemetryData()
+            #botAPI.emitTelemetryData()
             if(botAPI.rotationLock):
+                print("locked")
                 topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
         elif("accel" in outputData):
             args = outputData.split()
             botAPI.data["accelerometer"]["x"] = args[1]
             botAPI.data["accelerometer"]["y"] = args[2]
             botAPI.data["accelerometer"]["z"] = args[3]
-            botAPI.emitTelemetryData()
+            #botAPI.emitTelemetryData()
 
         print(outputData)
         received.put(outputData)

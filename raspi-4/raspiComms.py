@@ -6,7 +6,7 @@ import queue
 from RaspiGlobals import GLOBALS
 
 send = queue.Queue()
-threadData = {"leftmotor": "None", "rightmotor": "None", "pebbles": "None"}
+threadData = {"leftmotor": "None", "rightmotor": "None", "pebbles": "None", "led": "None", "sensors": "None"}
 threads = []
 stop_events = []
 
