@@ -77,7 +77,6 @@ def receiveData():
             botAPI.data["accelerometer"]["y"] = args[2]
             botAPI.data["accelerometer"]["z"] = args[3]
             #botAPI.emitTelemetryData()
-
         print(outputData)
         received.put(outputData)
 

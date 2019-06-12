@@ -8,11 +8,11 @@
                 "buttons": [
                     "pebbles_close",
                     "close_both_claw",
-                    "",
-                    "close_right_claw",
-                    "",
-                    "open_right_claw",
                     null,
+                    "close_right_claw",
+                    null,
+                    "open_right_claw",
+                    "light",
                     null,
                     null,
                     null,
@@ -23,7 +23,7 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "rotateCam1",
+                    "rotateCam2",
                     null,
                     null
                 ],
@@ -35,10 +35,10 @@
                     "pebbles_open",
                     "open_both_claw",
                     "close_left_claw",
-                    "",
-                    "open_left_claw",
-                    "",
                     null,
+                    "open_left_claw",
+                    null,
+                    "light",
                     null,
                     null,
                     null,
@@ -49,7 +49,7 @@
                     "roll",
                     "pitch",
                     "heave",
-                    "rotateCam2",
+                    "rotateCam1",
                     null,
                     null
                 ],
@@ -57,7 +57,7 @@
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-51-7",
+        "modified": "2019-51-9",
         "presets": [
             {
                 "id": 1282230587,
@@ -245,12 +245,12 @@
                     null,
                     null,
                     null,
-                    null
+                    "cam1_step"
                 ],
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-21",
+        "modified": "2019-51-12",
         "presets": [
             {
                 "id": 1302194,
