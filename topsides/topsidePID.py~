@@ -17,8 +17,6 @@ yaw = pid()
 r = pid()
 
 
-THRUSTER_ADJ = 0.8
-
 def setTopsidesComms(comms):
     global topsidesComms
     topsidesComms = comms
@@ -50,7 +48,6 @@ def runThruster(tData):
 
 def depth_PID_init():
     depth.kP = 1.25 ## don't go any higher than 0.9 otherwise, oscillation increases by about 10%
-    #depth.kP = 0.6
     depth.kI = 0.099
     depth.kD = 0.285
     depth.integral = 0.0
@@ -281,37 +278,13 @@ def runPitchAndRollPID(cPitch, cRoll):
     rl = runRollPID(float(cRoll), True)
 
     thrusterData = {
-        "fore-port-vert": (pch+rl) * THRUSTER_ADJ,
-        "fore-star-vert": (pch-rl)  * THRUSTER_ADJ,
-        "aft-port-vert": (pch-rl) * THRUSTER_ADJ,
-        "aft-star-vert": (pch+rl) * THRUSTER_ADJ
+        "fore-port-vert": pch+rl,
+        "fore-star-vert": pch-rl,
+        "aft-port-vert": pch-rl,
+        "aft-star-vert": pch+rl
     }
 
     runThruster(thrusterData)
-
-"""
-@Params cPitch, cRoll, cYaw, cDepth
-"""
-def runRotationLockPID(cPitch, cRoll, cYaw):
-    pch = runPitchPID(float(cPitch), True)
-    rl = runRollPID(float(cRoll), True)
-    yw = runYawPID(float(cYaw), True)
-
-    thrusterData = {
-        "fore-port-vert": (pch+rl) * THRUSTER_ADJ,
-        "fore-star-vert": (-pch+rl) * THRUSTER_ADJ,
-        "aft-port-vert":  (pch+rl) * THRUSTER_ADJ,
-        "aft-star-vert":  (pch-rl) * THRUSTER_ADJ,
-        "fore-port-horz": -yw * THRUSTER_ADJ,
-        "fore-star-horz": -yw * THRUSTER_ADJ,
-        "aft-port-horz": yw * THRUSTER_ADJ,
-        "aft-star-horz": yw * THRUSTER_ADJ,
-
-    }
-
-    runThruster(thrusterData)
-
-
 
 """
 @Params cPitch, cRoll, cYaw, cDepth

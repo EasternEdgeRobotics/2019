@@ -75,6 +75,9 @@
         },
         "roll_ccw":{
             "on-enable": true
+        },
+        "light":{
+            "on-enable": false
         }
     },
     "buttonToggle":{
@@ -129,5 +132,5 @@
             "on-enable": true
         }
     },
-    "settings": ["smart_pitch", "smart_roll", "back_press"]
+    "settings": ["smart_pitch", "smart_roll"]
 }

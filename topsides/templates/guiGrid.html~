@@ -121,9 +121,7 @@
                 // Handle joystick input
                 setInterval(function(){
                     var controls = controlHandler.parseControlsIfChanged();
-                    if(controls == null && $("#backPress")[0].checked) controls=controlHandler._parseControls();
-                    else if(controls == null)
-                        return
+                    if(controls == null) return;
                     // Scaling each control based on sliders
                     $.each(controls, function(control, value){
                         if($("#" + control).length){
@@ -138,9 +136,8 @@
                     });
                     controls["smart_pitch"] = $("#smartPitch")[0].checked ? 1 : 0;
                     controls["smart_roll"] = $("#smartRoll")[0].checked ? 1: 0;
-                    controls["back_press"] = $("#backPress")[0].checked && $("#pause")[0].checked ? 1 : 0;
                     runPythonPOST("sendControlValues", JSON.stringify(controls), function(){});
-                }, 100);
+                }, 30);
             });
         </script>
     </head>
@@ -201,10 +198,6 @@
                                 <div class="custom-control custom-switch m-4">
                                     <input type="checkbox" class="custom-control-input" id="smartRoll">
                                     <label class="custom-control-label" for="smartRoll">Smart Roll</label>
-                                </div>
-                                <div class="custom-control custom-switch m-4">
-                                    <input type="checkbox" class="custom-control-input" id="backPress">
-                                    <label class="custom-control-label" for="backPress">Back Press</label>
                                 </div>
                             </div>
                         </div>

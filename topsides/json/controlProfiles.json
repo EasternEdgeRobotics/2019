@@ -57,7 +57,7 @@
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-51-9",
+        "modified": "2019-51-13",
         "presets": [
             {
                 "id": 1282230587,
@@ -89,9 +89,9 @@
                 "id": 1282308906,
                 "values": {
                     "surge": "20",
-                    "heave": "20",
+                    "heave": "30",
                     "sway": "20",
-                    "yaw": "4",
+                    "yaw": "10",
                     "pitch": "20",
                     "roll": "20"
                 },
@@ -102,13 +102,26 @@
                 "id": 1282402786,
                 "values": {
                     "surge": "20",
-                    "heave": "20",
+                    "heave": "30",
                     "sway": "30",
-                    "yaw": "0",
+                    "yaw": "8",
                     "pitch": "20",
                     "roll": "20"
                 },
                 "name": "Cannon shells",
+                "color": "primary"
+            },
+            {
+                "id": 2036151606,
+                "values": {
+                    "surge": "0",
+                    "heave": "0",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "0",
+                    "roll": "0"
+                },
+                "name": "",
                 "color": "primary"
             }
         ]

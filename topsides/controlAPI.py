@@ -94,18 +94,19 @@ def sendControlValues():
         #rightClaw = data.get("open_both_claw", 0)
         print(pebbles)
         
+        surge = 0.2 if data.get("back_press", 0) == 1 else surge
 
         # Handling Movement Axes Controls
         thrusterData = {
-            "fore-port-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
-            "fore-star-vert": -heave - ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) - ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
-            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
-            "aft-star-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
+            "fore-port-vert": +heave - ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((-abs(roll) if roll > 0 else 0) if smartRoll else -roll),
+            "fore-star-vert": -heave + ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) - ((-abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) - ((-abs(roll) if roll > 0 else 0) if smartRoll else roll),
+            "aft-star-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
-            "fore-port-horz": -surge + yaw + sway,
-            "fore-star-horz": +surge + yaw + sway,
+            "fore-port-horz": surge - yaw - sway,
+            "fore-star-horz": -surge - yaw - sway,
             "aft-port-horz": -surge + yaw - sway,
-            "aft-star-horz": -surge - yaw + sway,
+            "aft-star-horz": surge + yaw - sway,
 
             "fore-camera": rotateCam1,
             "aft-camera": rotateCam2

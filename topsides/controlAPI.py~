@@ -93,18 +93,19 @@ def sendControlValues():
 
         #rightClaw = data.get("open_both_claw", 0)
         print(pebbles)
+        
 
         # Handling Movement Axes Controls
         thrusterData = {
-            "fore-port-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
-            "fore-star-vert": +heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
-            "aft-port-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
-            "aft-star-vert": -heave + ((-abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
+            "fore-port-vert": +heave - ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) - ((abs(roll) if roll > 0 else 0) if smartRoll else -roll),
+            "fore-star-vert": -heave + ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) + ((abs(roll) if roll > 0 else 0) if smartRoll else roll),
+            "aft-star-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
-            "fore-port-horz": -surge + yaw + sway,
-            "fore-star-horz": +surge + yaw + sway,
+            "fore-port-horz": surge - yaw - sway,
+            "fore-star-horz": -surge - yaw - sway,
             "aft-port-horz": -surge + yaw - sway,
-            "aft-star-horz": -surge - yaw + sway,
+            "aft-star-horz": surge + yaw - sway,
 
             "fore-camera": rotateCam1,
             "aft-camera": rotateCam2
@@ -122,15 +123,16 @@ def sendControlValues():
 
 
         if(rightClaw is not -1):
-            topsidesComms.sendData("rightmotor" + ("open" if rightClaw is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("rightmotor " + ("open" if rightClaw is 1 else "close"), "raspi-4")
             print("right motor -    " + ("open" if rightClaw is 1 else "close"))
         if(leftClaw is not -1):
-            topsidesComms.sendData("leftmotor" + ("open" if leftClaw is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("leftmotor " + ("open" if leftClaw is 1 else "close"), "raspi-4")
             print("left motor -   " + ("open" if leftClaw is 1 else "close"))
         if(pebbles is not -1):
-            topsidesComms.sendData("pebbles" + ("open" if pebbles is 1 else "close"), "raspi-4")
+            topsidesComms.sendData("pebbles " + ("open" if pebbles is 1 else "close"), "raspi-4")
             print("pebbles -   " + ("open" if pebbles is 1 else "close"))
         
+        topsidesComms.sendData("led " + ("50" if light is 1 else "0"), "raspi-4")
         
         print("====================")
         """
