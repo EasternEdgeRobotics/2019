@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from flask_socketio import SocketIO, emit
 from adminAPI import protected
+import json
 import random
 
 topsidePID = None
@@ -57,6 +58,12 @@ def botAPI(topPID, topsideC):
 def socketSetup(socket):
     global socketio
     socketio = socket
+    
+    
+    # Server side
+    @socketio.on('connect')
+    def on_connect():
+        print("connect")
 
 """
 set the bot data and emit to clients
@@ -119,12 +126,17 @@ def triggerRotation():
 
 @bot_api.route("/bot/trigger/gyro", methods=["POST"])
 def triggerGyro():
-    topsidesComms.putMessage("sensors 0")
+    topsidesComms.sendData("sensors 0", "raspi-4")
     return "good"
+
+@bot_api.route("/bot/giveme", methods=["GET"])
+def giveme():
+    return json.dumps(data)
+    
 
 @bot_api.route("/bot/trigger/sensors", methods=["POST"])
 def triggerSensors():
-    topsidesComms.putMessage("sensors 1")
+    topsidesComms.sendData("sensors 1", "raspi-4")
     return "good"
 
 @bot_api.route("/bot/test")

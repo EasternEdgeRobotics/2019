@@ -50,9 +50,16 @@
                 });
 
                 var socket = io.connect("/bot/telemetry");
+                
+                /*$(function() {
+                    var socket = io.connect('http://localhost:5000');
+                    socket.on('connect', function() {
+                        socket.emit('connect');
+                    });
+                });*/
+                
                 socket.on("data", function(data){
                     $("#ph").html(data.ph);
-                    print(data.ph);
                     $("#temp").html(data.temperature);
                 });
             });
@@ -132,6 +139,13 @@
                     return false;
                 }
                 });
+                
+                setInterval(function(){
+                    runPythonGET("/bot/giveme", null, function(data){
+                        $("#ph").html(data.ph);
+                        $("#temp").html(data.temperature);
+                    });
+                }, 1000);
 
                 // Handle joystick input
                 setInterval(function(){
@@ -291,7 +305,7 @@
                             <div class="card-body">
                                 <div class="d-flex flex-column">
                                     <div class="d-flex align-items-center">
-                                        <p style="font-size: 1rem;">Temperature: <b><span id="temperature">N/A</span><sup> o</sup></b></p>
+                                        <p style="font-size: 1rem;">Temperature: <b><span id="temp">N/A</span><sup> o</sup></b></p>
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <p style="font-size: 1rem;">pH: <b><span id="ph">N/A</span></b></p>
