@@ -38,7 +38,7 @@ app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
 app.register_blueprint(themeAPI.themeAPI())
-app.register_blueprint(botAPI.botAPI(topsidePID))
+app.register_blueprint(botAPI.botAPI(topsidePID, topsidesComms))
 
 
 #Register socket events

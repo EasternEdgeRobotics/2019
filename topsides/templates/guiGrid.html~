@@ -218,12 +218,13 @@
                                     <label class="custom-control-label" for="smartRoll">Smart Roll</label>
                                 </div>
                                 <div class="custom-control custom-switch m-4">
+<<<<<<< HEAD
                                     <input type="checkbox" class="custom-control-input" id="backPress">
                                     <label class="custom-control-label" for="backPress">Back Press</label>
-                                </div>
-                                <div class="custom-control custom-switch m-4">
+=======
                                     <input type="checkbox" class="custom-control-input" id="showSensors">
                                     <label class="custom-control-label" for="showSensors">Read Sensors</label>
+>>>>>>> dcec8b9ede79bf8db2042e61838546659745dedc
                                 </div>
                             </div>
                         </div>
