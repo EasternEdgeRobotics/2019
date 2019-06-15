@@ -74,7 +74,7 @@ def receiveData():
                     print("meeeep")
                     topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
             elif("accel" in outputData):
-                print(outputData)
+                #print(outputData)
                 #print("aaaaaaaaaaaaaaaaaaaaaaaaa")
                 args = outputData.split()
                 botAPI.data["accelerometer"]["x"] = args[1]
@@ -84,7 +84,7 @@ def receiveData():
         except Exception as e:
             print(e)
 
-        #print(outputData)
+        print(outputData)
         received.put(outputData)
 
 
@@ -98,7 +98,7 @@ t = threading.Thread(target=receiveData)
 t.start()
 
 if __name__ == "__main__":
-    '''
+    
     command = input()
     while command != "exit":
         if command == "motors open":
@@ -123,4 +123,5 @@ if __name__ == "__main__":
             outputFile.write(currentTime + "," + data[1] + "," + data[2] + "," + data[3] + "\n")
     print("done")
     outputFile.close()
+    '''
 

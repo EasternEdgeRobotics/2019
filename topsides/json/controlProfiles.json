@@ -23,9 +23,9 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "rotateCam2",
                     null,
-                    null
+                    null,
+                    "cam2_step"
                 ],
                 "friendly_name": "Vertical"
             },
@@ -49,15 +49,15 @@
                     "roll",
                     "pitch",
                     "heave",
-                    "rotateCam1",
                     null,
-                    null
+                    null,
+                    "cam1_step"
                 ],
                 "friendly_name": "Horizontal"
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-51-13",
+        "modified": "2019-51-14",
         "presets": [
             {
                 "id": 1282230587,
@@ -258,12 +258,12 @@
                     null,
                     null,
                     null,
-                    null
+                    "cam1_step"
                 ],
                 "friendly_name": "Joystick"
             }
         ],
-        "modified": "2019-41-21",
+        "modified": "2019-51-12",
         "presets": [
             {
                 "id": 1302194,
