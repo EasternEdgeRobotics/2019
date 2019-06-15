@@ -78,6 +78,12 @@ def receiveData():
                 botAPI.data["accelerometer"]["y"] = args[2]
                 botAPI.data["accelerometer"]["z"] = args[3]
                 botAPI.emitTelemetryData()
+            elif("ph" in outputData):
+                args - outputData.split()
+                botAPI.data["ph"] = args[1]
+            elif("temperature" in outputData):
+                args - outputData.split()
+                botAPI.data["ph"] = args[1]
         except Exception:
             pass
 

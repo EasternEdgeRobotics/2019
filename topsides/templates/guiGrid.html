@@ -40,6 +40,21 @@
                 $("#rotateLock").on("change", function(){
                     runPythonPOST('bot/trigger/rotation', JSON.stringify({'enabled': $(this)[0].checked}), function(){});
                 });
+
+                $("#showSensors").on("change", function(){
+                    if($(this)[0].checked){
+                        runPythonPOST("bot/trigger/sensors", null, function(){});
+                    }else{
+                        runPythonPOST("bot/trigger/gyro", null, function(){});
+                    }
+                });
+
+                var socket = io.connect("/bot/telemetry");
+                socket.on("data", function(data){
+                    $("#ph").html(data.ph);
+                    print(data.ph);
+                    $("#temp").html(data.temperature);
+                });
             });
 
             var profileHandler = new ProfileHandler();
@@ -199,6 +214,10 @@
                                     <input type="checkbox" class="custom-control-input" id="smartRoll">
                                     <label class="custom-control-label" for="smartRoll">Smart Roll</label>
                                 </div>
+                                <div class="custom-control custom-switch m-4">
+                                    <input type="checkbox" class="custom-control-input" id="showSensors">
+                                    <label class="custom-control-label" for="showSensors">Read Sensors</label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -255,6 +274,21 @@
                                         <label class="custom-control-label" for="depthLock">Depth Lock</label>
                                     </div>
                                     <button disabled class="btn btn-primary" onclick="runPythonPOST('bot/target/depth', null, function(){})">Set Depth</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-item grid-item--width3">
+                        <div class="panel">
+                            <h5 class="card-header">Sensor Readings</h5>
+                            <div class="card-body">
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex align-items-center">
+                                        <p style="font-size: 1rem;">Temperature: <b><span id="temperature">N/A</span><sup> o</sup></b></p>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <p style="font-size: 1rem;">pH: <b><span id="ph">N/A</span></b></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
