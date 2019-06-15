@@ -20,6 +20,8 @@ targetRotation = {
 depthLock = True
 targetDepth = None
 
+topsidesComms = None
+
 data = {
     "raspi1": {
         "ping": None,
@@ -39,12 +41,15 @@ data = {
         "y": None,
         "z": None
     },
-    "pressure": None
+    "pressure": None,
+    "temperature": None,
+    "ph": None
 }
 
-def botAPI(topPID):
-    global topsidePID
+def botAPI(topPID, topsideC):
+    global topsidePID, topsidesComms
     topsidePID = topPID
+    topsidesComms = topsideC
 
     return bot_api
 
@@ -110,6 +115,16 @@ def triggerRotation():
     global rotationLock
 
     rotationLock = bool(data.get("enabled", False))
+    return "good"
+
+@bot_api.route("/bot/trigger/gyro", methods=["POST"])
+def triggerGyro():
+    topsidesComms.putMessage("sensors 0")
+    return "good"
+
+@bot_api.route("/bot/trigger/sensors", methods=["POST"])
+def triggerSensors():
+    topsidesComms.putMessage("sensors 1")
     return "good"
 
 @bot_api.route("/bot/test")
