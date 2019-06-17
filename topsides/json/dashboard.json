@@ -25,8 +25,8 @@
 
     "control-links":[
         {
-            "name": "GUI",
-            "file_name": "gui.html",
+            "name": "New GUI",
+            "file_name": "guiGrid.html",
             "outside_dashboard": true
         }
     ]

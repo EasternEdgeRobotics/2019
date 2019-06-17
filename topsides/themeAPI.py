@@ -9,7 +9,11 @@ theme_api = Blueprint("theme_api", __name__)
 def themeAPI():
     return theme_api
 
+""" loadThemes
+    
+    @description - finalizes and minimizes css for themes in themes directory and copies to /themes/loaded 
 
+"""
 def loadThemes():
     print("loading themes...")
     for filename in os.listdir("./static/css/themes"):
@@ -27,6 +31,12 @@ def loadThemes():
                 print("loaded theme: " + themename)
             oldfile.close()
 
+""" getThemes()
+    GET
+
+    @description - returns the html tags to link themes to page. Returns a bunch of <link> tags
+
+"""
 @theme_api.route("/themes", methods=["GET"])
 def getThemes():
     returnHTML = ""
@@ -34,6 +44,13 @@ def getThemes():
         returnHTML += "<link rel='stylesheet' type='text/css' href='/static/css/themes/loaded/" + filename + "'>"
     return returnHTML
 
+
+""" getThemeNames
+    GET
+
+    @description - returns a list of all loaded themes
+
+"""
 @theme_api.route("/themes/getnames", methods=["GET"])
 def getThemeNames():
     themes = []
@@ -41,12 +58,26 @@ def getThemeNames():
         themes.append(theme.replace(".css", ""))
     return jsonify(themes)
 
+""" setCurrentTheme
+    POST
+
+    @description - Uses cookies to set theme for the client.
+
+    @data - JSON object with theme field for theme name
+
+"""
 @theme_api.route("/themes/set", methods=["POST"])
 def setCurrentTheme():
     res = make_response("set theme")
     res.set_cookie("theme", request.json["theme"])
     return res
 
+
+""" getCurrentTheme
+    GET
+
+    @description - returns the value of the clients theme cookie
+"""
 @theme_api.route("/themes/get", methods=["GET"])
 def getCurrentTheme():
     res = None

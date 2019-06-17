@@ -6,13 +6,13 @@
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
+                    "pebbles_close",
+                    "close_both_claw",
                     null,
+                    "close_right_claw",
                     null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
+                    "open_right_claw",
+                    "light",
                     null,
                     null,
                     null,
@@ -23,22 +23,22 @@
                     "sway",
                     "surge",
                     "yaw",
-                    "rotateCam1",
                     null,
-                    null
+                    null,
+                    "cam2_step"
                 ],
-                "friendly_name": "joystickhorizontal"
+                "friendly_name": "Vertical"
             },
             {
                 "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
                 "buttons": [
+                    "pebbles_open",
+                    "open_both_claw",
+                    "close_left_claw",
                     null,
+                    "open_left_claw",
                     null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
+                    "light",
                     null,
                     null,
                     null,
@@ -49,15 +49,82 @@
                     "roll",
                     "pitch",
                     "heave",
-                    "rotateCam2",
                     null,
-                    null
+                    null,
+                    "cam1_step"
                 ],
-                "friendly_name": "joystickvertical"
+                "friendly_name": "Horizontal"
             }
         ],
         "undefined": "undefined",
-        "modified": "2019-01-24"
+        "modified": "2019-51-14",
+        "presets": [
+            {
+                "id": 1282230587,
+                "values": {
+                    "surge": "40",
+                    "heave": "40",
+                    "sway": "20",
+                    "yaw": "10",
+                    "pitch": "20",
+                    "roll": "20"
+                },
+                "name": "Standard",
+                "color": "primary"
+            },
+            {
+                "id": 1282274622,
+                "values": {
+                    "surge": "10",
+                    "heave": "80",
+                    "sway": "10",
+                    "yaw": "10",
+                    "pitch": "10",
+                    "roll": "10"
+                },
+                "name": "Cannon",
+                "color": "warning"
+            },
+            {
+                "id": 1282308906,
+                "values": {
+                    "surge": "20",
+                    "heave": "30",
+                    "sway": "20",
+                    "yaw": "10",
+                    "pitch": "20",
+                    "roll": "20"
+                },
+                "name": "Grout",
+                "color": "primary"
+            },
+            {
+                "id": 1282402786,
+                "values": {
+                    "surge": "20",
+                    "heave": "30",
+                    "sway": "30",
+                    "yaw": "8",
+                    "pitch": "20",
+                    "roll": "20"
+                },
+                "name": "Cannon shells",
+                "color": "primary"
+            },
+            {
+                "id": 2036151606,
+                "values": {
+                    "surge": "0",
+                    "heave": "0",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "0",
+                    "roll": "0"
+                },
+                "name": "",
+                "color": "primary"
+            }
+        ]
     },
     {
         "name": "One Joy",
@@ -164,5 +231,66 @@
             }
         ],
         "modified": "2019-11-2"
+    },
+    {
+        "name": "Troake Test",
+        "id": 8,
+        "gamepads": [
+            {
+                "name": "Logitech Logitech Extreme 3D (Vendor: 046d Product: c215)",
+                "buttons": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    "pebbles_close",
+                    "pebbles_open",
+                    "close_both_claw",
+                    "open_both_claw",
+                    "close_right_claw",
+                    "open_right_claw",
+                    "close_left_claw",
+                    "open_left_claw"
+                ],
+                "axes": [
+                    "surge",
+                    null,
+                    null,
+                    null,
+                    null,
+                    "cam1_step"
+                ],
+                "friendly_name": "Joystick"
+            }
+        ],
+        "modified": "2019-51-12",
+        "presets": [
+            {
+                "id": 1302194,
+                "values": {
+                    "surge": "58",
+                    "heave": "0",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "0",
+                    "roll": "0"
+                },
+                "name": "Test Preset",
+                "color": "secondary"
+            },
+            {
+                "id": 6350969,
+                "values": {
+                    "surge": "0",
+                    "heave": "100",
+                    "sway": "0",
+                    "yaw": "0",
+                    "pitch": "26",
+                    "roll": "0"
+                },
+                "name": "Test 4",
+                "color": "info"
+            }
+        ]
     }
 ]

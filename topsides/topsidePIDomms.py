@@ -407,10 +407,9 @@ if __name__ == "__main__":
                 cDepth = float(getDepth())/100
             except (IndexError,ValueError):
                 continue
-
-            runAbsoluteLockPID(float(cPitch), float(cRoll), float(cYaw), cDepth)
+            #runAbsoluteLockPID(float(cPitch), float(cRoll), float(cYaw), cDepth)
             # runDepthPID(cDepth, False)
-            # runPitchAndRollPID(float(cPitch), float(cRoll))
+            runPitchAndRollPID(float(cPitch), float(cRoll))
             # runRollPID(float(cRoll), False)
             #runPitchPID(float(cPitch), False)
     except KeyboardInterrupt:

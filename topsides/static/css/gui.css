@@ -10,11 +10,6 @@
     width: 100px;
 }
 
-.pidSlider {
-  height: 30px;
-  width: 100px;
-}
-
 input[type=range][orient=vertical] {
     -webkit-appearance: slider-vertical;
 }
@@ -102,3 +97,11 @@ label {
     padding: 30px;
     font-size: 24px;
 }
+
+/*
+.custom-switch-lg label::before{
+    width: 3.5rem !important;
+    height: 2rem;
+    left: -4.5rem !important;
+    border-radius: 1rem !important;
+}*/

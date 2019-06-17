@@ -1,5 +1,125 @@
 {
-    "axes":["surge", "sway", "heave", "pitch", "roll", "yaw", "rotateCam1", "rotateCam2"],
-    "button":["surge_forewards", "surge_backwards", "heave_up", "heave_down", "sway_left", "sway_right", "yaw_cw", "yaw_ccw", "pitch_up", "pitch_down", "roll_cw", "roll_ccw"],
-    "buttonToggle":["invert_global", "invert_surge", "invert_sway", "invert_yaw", "invert_heave", "invert_pitch", "invert_roll"]
+    "axes":{
+        "surge":{
+            "on-enable": true
+        },
+        "sway":{
+            "on-enable": true
+        },
+        "heave":{
+            "on-enable": true
+        },
+        "pitch":{
+            "on-enable": true
+        },
+        "roll":{
+            "on-enable": true
+        },
+        "yaw":{
+            "on-enable": true
+        },
+        "rotateCam1":{
+            "on-enable": false
+        },
+        "rotateCam2":{
+            "on-enable": false
+        },
+        "cam1_step":{
+            "on-enable": false
+        },
+        "cam2_step":{
+            "on-enable": false
+        }
+    },
+    "button":{
+        "surge_forewards":{
+            "on-enable": true
+        },
+        "surge_backwards":{
+            "on-enable": true
+        },
+        "heave_up":{
+            "on-enable": true
+        },
+        "heave_down":{
+            "on-enable": true
+        },
+        "sway_left":{
+            "on-enable": true
+        },
+        "sway_right":{
+            "on-enable": true
+        },
+        "yaw_cw":{
+            "on-enable": true
+        },
+        "yaw_ccw":{
+            "on-enable": true
+        },
+        "pitch_up":{
+            "on-enable": true
+        },
+        "pitch_down":{
+            "on-enable": true
+        },
+        "roll_cw":{
+            "on-enable": true
+        },
+        "roll_ccw":{
+            "on-enable": true
+        }
+    },
+    "buttonToggle":{
+        "invert_global":{
+            "on-enable": false
+        },
+        "invert_surge":{
+            "on-enable": false
+        },
+        "invert_sway":{
+            "on-enable": false
+        },
+        "invert_yaw":{
+            "on-enable": false
+        },
+        "invert_heave":{
+            "on-enable": false
+        },
+        "invert_pitch":{
+            "on-enable": false
+        },
+        "invert_roll":{
+            "on-enable": false
+        },
+        "light":{
+            "on-enable": false
+        }
+    },
+    "buttonFlash": {
+        "open_left_claw":{
+            "on-enable": true
+        },
+        "close_left_claw":{
+            "on-enable": true
+        },
+        "open_right_claw":{
+            "on-enable": true
+        },
+        "close_right_claw":{
+            "on-enable": true
+        },
+        "open_both_claw":{
+            "on-enable": true
+        },
+        "close_both_claw":{
+            "on-enable": true
+        },
+        "pebbles_open": {
+            "on-enable": true
+        },
+        "pebbles_close":{
+            "on-enable": true
+        }
+    },
+    "settings": ["smart_pitch", "smart_roll", "back_press"]
 }

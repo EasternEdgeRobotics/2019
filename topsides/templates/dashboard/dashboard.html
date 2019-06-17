@@ -2,13 +2,13 @@
 
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+        <title>Eastern Edge Robotics 2019</title>
 
         <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap/bootstrap.min.css')}}" type="text/css" />
         <link rel="stylesheet" href="{{url_for('static', filename='css/snackbar.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/dashboard.css')}}" type="text/css" />
 
-        <script src="{{url_for('static', filename='js/lib/jquery-3.3.1.min.js')}}" type="text/javascript"></script>
+        <script src="{{url_for('static', filename='js/lib/jquery-3.4.1.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/bootstrap.min.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/lib/socket.io.slim.js')}}" type="text/javascript"></script>
         <script src="{{url_for('static', filename='js/EER2019.js')}}" type="text/javascript"></script>
@@ -24,12 +24,12 @@
     </head>
     <body>
         <div class="container-fluid h-100">
-            <div class="row h-100">
+            <div class="row h-100 master-container">
                 <div class="col-xl-2 col-lg-3 col-md-2 sidebar">
                     <div class="eer-logo background-full" style="background-image: url('static/res/img/eer-logo.png')"></div>
                     <div id="nav"></div>
                 </div>
-                <div class="col-xl-10 col-lg-9 col-md-10" id="pageBody"></div>
+                <div class="page-body col-xl-10 col-lg-9 col-md-10" id="pageBody"></div>
 
             </div>
         </div>

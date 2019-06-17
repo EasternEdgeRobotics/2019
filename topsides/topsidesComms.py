@@ -4,16 +4,26 @@ import sys
 import queue
 import threading
 from TopsidesGlobals import GLOBALS
+import botAPI
+import topsidePID
+import time
+
 
 # Change IP addresses for a production or development environment
 if ((len(sys.argv) > 1) and (sys.argv[1] == "--dev")):
-    ipSend = GLOBALS['ipSend-dev']
+    ipSend4 = GLOBALS['ipSend-4-dev']
+    ipSend5 = GLOBALS['ipSend-5-dev']
+    ipSendMicro = GLOBALS['ipSendMicro-dev']
     ipHost = GLOBALS['ipHost-dev']
 else:
-    ipSend = GLOBALS['ipSend']
+    ipSend4 = GLOBALS['ipSend-4']
+    ipSend5 = GLOBALS['ipSend-5']
+    ipSendMicro = GLOBALS['ipSendMicro']
     ipHost = GLOBALS['ipHost']
 
-portSend = GLOBALS['portSend']
+portSend4 = GLOBALS['portSend-4']
+portSend5 = GLOBALS['portSend-5']
+portSendMicro = GLOBALS['portSendMicro']
 portHost = GLOBALS['portHost']
 
 received = queue.Queue()
@@ -34,12 +44,16 @@ simulator = queue.Queue()
 
 
 # This function sends data to the ROV
-def sendData(inputData):
+def sendData(inputData, location = "raspi-5"):
     global s
-    s.sendto(inputData.encode('utf-8'), (ipSend, portSend))
+    if (location == "micro"):
+        s.sendto(inputData.encode('utf-8'), (ipSendMicro, portSendMicro))
+    elif (location == "raspi-4"):
+        s.sendto(inputData.encode('utf-8'), (ipSend4, portSend4))
+    else:
+        s.sendto(inputData.encode('utf-8'), (ipSend5, portSend5))
+        #print("sent " + inputData + " to " + str(ipSend5) + " at " + str(portSend5))
 
-
-keep = [0]
 
 # This function is constantly trying to receive data from the ROV
 def receiveData():
@@ -47,8 +61,34 @@ def receiveData():
     while True:
         outputData, addr = s.recvfrom(1024)
         outputData = outputData.decode("utf-8")
-        if (outputData == "exit"):
-            break
+        try:
+            if (outputData == "exit"):
+                break
+            elif("gyro" in outputData):
+                args = outputData.split()
+                botAPI.data["gyroscope"]["x"] = float(args[3]) #pitch
+                botAPI.data["gyroscope"]["y"] = float(args[2]) - 1 #roll
+                botAPI.data["gyroscope"]["z"] = float(args[1])
+                botAPI.emitTelemetryData()
+                if(botAPI.rotationLock):
+                    topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
+            elif("accel" in outputData):
+                args = outputData.split()
+                botAPI.data["accelerometer"]["x"] = args[1]
+                botAPI.data["accelerometer"]["y"] = args[2]
+                botAPI.data["accelerometer"]["z"] = args[3]
+                botAPI.emitTelemetryData()
+            elif("ph" in outputData):
+                args = outputData.split()
+                botAPI.data["ph"] = args[1]
+                botAPI.emitTelemetryData()
+            elif("temp " in outputData):
+                args = outputData.split()
+                botAPI.data["temperature"] = args[1]
+                botAPI.emitTelemetryData()
+        except Exception as e:
+            print(e)
+            
         print(outputData)
         received.put(outputData)
 
@@ -63,7 +103,30 @@ t = threading.Thread(target=receiveData)
 t.start()
 
 if __name__ == "__main__":
-    import time
-    for x in range(0,100):
-        sendData(input())
-        time.sleep(1);
+    
+    command = input()
+    while command != "exit":
+        if command == "motors open":
+            sendData("leftmotor open", "raspi-4")
+            sendData("rightmotor open", "raspi-4")
+        elif command == "motors close":
+            sendData("leftmotor close", "raspi-4")
+            sendData("rightmotor close", "raspi-4")
+        else:
+            sendData(command, "raspi-4")
+        command = input()
+    sendData(command)
+    '''
+    startTime = time.time()
+    outputFile = open('gyrotest2.txt', 'w')
+    while (time.time() - startTime) / 60 < 1:
+        outputData = received.get()
+        if("gyro" in outputData):
+            data = outputData.split(" ")
+            currentTime = str(time.time() - startTime)
+            print(currentTime + "," + data[1] + "," + data[2] + "," + data[3] + "\n")
+            outputFile.write(currentTime + "," + data[1] + "," + data[2] + "," + data[3] + "\n")
+    print("done")
+    outputFile.close()
+    '''
+

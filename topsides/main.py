@@ -6,6 +6,7 @@ import random
 from profileAPI import profile_api
 from controlAPI import controlAPI
 import notificationAPI
+import botAPI
 from devAPI import devAPI
 from guiAPI import gui_api
 import dashboardAPI
@@ -18,11 +19,14 @@ import gevent.monkey
 import werkzeug.serving
 import topsidesComms
 from flask_socketio import SocketIO
+import topsidePID
 
 #gevent.monkey.patch_all()
 app = Flask(__name__)
 socketio = SocketIO(app)
 CORS(app)
+
+topsidePID.topsidesComms = topsidesComms
 
 # Registering APIs
 app.register_blueprint(profile_api)
@@ -34,10 +38,12 @@ app.register_blueprint(gui_api)
 app.register_blueprint(simulatorAPI(topsidesComms))
 app.register_blueprint(dashboardAPI.dashboardAPI(topsidesComms))
 app.register_blueprint(themeAPI.themeAPI())
+app.register_blueprint(botAPI.botAPI(topsidePID, topsidesComms))
 
 
 #Register socket events
 notificationAPI.socketSetup(socketio)
+botAPI.socketSetup(socketio)
 
 
 @app.after_request

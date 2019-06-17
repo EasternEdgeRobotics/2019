@@ -13,8 +13,12 @@
                 PROFILEHANDLE.onProfilesLoaded = function(profiles){
                     $("#profileCount").html(profiles.length);
                     $("#fileSize").html(Math.round(PROFILEHANDLE.fileSize/1000*100)/100);
+                    
                     profiles.forEach(function(profile){
-                        $("#profileInsert").append("<div class='grid-item profile col-lg-3 col-md-6 init'><div class='item-content panel'><p class='date-modified'>" + (profile.modified != null ? profile.modified : 'n/a') + "</p><h2 class='name'>"+profile.name+"</h2><h4 class='gamepad-count'>"+profile.gamepads.length+"</h4><div class='btn-container'><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div></div></div>");
+                        if(profile.presets == undefined) //handling <v3 profiles (ones without presets)
+                            profile.presets = [];
+
+                        $("#profileInsert").append("<div class='grid-item profile col-lg-3 col-md-6 init'><div class='item-content panel'><p class='date-modified'>" + (profile.modified != null ? profile.modified : 'n/a') + "</p><h2 class='name'>"+profile.name+"</h2><h4 class='gamepad-count'>"+profile.gamepads.length+"</h4><h4 class='preset-count'>"+profile.presets.length+"</h4><div class='btn-container'><button class='btn btn-primary' onclick='editProfile_click("+profile.id+")'>Edit</button><button class='btn btn-danger' onclick='deleteProfile("+profile.id+")'>Delete</button></div></div></div>");
                     });
                     
                     $(".grid").masonry({
@@ -67,13 +71,13 @@
 
     <div class="grid" id="profileInsert">
         <div class="grid-sizer"></div>
-        <div class="grid-item init col-lg-3 col-md-6">
+        <div class="grid-item init col-lg-3 col-md-6 profile status">
             <div class="item-content panel left">
                 <h1 id='profileCount'></h1>
                 <h1 id="fileSize"></h1>
             </div>
         </div>
-        <div class="grid-item init col-lg-3 col-md-6">
+        <div class="grid-item init col-lg-3 col-md-6 profile new">
             <div class="item-content panel center">
                 <h3>Create New Profile</h3>
                 <button class="btn btn-primary" onclick="newProfile_click();">Create New</button>

@@ -1,11 +1,20 @@
 {
-    "admin_password": "whynick",
     "ipHost": "192.168.88.2",
     "ipHost-dev": "localhost",
+    "ipSend-4": "192.168.88.4",
+    "ipSend-4-dev": "localhost",
+    "ipSend-5": "192.168.88.5",
+    "ipSend-5-dev": "localhost",
+    "ipSendMicro": "192.168.88.6",
+    "ipSendMicro-dev": "localhost",
+    "portSend-5": 5000,
     "portHost": 5001,
-    "ipSend": "192.168.88.5",
-    "ipSend-dev": "localhost",
-    "portSend": 5000,
+    "portFrontCamera": 5002,
+    "portBackCamera": 5003,
+    "portCV": 5004,
+    "portSendMicro": 5005,
+    "portMicroCamera": 5006,
+    "portSend-4": 5007,
     "flaskPort": 80,
     "thrusterPorts": {
         "fore-port-vert": 1,
@@ -19,6 +28,7 @@
         "fore-camera": 8,
         "aft-camera": 9
     },
+    "thrusterSafety": 0.9,
     "simulatorEnabled": true,
     "defaultTheme": "snow"
 }

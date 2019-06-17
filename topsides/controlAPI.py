@@ -8,6 +8,9 @@ control_api = Blueprint("control_api", __name__)
 topsidesComms = None
 
 
+rotateCam1 = 0
+rotateCam2 = 0
+
 def controlAPI(comms):
     global topsidesComms
     topsidesComms = comms
@@ -47,6 +50,7 @@ def loadControlTestPage():
 
 @control_api.route("/sendControlValues", methods=["POST"])
 def sendControlValues():
+    global rotateCam1, rotateCam2
     """
     Parsed control values are sent to the server and eventually to the bot.
 
@@ -67,38 +71,86 @@ def sendControlValues():
     """
     try:
         data = request.json
-        print("1")
+        #print("1")
         # .get(<index>, <default value if key doesn't exist>)
 
-        heave = data.get("heave", data.get("heave_up", 0) - data.get("heave_down", 0))
-        pitch = data.get("pitch", data.get("pitch_up", 0) - data.get("pitch_down", 0))
-        roll = data.get("roll", data.get("roll_cw", 0) - data.get("roll_ccw", 0))
-        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_bakcwards", 0))
-        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0))
-        sway = data.get("sway", data.get("sway_right", 0) - data.get("sway_left", 0))
-        rotateCam1 = data.get("rotateCam1")
-        rotateCam2 = data.get("rotateCam2")
+        #print(1)
+        
+        heave = data.get("heave", data.get("heave_up",0) - data.get("heave_down", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_heave", 0)))
+        pitch = data.get("pitch", data.get("pitch_up",0) - data.get("pitch_down", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_pitch", 0)))
+        roll = data.get("roll", data.get("roll_cw",0) - data.get("roll_ccw", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_roll", 0)))
+        surge = data.get("surge", data.get("surge_forewards", 0) - data.get("surge_backwards", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_surge", 0)))
+        yaw = data.get("yaw", data.get("yaw_cw", 0) - data.get("yaw_ccw", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_yaw", 0)))
+        sway = data.get("sway", data.get("sway_right",0) - data.get("sway_left", 0)) * GLOBALS["thrusterSafety"] * (1 - 2* data.get("invert_global", data.get("invert_sway", 0)))
+        rotateCam1 = data.get("rotateCam1", rotateCam1 - 0.05*data.get("cam1_step", 0))
+        rotateCam2 = data.get("rotateCam2", rotateCam2 - 0.05*data.get("cam2_step", 0))
 
+        rotateCam1 = (rotateCam1 if (rotateCam1 > -1 and rotateCam1 < 1) else (rotateCam1/abs(rotateCam1)))
+        rotateCam2 = (rotateCam2 if (rotateCam2 > -1 and rotateCam2 < 1) else (rotateCam2/abs(rotateCam2)))
+
+        #print(2)
+
+        smartPitch = bool(data.get("smart_pitch", 0))
+        smartRoll = bool(data.get("smart_roll", 0))
+
+        rightClaw = data.get("open_both_claw", data.get("open_right_claw", -1 + data.get("close_both_claw", data.get("close_right_claw", 0))))
+        leftClaw = data.get("open_both_claw", data.get("open_left_claw", -1 + data.get("close_both_claw", data.get("close_left_claw", 0))))
+        light = data.get("light", 0)
+        pebbles = data.get("pebbles_open", -1 + data.get("pebbles_close", 0))
+
+        #rightClaw = data.get("open_both_claw", 0))
+        print(pebbles)
+        
+        surge = 0.4 if data.get("back_press", 0) == 1 else surge
+        
         # Handling Movement Axes Controls
         thrusterData = {
-            "fore-port-vert": +heave - pitch - roll,
-            "fore-star-vert": +heave - pitch + roll,
-            "aft-port-vert": -heave - pitch + roll,
-            "aft-star-vert": -heave - pitch - roll,
+            #"fore-port-vert": +heave - ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) + ((-abs(roll) if roll > 0 else 0) if smartRoll else -roll),
+            #"fore-star-vert": -heave + ((abs(pitch) if pitch > 0 else 0) if smartPitch else -pitch) - ((-abs(roll) if roll < 0 else 0) if smartRoll else roll),
+            "aft-port-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) - ((-abs(roll) if roll > 0 else 0) if smartRoll else roll),
+            "aft-star-vert": -heave + ((abs(pitch) if pitch < 0 else 0) if smartPitch else pitch) + ((abs(roll) if roll < 0 else 0) if smartRoll else -roll),
 
-            "fore-port-horz": -surge + yaw + sway,
-            "fore-star-horz": +surge + yaw + sway,
-            "aft-port-horz": -surge + yaw - sway,
-            "aft-star-horz": -surge - yaw + sway,
+            "fore-port-horz": surge - yaw - sway,
+            "fore-star-horz": -surge - yaw - sway,
+            "aft-port-horz": -(surge if data.get("back_press", 0) == 0 else 0) + yaw - sway,
+            "aft-star-horz": (surge if data.get("back_press", 0) == 0 else 0) + yaw - sway,
 
             "fore-camera": rotateCam1,
-            "aft-camera": rotateCam2,
+            "aft-camera": rotateCam2
         }
+
         for control in thrusterData:
-            print(control + "   " + str(thrusterData))
+            #print(control + "   " + str(thrusterData))
             val = thrusterData[control]
-            topsidesComms.putMessage("fControl.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+            topsidesComms.putMessage("runThruster.py " + str(GLOBALS["thrusterPorts"][control]) + " " + str(val))
+
+
+        print("====================")
+        
+        
+
+
+        if(rightClaw is not -1):
+            topsidesComms.sendData("rightmotor " + ("open" if rightClaw is 1 else "close"), "raspi-4")
+            print("right motor -    " + ("open" if rightClaw is 1 else "close"))
+        if(leftClaw is not -1):
+            topsidesComms.sendData("leftmotor " + ("open" if leftClaw is 1 else "close"), "raspi-4")
+            print("left motor -   " + ("open" if leftClaw is 1 else "close"))
+        if(pebbles is not -1):
+            topsidesComms.sendData("pebbles " + ("open" if pebbles is 1 else "close"), "raspi-4")
+            print("pebbles -   " + ("open" if pebbles is 1 else "close"))
+        
+        topsidesComms.sendData("led " + ("80" if light is 1 else "0"), "raspi-4")
+        
+        print("====================")
+        """
+        topsidesComms.sendData("claw " + ("close" if claws is 1 else "open"), "raspi-4")
+        topsidesComms.sendData("led.py " + ("100" if light is 1 else "0"))
+        topsidesComms.sendData("pebbles " + ("open" if trought_fly is 1 else "close"), "raspi-4")
+        """
+
         return "good"
 
-    except(Exception):
-        return "error"
+    except Exception as e:
+        print(e)
+        return str(e), 500
