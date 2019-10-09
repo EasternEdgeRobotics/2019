@@ -69,7 +69,7 @@ def receiveData():
                 botAPI.data["gyroscope"]["x"] = float(args[3]) #pitch
                 botAPI.data["gyroscope"]["y"] = float(args[2]) - 1 #roll
                 botAPI.data["gyroscope"]["z"] = float(args[1])
-                botAPI.emitTelemetryData()
+                #botAPI.emitTelemetryData()
                 if(botAPI.rotationLock):
                     topsidePID.runPitchAndRollPID(botAPI.data["gyroscope"]["x"], botAPI.data["gyroscope"]["y"])
             elif("accel" in outputData):
@@ -77,18 +77,18 @@ def receiveData():
                 botAPI.data["accelerometer"]["x"] = args[1]
                 botAPI.data["accelerometer"]["y"] = args[2]
                 botAPI.data["accelerometer"]["z"] = args[3]
-                botAPI.emitTelemetryData()
+                #botAPI.emitTelemetryData()
             elif("ph" in outputData):
                 args = outputData.split()
                 botAPI.data["ph"] = args[1]
-                botAPI.emitTelemetryData()
+                #botAPI.emitTelemetryData()
             elif("temp " in outputData):
                 args = outputData.split()
                 botAPI.data["temperature"] = args[1]
-                botAPI.emitTelemetryData()
+                #botAPI.emitTelemetryData()
         except Exception as e:
             print(e)
-            
+
         print(outputData)
         received.put(outputData)
 
@@ -129,4 +129,3 @@ if __name__ == "__main__":
     print("done")
     outputFile.close()
     '''
-
